@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head><title>API Test</title></head>
+<body>
+<h2>Server API Test</h2>
+<button id="send">Send Test Participants</button>
+<button id="get">Get Participants</button>
+<pre id="output"></pre>
+<script>
+    const sendBtn = document.getElementById('send');
+    const getBtn = document.getElementById('get');
+    const output = document.getElementById('output');
+
+    sendBtn.onclick = async () => {
+        const testData = [
+            { name: "TestUser1", team: "A", points: 5 },
+            { name: "TestUser2", team: "B", points: 3 }
+        ];
+        output.innerText = "Sending...";
+        try {
+            const res = await fetch('/api/participants', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ participants: testData })
+            });
+            const json = await res.json();
+            output.innerText = "POST result: " + JSON.stringify(json, null, 2);
+        } catch(e) {
+            output.innerText = "Error: " + e.message;
+        }
+    };
+
+    getBtn.onclick = async () => {
+        output.innerText = "Fetching...";
+        try {
+            const res = await fetch('/api/participants');
+            const data = await res.json();
+            output.innerText = "GET data: " + JSON.stringify(data, null, 2);
+        } catch(e) {
+            output.innerText = "Error: " + e.message;
+        }
+    };
+</script>
+</body>
+</html>

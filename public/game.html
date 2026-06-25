@@ -1,0 +1,1914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Ace Race — Kick Giveaway Game (Winner History + Multi‑Channel)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Poppins:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* ========== ORIGINAL CSS (unchanged) ========== */
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        body { font-family: 'Poppins', sans-serif; background: radial-gradient(ellipse 80% 50% at 20% 40%, rgba(25, 198, 253, 0.15), transparent), radial-gradient(ellipse 60% 80% at 80% 60%, rgba(6, 93, 230, 0.1), transparent), #0a0c12; min-height: 100vh; padding: 24px; color: #e2e8f0; }
+        .game-container { max-width: 1600px; margin: 0 auto; background: rgba(10, 14, 23, 0.6); backdrop-filter: blur(12px); border-radius: 48px; padding: 24px 28px; border: 1px solid rgba(25, 198, 253, 0.2); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4); }
+        .title { text-align: center; font-size: 3rem; font-weight: 800; font-family: 'Orbitron', monospace; background: linear-gradient(135deg, #19C6FD, #3b82f6); -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 8px; text-shadow: 0 0 20px rgba(25, 198, 253, 0.3); animation: titlePulse 1.5s infinite; }
+        @keyframes titlePulse { 0% { text-shadow: 0 0 5px #19C6FD; } 50% { text-shadow: 0 0 25px #19C6FD, 0 0 10px #3b82f6; } 100% { text-shadow: 0 0 5px #19C6FD; } }
+        .sub { text-align: center; margin-bottom: 28px; font-weight: 500; color: #94a3b8; }
+        .three-columns { display: flex; flex-wrap: wrap; gap: 24px; }
+        .left-column { flex: 1; min-width: 280px; }
+        .middle-column { flex: 1.5; min-width: 400px; }
+        .right-column { flex: 1; min-width: 280px; }
+        .panel { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); border-radius: 28px; padding: 20px; border: 1px solid rgba(25, 198, 253, 0.2); box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2); margin-bottom: 20px; transition: 0.2s; }
+        .participants-panel { background: rgba(15, 23, 42, 0.8); backdrop-filter: none; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3); border: 1px solid rgba(25, 198, 253, 0.3); }
+        .panel-title { font-weight: 700; font-size: 1.2rem; margin-bottom: 16px; color: #19C6FD; border-left: 4px solid #19C6FD; padding-left: 12px; font-family: 'Orbitron', monospace; letter-spacing: 1px; }
+        .input-field { flex: 1; padding: 10px 14px; border-radius: 60px; border: 1px solid rgba(25, 198, 253, 0.3); background: #0f172a; color: #f1f5f9; outline: none; font-family: inherit; }
+        .input-field:focus { border-color: #19C6FD; box-shadow: 0 0 0 2px rgba(25, 198, 253, 0.2); }
+        .btn-blue { background: linear-gradient(135deg, #19C6FD, #3b82f6); color: white; border: none; padding: 10px 20px; border-radius: 60px; font-weight: 600; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; font-family: inherit; }
+        .btn-blue:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(25, 198, 253, 0.4); }
+        .btn-secondary, .btn-primary, .btn-danger, .btn-success, .btn-clear { padding: 10px 20px; border-radius: 60px; font-weight: 600; border: none; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; font-family: inherit; }
+        .btn-secondary { background: #334155; color: #e2e8f0; }
+        .btn-primary { background: linear-gradient(135deg, #19C6FD, #3b82f6); color: white; }
+        .btn-danger { background: #dc2626; color: white; }
+        .btn-success { background: #22c55e; color: white; }
+        .btn-clear { background: #334155; width: 100%; margin-top: 12px; color: #e2e8f0; }
+        .btn-secondary:hover, .btn-primary:hover, .btn-danger:hover, .btn-success:hover, .btn-clear:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+        .connection-status { font-size: 0.8rem; margin-top: 10px; padding: 8px 12px; border-radius: 60px; text-align: center; background: rgba(255,255,255,0.08); color: #cbd5e1; border: 1px solid rgba(148, 163, 184, 0.3); transition: background 0.2s, color 0.2s, border-color 0.2s; }
+        .connection-status.connected { background: rgba(34, 197, 94, 0.15); color: #d1fae5; border-color: rgba(34, 197, 94, 0.35); }
+        .connection-status.disconnected { background: rgba(255,255,255,0.08); color: #cbd5e1; border-color: rgba(148, 163, 184, 0.3); }
+        .connection-status.failed { background: rgba(220, 38, 38, 0.12); color: #fee2e2; border-color: rgba(220, 38, 38, 0.35); }
+        .connection-status.reconnecting { background: rgba(245, 158, 11, 0.15); color: #fde68a; border-color: rgba(245, 158, 11, 0.4); animation: pulseReconnect 1s infinite; }
+        @keyframes pulseReconnect { 0%, 100% { opacity: 0.7; } 50% { opacity: 1; text-shadow: 0 0 2px #f59e0b; } }
+        #selectedDisplay { background: rgba(25, 198, 253, 0.1); border-radius: 60px; padding: 8px; margin-bottom: 16px; text-align: center; font-weight: 600; color: #19C6FD; border: 1px solid rgba(25, 198, 253, 0.3); }
+        .participant-list { max-height: 500px; overflow-y: auto; margin-top: 16px; scrollbar-width: thin; scrollbar-color: #19C6FD #0f172a; }
+        .participant-list::-webkit-scrollbar { width: 6px; }
+        .participant-list::-webkit-scrollbar-track { background: #0f172a; border-radius: 3px; }
+        .participant-list::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #19C6FD, #3b82f6); border-radius: 3px; }
+        .participant-item { background: rgba(30, 41, 59, 0.7); margin: 8px 0; padding: 8px 12px; border-radius: 60px; display: flex; justify-content: space-between; align-items: center; gap: 8px; border: 1px solid rgba(25, 198, 253, 0.15); cursor: pointer; transition: all 0.2s; color: #f1f5f9; min-height: 40px; }
+        .participant-item:hover { background: rgba(25, 198, 253, 0.2); transform: translateX(4px); }
+        .participant-item.selected-player1 { background: rgba(25, 198, 253, 0.3); border-left: 6px solid #19C6FD; }
+        .participant-item.selected-player2 { background: rgba(25, 198, 253, 0.15); border-right: 6px solid #19C6FD; }
+        .participant-name { font-weight: 600; word-break: break-word; max-width: 150px; overflow: hidden; text-overflow: ellipsis; }
+        .participant-time { font-size: 0.7rem; opacity: 0.8; margin-left: 8px; white-space: nowrap; font-family: monospace; }
+        .remove-participant { background: #dc2626; border: none; border-radius: 40px; padding: 2px 10px; color: white; cursor: pointer; font-size: 12px; transition: 0.2s; flex-shrink: 0; line-height: 1.4; }
+        .remove-participant:hover { transform: scale(1.05); background: #ef4444; }
+        .duel-players { display: flex; gap: 20px; justify-content: center; margin-bottom: 20px; perspective: 800px; background: radial-gradient(ellipse at 50% 30%, rgba(10, 50, 20, 0.6), rgba(0, 0, 0, 0.3)); border-radius: 60px; padding: 20px 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1); }
+        .player-card { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(4px); flex: 1; border-radius: 28px; padding: 20px; text-align: center; border: 2px solid rgba(25, 198, 253, 0.4); transition: all 0.2s; transform: rotateX(5deg) translateZ(10px); box-shadow: 0 15px 25px -10px rgba(0,0,0,0.5); }
+        .player-card:first-child { transform: rotateX(4deg) rotateY(-2deg) translateZ(8px); }
+        .player-card:last-child { transform: rotateX(4deg) rotateY(4deg) translateZ(8px); }
+        /* Remove active-turn glow – we will not use it during duel */
+        .player-card.winner-highlight {
+            border: 3px solid #fbbf24;
+            box-shadow: 0 0 40px rgba(251, 191, 36, 0.8), 0 10px 30px rgba(0,0,0,0.4);
+            transform: scale(1.04) rotateX(3deg) translateZ(20px);
+            transition: all 0.3s ease;
+        }
+        .player-name { font-size: 1.5rem; font-weight: 800; font-family: 'Orbitron', monospace; background: linear-gradient(135deg, #19C6FD, #3b82f6); -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 16px; word-break: break-word; }
+        .card-slot { background: rgba(0,0,0,0.3); border-radius: 20px; padding: 15px; min-height: 180px; display: flex; align-items: center; justify-content: center; }
+        .card-image { width: 110px; height: 154px; object-fit: contain; border-radius: 12px; background: #1e293b; box-shadow: 0 8px 20px rgba(0,0,0,0.3); animation: drawCard 0.4s cubic-bezier(0.2,0.9,0.4,1.1); transition: opacity 0.15s; }
+        .card-image.loading { opacity: 0.4; }
+        .card-image.loaded { opacity: 1; }
+        .card-back-img { width: 110px; height: 154px; object-fit: contain; border-radius: 12px; background: #1e293b; box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
+        .card-placeholder { width: 110px; height: 154px; background: rgba(255,255,255,0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #94a3b8; border: 2px dashed #19C6FD; }
+        .card-placeholder.has-back { border: none; background: transparent; padding: 0; }
+        @keyframes drawCard { 0% { opacity: 0; transform: translateY(-40px) rotate(-8deg); } 100% { opacity: 1; transform: translateY(0) rotate(0); } }
+        .card-flipper { perspective: 800px; width: 110px; height: 154px; }
+        .card-flipper-inner { 
+            position: relative; 
+            width: 100%; 
+            height: 100%; 
+            transition: transform 0.6s ease-in-out; /* slightly slower */
+            transform-style: preserve-3d; 
+            will-change: transform; 
+        }
+        .card-flipper-inner.flipped { transform: rotateY(180deg); }
+        .card-front, .card-back { 
+            position: absolute; 
+            width: 100%; 
+            height: 100%; 
+            backface-visibility: hidden; 
+            -webkit-backface-visibility: hidden; 
+            border-radius: 12px; 
+            overflow: hidden; 
+        }
+        .card-front { transform: rotateY(180deg); }
+        .card-back { transform: rotateY(0deg); }
+
+        /* Shine effect on flip */
+        .card-flipper-inner::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%);
+            background-size: 200% 200%;
+            pointer-events: none;
+            z-index: 10;
+            border-radius: 12px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .card-flipper-inner.flipped::after {
+            opacity: 1;
+            animation: shine 0.6s ease-in-out;
+        }
+        @keyframes shine {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .winner-badge { margin-top: 12px; font-size: 0.9rem; font-weight: 800; background: linear-gradient(135deg, #19C6FD, #3b82f6); color: white; padding: 6px 14px; border-radius: 60px; display: inline-block; animation: bouncePop 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+        @keyframes bouncePop { 0% { transform: scale(0); opacity: 0; } 80% { transform: scale(1.1); } 100% { transform: scale(1); opacity: 1; } }
+        .controls { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 20px; }
+        .turn-indicator, .deck-status { background: rgba(0,0,0,0.5); border-radius: 60px; padding: 8px 16px; text-align: center; margin: 10px auto; width: fit-content; font-weight: 500; color: #cbd5e1; }
+        .winner-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: center; z-index: 10000; cursor: pointer; }
+        .winner-card { background: linear-gradient(135deg, #1e293b, #0f172a); border-radius: 48px; padding: 40px 60px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.5); border: 2px solid #19C6FD; max-width: 800px; width: 90%; max-height: 90vh; overflow-y: auto; cursor: default; color: #f1f5f9; font-family: 'Poppins', sans-serif; }
+        .winner-card h1 { font-size: 2.5rem; margin-bottom: 10px; background: linear-gradient(135deg, #19C6FD, #3b82f6); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .winner-card .winner-name { font-size: 2.8rem; font-weight: 800; margin: 20px 0; text-shadow: 0 0 10px #19C6FD, 0 0 20px #3b82f6; animation: flicker 2s infinite; font-family: 'Orbitron', monospace; word-break: break-word; line-height: 1.2; text-align: center; }
+        @keyframes flicker { 0%, 100% { text-shadow: 0 0 10px #19C6FD, 0 0 20px #3b82f6; } 50% { text-shadow: 0 0 30px #19C6FD, 0 0 15px #3b82f6; } }
+        .winner-chat-log { background: rgba(0,0,0,0.6); border-radius: 24px; padding: 15px; margin: 20px 0; max-height: 300px; overflow-y: auto; text-align: left; font-family: monospace; font-size: 0.85rem; color: #cbd5e1; border: 1px solid rgba(25,198,253,0.3); }
+        .winner-chat-log div { padding: 6px 0; border-bottom: 1px solid #334155; }
+        .confetti-piece { position: fixed; width: 8px; height: 8px; pointer-events: none; z-index: 9999; animation: confettiFall 1.5s ease-out forwards; }
+        @keyframes confettiFall { to { transform: translateY(100vh) rotate(360deg); opacity: 0; } }
+        .wheel-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 20000; cursor: default; }
+        .wheel-container { background: linear-gradient(135deg, #1e293b, #0f172a); border-radius: 48px; padding: 40px; max-width: 1000px; width: 90%; text-align: center; border: 2px solid #19C6FD; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+        .wheel-title { font-size: 2rem; font-weight: 800; margin-bottom: 30px; color: #19C6FD; font-family: 'Orbitron', monospace; }
+        .wheels { display: flex; gap: 40px; justify-content: center; flex-wrap: wrap; }
+        .wheel { flex: 1; min-width: 250px; background: #0f172a; border-radius: 32px; padding: 20px; color: white; box-shadow: 0 0 20px rgba(0,0,0,0.5); position: relative; }
+        .wheel-label { font-size: 1.2rem; font-weight: 700; margin-bottom: 15px; color: #19C6FD; font-family: 'Orbitron', monospace; }
+        .wheel-viewport { background: #020617; border-radius: 20px; padding: 20px; overflow: hidden; height: 120px; position: relative; }
+        .wheel-scroller { transition: transform cubic-bezier(0.05, 0.9, 0.2, 1); }
+        .wheel-item { padding: 12px; font-size: 1.5rem; font-weight: 700; text-align: center; border-bottom: 1px solid #334155; color: #f1f5f9; }
+        .wheel-item:last-child { border-bottom: none; }
+        .wheel-pointer { position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 0; height: 0; border-left: 15px solid #19C6FD; border-top: 10px solid transparent; border-bottom: 10px solid transparent; filter: drop-shadow(0 0 2px black); pointer-events: none; z-index: 10; }
+        .ready-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 20000; cursor: default; }
+        .ready-container { background: linear-gradient(135deg, #1e293b, #0f172a); border-radius: 48px; padding: 30px; max-width: 1200px; width: 90%; border: 2px solid #19C6FD; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+        .ready-title { text-align: center; font-size: 2rem; font-weight: 800; margin-bottom: 20px; color: #19C6FD; font-family: 'Orbitron', monospace; }
+        .ready-players { display: flex; gap: 30px; justify-content: center; flex-wrap: wrap; flex-direction: row; }
+        .ready-player-card { flex: 1; min-width: 280px; background: rgba(30, 41, 59, 0.8); border-radius: 28px; padding: 20px; border: 2px solid #19C6FD; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        .ready-player-name { font-size: 1.8rem; font-weight: 800; text-align: center; margin-bottom: 10px; background: linear-gradient(135deg, #19C6FD, #3b82f6); -webkit-background-clip: text; background-clip: text; color: transparent; font-family: 'Orbitron', monospace; word-break: break-word; }
+        .ready-status { text-align: center; font-weight: 600; padding: 6px; border-radius: 60px; margin: 10px 0; }
+        .ready-status.waiting { background: rgba(25, 198, 253, 0.2); color: #19C6FD; border: 1px solid rgba(25, 198, 253, 0.4); }
+        .ready-status.ready { background: rgba(34, 197, 94, 0.2); color: #22c55e; border: 1px solid #22c55e; }
+        .ready-timer { text-align: center; font-size: 1.2rem; font-weight: 700; margin: 10px 0; color: #f1f5f9; }
+        .timer-bar-container { width: 100%; height: 8px; background: #334155; border-radius: 4px; margin: 10px 0 5px 0; overflow: hidden; }
+        .timer-bar { width: 100%; height: 100%; background: linear-gradient(90deg, #19C6FD, #3b82f6); border-radius: 4px; transition: width 1s linear; }
+        .ready-chat-log { background: #0f172a; border-radius: 20px; padding: 10px; max-height: 200px; overflow-y: auto; margin: 10px 0; font-family: monospace; font-size: 0.8rem; color: #94a3b8; }
+        .ready-chat-log div { padding: 4px; border-bottom: 1px solid #334155; }
+        .ready-replace-btn { background: linear-gradient(135deg, #19C6FD, #3b82f6); border: none; padding: 8px 16px; border-radius: 60px; font-weight: 700; color: white; cursor: pointer; margin-top: 10px; width: 100%; transition: transform 0.2s; }
+        .ready-replace-btn:hover { transform: translateY(-2px); filter: brightness(1.05); }
+        .ready-start-battle { text-align: center; margin-top: 20px; display: flex; gap: 15px; justify-content: center; }
+        .ready-start-battle button { background: linear-gradient(135deg, #19C6FD, #3b82f6); border: none; padding: 12px 32px; border-radius: 60px; font-weight: 700; font-size: 1.2rem; color: white; cursor: pointer; transition: transform 0.2s; }
+        .ready-start-battle button:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(25,198,253,0.4); }
+        .ready-cancel { text-align: center; margin-top: 10px; }
+        .ready-cancel button { background: #334155; border: none; padding: 6px 20px; border-radius: 60px; font-weight: 600; cursor: pointer; color: #f1f5f9; }
+        .start-ready-check { text-align: center; margin-top: 15px; }
+        .preset-card-panel { display: flex; gap: 8px; margin-top: 12px; align-items: center; flex-wrap: wrap; }
+        .preset-input { width: 80px; text-align: center; text-transform: uppercase; }
+        .preset-checkbox { width: 20px; height: 20px; margin-right: 4px; }
+        input[type="checkbox"] { appearance: none; -webkit-appearance: none; width: 22px; height: 22px; border: 2px solid rgba(25, 198, 253, 0.4); border-radius: 6px; background: #0f172a; cursor: pointer; position: relative; transition: all 0.2s; vertical-align: middle; margin-right: 4px; flex-shrink: 0; }
+        input[type="checkbox"]:checked { background: linear-gradient(135deg, #19C6FD, #3b82f6); border-color: #19C6FD; box-shadow: 0 0 12px rgba(25, 198, 253, 0.4); }
+        input[type="checkbox"]:checked::after { content: "✓"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 14px; font-weight: 800; }
+        input[type="checkbox"]:hover { border-color: #19C6FD; box-shadow: 0 0 8px rgba(25, 198, 253, 0.2); }
+        input[type="checkbox"]:disabled { opacity: 0.4; cursor: not-allowed; }
+        .preset-checkbox { width: auto; height: auto; border: none; background: none; margin-right: 0; vertical-align: baseline; }
+        .preset-checkbox:checked { background: none; box-shadow: none; }
+        .preset-checkbox:checked::after { display: none; }
+        .pick-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: center; z-index: 20000; cursor: default; }
+        .pick-container { background: linear-gradient(135deg, #1e293b, #0f172a); border-radius: 48px; padding: 40px 50px; max-width: 550px; width: 90%; text-align: center; border: 2px solid #19C6FD; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+        .pick-crown { font-size: 3rem; margin-bottom: 10px; display: block; }
+        .pick-title { font-size: 1.8rem; font-weight: 800; color: #19C6FD; font-family: 'Orbitron', monospace; margin-bottom: 10px; }
+        .pick-player-name { font-size: 2.5rem; font-weight: 800; background: linear-gradient(135deg, #19C6FD, #3b82f6); -webkit-background-clip: text; background-clip: text; color: transparent; font-family: 'Orbitron', monospace; margin-bottom: 20px; word-break: break-word; }
+        .pick-card-display { width: 120px; height: 168px; background: rgba(255,255,255,0.05); border-radius: 16px; border: 2px dashed #19C6FD; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin: 20px auto; transition: all 0.3s; }
+        .pick-card-display.filled { background: rgba(25,198,253,0.15); border: 2px solid #19C6FD; }
+        .pick-input-group { display: flex; gap: 12px; justify-content: center; margin-top: 15px; }
+        .pick-input-group input { width: 100px; padding: 12px 16px; border-radius: 60px; border: 2px solid rgba(25,198,253,0.4); background: #0f172a; color: white; font-size: 1.3rem; text-align: center; text-transform: uppercase; outline: none; font-weight: 700; letter-spacing: 2px; }
+        .pick-input-group input:focus { border-color: #19C6FD; box-shadow: 0 0 15px rgba(25,198,253,0.3); }
+        .pick-input-group button { padding: 12px 28px; border-radius: 60px; background: linear-gradient(135deg, #19C6FD, #3b82f6); border: none; font-weight: 700; font-size: 1.1rem; color: white; cursor: pointer; transition: 0.2s; }
+        .pick-input-group button:hover { transform: scale(1.05); }
+        .pick-feedback { margin-top: 15px; font-size: 0.9rem; min-height: 24px; }
+        .pick-feedback.success { color: #22c55e; }
+        .pick-feedback.error { color: #ef4444; }
+        .toggle-group { display: flex; gap: 8px; margin-bottom: 12px; }
+        .toggle-group button { flex: 1; margin-bottom: 0; }
+        .toggle-group .btn-success.joining-open { box-shadow: 0 0 12px #22c55e; border: 1px solid #22c55e; }
+        .toggle-group .btn-danger.joining-closed { box-shadow: 0 0 12px #dc2626; border: 1px solid #dc2626; }
+        .chat-log-panel, .history-panel {
+            background: rgba(0,0,0,0.5);
+            border-radius: 20px;
+            padding: 12px;
+            margin-top: 16px;
+            max-height: 250px;
+            overflow-y: auto;
+            font-size: 0.75rem;
+            font-family: monospace;
+        }
+        .chat-log-panel div, .history-panel div {
+            padding: 4px 0;
+            border-bottom: 1px solid #334155;
+            color: #cbd5e1;
+        }
+        .history-panel .winner-entry {
+            color: #fbbf24;
+        }
+
+        /* Loading overlay for cards */
+        #loadingOverlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(4px);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 1.5rem;
+            font-family: 'Orbitron', monospace;
+        }
+        #loadingOverlay.active {
+            display: flex;
+        }
+        .spinner {
+            border: 4px solid rgba(255,255,255,0.1);
+            border-top: 4px solid #19C6FD;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin-right: 20px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+<div class="game-container">
+    <div class="title">⚡ ACE RACE ⚡</div>
+    <div class="sub">Viewers type <strong id="modeIndicator">!ace</strong> to join</div>
+    <div class="three-columns">
+        <div class="left-column">
+            <div id="kickPanelGame" class="panel">
+                <div class="panel-title">🔌 Kick Connection</div>
+                <div id="userInfoArea" style="margin-bottom: 16px;"></div>
+                <button id="loginBtn" class="btn-blue" style="width: 100%;">Login with Kick</button>
+                <div style="margin-top: 12px; display: flex; gap: 10px; align-items: center;">
+                    <input id="channelNameInput" type="text" class="input-field" placeholder="Enter channel name" style="flex: 1;">
+                    <button id="connectChannelBtn" class="btn-blue" style="white-space: nowrap;">Connect</button>
+                </div>
+                <div id="statusDisplay" class="connection-status disconnected" style="margin-top: 12px;">⚪ Not logged in</div>
+            </div>
+            <div class="panel">
+                <div class="panel-title">⚙️ Giveaway Mode</div>
+                <div class="toggle-group" style="margin: 12px 0;">
+                    <button id="openJoiningBtn" class="btn-success">Open Joining</button>
+                    <button id="closeJoiningBtn" class="btn-danger">Close Joining</button>
+                </div>
+                <div style="margin: 12px 0;">
+                    <label><input type="radio" name="mode" value="keyword" checked> Keyword Mode</label>
+                    <label style="margin-left: 20px;"><input type="radio" name="mode" value="active"> Active Chatter Mode</label>
+                </div>
+                <div id="keywordSettings">
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="keywordInput" class="input-field" placeholder="Keyword (e.g., !ace)" value="!ace">
+                        <button id="setKeywordBtn" class="btn-blue">Set</button>
+                    </div>
+                </div>
+                <div id="activeSettings" style="display: none;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-top: 12px;">
+                        <span>Inactivity timeout:</span>
+                        <input type="range" id="inactivitySlider" min="0.5" max="5" step="0.5" value="1" style="flex:1;">
+                        <span id="inactivityValue">1</span> min
+                    </div>
+                    <small>Viewers who don't send any message for this time are removed. Selected players are protected.</small>
+                </div>
+            </div>
+            <div class="panel">
+                <div class="panel-title">Manual Join (Test)</div>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="participantName" class="input-field" placeholder="Enter a name">
+                    <button id="joinBtn" class="btn-blue">Join</button>
+                </div>
+            </div>
+            <div class="panel">
+                <div class="panel-title">📜 Stream Chat Log</div>
+                <div id="chatLogPanel" class="chat-log-panel">Waiting for messages...</div>
+            </div>
+            <div class="panel">
+                <div class="panel-title">🏆 Last 20 Winners</div>
+                <div id="winnerHistoryPanel" class="history-panel">No winners yet</div>
+            </div>
+        </div>
+        <div class="middle-column">
+            <div class="panel">
+                <div class="panel-title">⚔️ Ace Duel</div>
+                <div id="selectedDisplay">No players selected</div>
+                <div class="duel-players">
+                    <div class="player-card" id="player1Card">
+                        <div class="player-name" id="p1Name">—</div>
+                        <div class="card-slot" id="p1CardSlot"></div>
+                        <div id="p1WinnerBadge"></div>
+                    </div>
+                    <div class="player-card" id="player2Card">
+                        <div class="player-name" id="p2Name">—</div>
+                        <div class="card-slot" id="p2CardSlot"></div>
+                        <div id="p2WinnerBadge"></div>
+                    </div>
+                </div>
+                <div class="controls">
+                    <button id="pickRandomBtn" class="btn-secondary">Pick Two Random</button>
+                    <button id="pickSingleWinnerBtn" class="btn-secondary" style="background: linear-gradient(135deg, #f59e0b, #eab308);">🎲 Pick Single Winner</button>
+                    <button id="startDuelBtn" class="btn-primary">Start Duel</button>
+                    <button id="resetDuelBtn" class="btn-secondary">Reset</button>
+                    <button id="stopDrawBtn" class="btn-danger">Stop</button>
+                    <button id="newDuelSameBtn" class="btn-success">New Duel</button>
+                </div>
+                <div class="preset-card-panel">
+                    <label><input type="checkbox" id="presetWinEnable" class="preset-checkbox"> Preset card</label>
+                    <input type="text" id="presetCardInput" class="input-field preset-input" placeholder="e.g., 5D" maxlength="3" disabled>
+                    <span id="presetBadge" style="display:none;font-size:0.75rem;font-weight:700;background:linear-gradient(135deg,#19C6FD,#3b82f6);color:white;padding:2px 10px;border-radius:60px;">🎯 </span>
+                    <label style="margin-left:12px;"><input type="checkbox" id="playerPicksEnable" class="preset-checkbox"> Player picks card</label>
+                </div>
+                <div class="deck-status" id="deckStatus">Deck: 0</div>
+                <div class="turn-indicator" id="turnStatus">No active duel</div>
+                <div id="gameMessage" style="background: rgba(0,0,0,0.5); border-radius: 60px; padding: 8px; margin-top: 12px; text-align: center;"></div>
+            </div>
+        </div>
+        <div class="right-column">
+            <div class="panel participants-panel">
+                <div class="panel-title">Participants (<span id="participantCount">0</span>)</div>
+                <button id="clearAllBtn" class="btn-clear">Clear All</button>
+                <div id="participantListContainer" class="participant-list"></div>
+                <div id="startReadyCheckContainer" class="start-ready-check" style="display: none;">
+                    <button id="startReadyCheckBtn" class="btn-blue">Start Ready Check</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading overlay for card preload -->
+<div id="loadingOverlay">
+    <div class="spinner"></div>
+    <span>Loading cards…</span>
+</div>
+
+<script>
+    // ========== MULTI-CHANNEL SUPPORT ==========
+    let currentChannelKey = '';
+    function getStorageKey(base) {
+        return currentChannelKey ? `${base}_${currentChannelKey}` : base;
+    }
+
+    // ========== GLOBAL CHAT LOG & WINNER HISTORY ==========
+    let fullChatLog = [];
+    let winnerHistory = [];
+    const MAX_CHAT_LOG = 200;
+    const MAX_WINNERS = 20;
+
+    // Deduplicate chat messages (prevents duplicates from multiple connections)
+    const processedMessages = new Set();
+    function isDuplicateMessage(username, content) {
+        const key = `${username}|${content}`;
+        if (processedMessages.has(key)) return true;
+        processedMessages.add(key);
+        setTimeout(() => processedMessages.delete(key), 2000);
+        return false;
+    }
+
+    function addChatMessage(username, message) {
+        const timestamp = new Date().toLocaleTimeString();
+        fullChatLog.unshift({ username, message, timestamp });
+        if (fullChatLog.length > MAX_CHAT_LOG) fullChatLog.pop();
+        updateChatLogPanel();
+
+        if (currentWinnerOverlay && currentWinnerName && username.toLowerCase() === currentWinnerName.toLowerCase()) {
+            const mainChatDiv = currentWinnerOverlay.querySelector('.winner-main-chat');
+            if (mainChatDiv) {
+                const newMsgDiv = document.createElement('div');
+                newMsgDiv.innerHTML = `[${timestamp}] ${escapeHtml(message)}`;
+                mainChatDiv.appendChild(newMsgDiv);
+                mainChatDiv.scrollTop = mainChatDiv.scrollHeight;
+            }
+        }
+    }
+
+    function updateChatLogPanel() {
+        const panel = document.getElementById('chatLogPanel');
+        if (!panel) return;
+        if (fullChatLog.length === 0) {
+            panel.innerHTML = 'Waiting for messages...';
+            return;
+        }
+        panel.innerHTML = fullChatLog.map(entry => 
+            `<div>[${entry.timestamp}] <strong>${escapeHtml(entry.username)}</strong>: ${escapeHtml(entry.message)}</div>`
+        ).join('');
+        panel.scrollTop = 0;
+    }
+
+    function addWinnerToHistory(winnerName, winReason) {
+        const timestamp = new Date().toLocaleString();
+        winnerHistory.unshift({ timestamp, winnerName, winReason });
+        if (winnerHistory.length > MAX_WINNERS) winnerHistory.pop();
+        updateWinnerHistoryPanel();
+        saveState();
+    }
+
+    function updateWinnerHistoryPanel() {
+        const panel = document.getElementById('winnerHistoryPanel');
+        if (!panel) return;
+        if (winnerHistory.length === 0) {
+            panel.innerHTML = 'No winners yet';
+            return;
+        }
+        panel.innerHTML = winnerHistory.map(entry => 
+            `<div class="winner-entry">🏆 [${entry.timestamp}] ${escapeHtml(entry.winnerName)} – ${entry.winReason}</div>`
+        ).join('');
+        panel.scrollTop = 0;
+    }
+
+    // ========== CARD ASSETS ==========
+    const CARD_ASSET_PATH = "/assets/cards/";
+    const CARD_EXT = ".png";
+    const CARD_BACK_URL = CARD_ASSET_PATH + "back.png?v=" + Date.now();
+    function getCardImageUrl(rank, suitLetter) { return CARD_ASSET_PATH + rank + suitLetter + CARD_EXT; }
+    const suitFull = { 'H': '♥', 'D': '♦', 'C': '♣', 'S': '♠' };
+    const allRanks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+    const allSuits = ['H', 'D', 'C', 'S'];
+    let cardBackAvailable = false;
+    let cardsLoaded = false;
+
+    // ========== AGGRESSIVE PRELOAD ==========
+    function preloadAllCards() {
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        loadingOverlay.classList.add('active');
+
+        const promises = [];
+        // Preload all 52 cards
+        for (const s of allSuits) {
+            for (const r of allRanks) {
+                const url = getCardImageUrl(r, s);
+                promises.push(new Promise((resolve) => {
+                    const img = new Image();
+                    img.onload = () => resolve();
+                    img.onerror = () => resolve(); // still resolve to not hang
+                    img.src = url;
+                }));
+            }
+        }
+        // Also preload back
+        promises.push(new Promise((resolve) => {
+            const img = new Image();
+            img.onload = () => { cardBackAvailable = true; resolve(); };
+            img.onerror = () => { cardBackAvailable = false; resolve(); };
+            img.src = CARD_BACK_URL;
+        }));
+
+        Promise.all(promises).then(() => {
+            cardsLoaded = true;
+            loadingOverlay.classList.remove('active');
+            document.getElementById('startDuelBtn').disabled = false;
+            document.getElementById('gameMessage').innerText = 'Cards loaded! Ready.';
+        });
+    }
+
+    // ========== AUDIO ==========
+    let drawSound = null;
+    let flipSound = null;
+    function initAudio() {
+        if (!drawSound) {
+            drawSound = new Audio('/assets/sounds/draw.mp3');
+            drawSound.preload = 'auto';
+        }
+        if (!flipSound) {
+            flipSound = new Audio('/assets/sounds/flip.mp3');
+            flipSound.preload = 'auto';
+        }
+    }
+    function playDrawSound() {
+        try {
+            initAudio();
+            if (drawSound) {
+                drawSound.currentTime = 0;
+                drawSound.play().catch(e => console.log('Draw sound error:', e));
+            }
+        } catch (e) { /* silent */ }
+    }
+    function playFlipSound() {
+        try {
+            initAudio();
+            if (flipSound) {
+                flipSound.currentTime = 0;
+                flipSound.play().catch(e => console.log('Flip sound error:', e));
+            }
+        } catch (e) { /* silent */ }
+    }
+    function playDing() {
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            if (ctx.state === 'suspended') ctx.resume();
+            const now = ctx.currentTime;
+            const o = ctx.createOscillator();
+            const g = ctx.createGain();
+            o.connect(g); g.connect(ctx.destination);
+            o.frequency.value = 1318.52;
+            g.gain.setValueAtTime(0.15, now);
+            g.gain.exponentialRampToValueAtTime(0.00001, now + 0.4);
+            o.start(now); o.stop(now + 0.3);
+        } catch (e) { /* silent */ }
+    }
+    function playWheelSpinSound() {
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            if (ctx.state === 'suspended') ctx.resume();
+            const now = ctx.currentTime;
+            const bufferSize = 4096;
+            const noise = ctx.createScriptProcessor(bufferSize, 1, 1);
+            noise.onaudioprocess = function(e) {
+                const output = e.outputBuffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) output[i] = (Math.random() - 0.5) * 0.3;
+                noise.disconnect();
+            };
+            noise.connect(ctx.destination);
+            const gain = ctx.createGain();
+            gain.gain.setValueAtTime(0.2, now);
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.3);
+            noise.connect(gain);
+            gain.connect(ctx.destination);
+            setTimeout(() => noise.disconnect(), 300);
+        } catch (e) { /* fallback */ }
+    }
+
+    function playWinSound() {
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            if (ctx.state === 'suspended') ctx.resume();
+            const now = ctx.currentTime;
+            const o = ctx.createOscillator();
+            const g = ctx.createGain();
+            o.connect(g); g.connect(ctx.destination);
+            o.frequency.value = 880;
+            g.gain.setValueAtTime(0.2, now);
+            g.gain.exponentialRampToValueAtTime(0.00001, now + 0.5);
+            o.start(now); o.stop(now + 0.5);
+        } catch(e) {}
+    }
+
+    // ========== STATE ==========
+    let participants = [];
+    let selectedPlayer1 = null, selectedPlayer2 = null;
+    let deck = [], isDuelActive = false, currentTurn = 0, duelWinner = null, drawTimeout = null;
+    let kickBrowserSocket = null;
+    let inactivityInterval = null;
+    let currentMode = 'keyword';
+    let inactivityMinutes = 1;
+    let keyword = '!ace';
+    let kickToken = null;
+    let currentChannel = null;
+    let isLoggedIn = false;
+    let joiningOpen = true;
+
+    let presetWinEnabled = false;
+    let presetCardCode = '';
+    let playerPicksCard = false;
+    let lastSelectedPair = null;
+    let reconnectTimer = null;
+    let reconnectAttempt = 0;
+    let manualDisconnect = false;
+    let lastSingleWinner = null;
+    let readyCheckActive = false;
+    let readyCheckPlayers = [null, null];
+    let readyStatus = [false, false];
+    let readyMessageLogs = [[], []];
+    let readyOverlayElement = null;
+    let readyTimerIntervals = [null, null];
+    let currentWinnerOverlay = null;
+    let currentWinnerName = null;
+
+    let stateDirty = false;
+    function markStateDirty() { stateDirty = true; }
+    setInterval(() => { if (stateDirty) { saveState(); stateDirty = false; } }, 2000);
+    let drawCount = 0;
+
+    const $ = id => document.getElementById(id);
+    const loginBtn = $('loginBtn');
+    const channelNameInput = $('channelNameInput');
+    const connectChannelBtn = $('connectChannelBtn');
+    const statusDisplay = $('statusDisplay');
+    const userInfoArea = $('userInfoArea');
+    const participantName = $('participantName');
+    const joinBtn = $('joinBtn');
+    const clearAllBtn = $('clearAllBtn');
+    const pickRandomBtn = $('pickRandomBtn');
+    const pickSingleWinnerBtn = $('pickSingleWinnerBtn');
+    const startDuelBtn = $('startDuelBtn');
+    const resetDuelBtn = $('resetDuelBtn');
+    const stopDrawBtn = $('stopDrawBtn');
+    const newDuelSameBtn = $('newDuelSameBtn');
+    const participantCountSpan = $('participantCount');
+    const participantListDiv = $('participantListContainer');
+    const selectedDisplayDiv = $('selectedDisplay');
+    const p1NameSpan = $('p1Name');
+    const p2NameSpan = $('p2Name');
+    const p1CardSlot = $('p1CardSlot');
+    const p2CardSlot = $('p2CardSlot');
+    const p1WinnerBadge = $('p1WinnerBadge');
+    const p2WinnerBadge = $('p2WinnerBadge');
+    const deckStatusSpan = $('deckStatus');
+    const turnStatusSpan = $('turnStatus');
+    const gameMessageSpan = $('gameMessage');
+    const keywordInput = $('keywordInput');
+    const setKeywordBtn = $('setKeywordBtn');
+    const inactivitySlider = $('inactivitySlider');
+    const inactivityValue = $('inactivityValue');
+    const modeIndicator = $('modeIndicator');
+    const startReadyCheckContainer = $('startReadyCheckContainer');
+    const startReadyCheckBtn = $('startReadyCheckBtn');
+    const presetWinEnable = $('presetWinEnable');
+    const presetCardInput = $('presetCardInput');
+    const playerPicksEnable = $('playerPicksEnable');
+    const radioKeyword = document.querySelector('input[value="keyword"]');
+    const radioActive = document.querySelector('input[value="active"]');
+    const keywordSettingsDiv = $('keywordSettings');
+    const activeSettingsDiv = $('activeSettings');
+    const openJoiningBtn = $('openJoiningBtn');
+    const closeJoiningBtn = $('closeJoiningBtn');
+
+    function setConnectionStatus(message, status) {
+        statusDisplay.innerHTML = message;
+        statusDisplay.className = 'connection-status ' + (status || 'disconnected');
+    }
+
+    // ========== PRESET / CARD PICK HANDLERS ==========
+    function updatePresetBadge() {
+        const badge = $('presetBadge');
+        if (!badge) return;
+        if (presetWinEnabled && presetCardCode) {
+            badge.style.display = 'inline';
+            badge.textContent = '🎯 ' + presetCardCode;
+        } else {
+            badge.style.display = 'none';
+        }
+    }
+    presetWinEnable.addEventListener('change', () => {
+        presetWinEnabled = presetWinEnable.checked;
+        presetCardInput.disabled = !presetWinEnabled;
+        if (presetWinEnabled) {
+            gameMessageSpan.innerText = 'Preset win card mode enabled. Set a card code (e.g., 5D).';
+        } else {
+            presetCardCode = '';
+            presetCardInput.value = '';
+            updatePresetBadge();
+            gameMessageSpan.innerText = 'Preset win card mode disabled.';
+            setTimeout(() => gameMessageSpan.innerText = 'Ready.', 2000);
+        }
+    });
+    presetCardInput.addEventListener('change', (e) => {
+        const val = e.target.value.toUpperCase().trim();
+        const match = val.match(/^([0-9]+|A|K|Q|J)([HDCS])$/);
+        if (match) {
+            presetCardCode = val; presetCardInput.value = val; updatePresetBadge();
+            gameMessageSpan.innerText = `✅ Preset winning card set to ${presetCardCode}`;
+        } else if (val === '') {
+            presetCardCode = ''; updatePresetBadge();
+            gameMessageSpan.innerText = 'Preset card cleared. Ace wins as usual.';
+        } else {
+            gameMessageSpan.innerText = '❌ Invalid card code. Use format like 5D, AH, KS, 10C';
+            e.target.value = presetCardCode || '';
+        }
+        setTimeout(() => { if (gameMessageSpan.innerText.includes('Preset') || gameMessageSpan.innerText.includes('Invalid')) gameMessageSpan.innerText = 'Ready.'; }, 2500);
+    });
+    presetCardInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') presetCardInput.dispatchEvent(new Event('change')); });
+
+    playerPicksEnable.addEventListener('change', () => {
+        playerPicksCard = playerPicksEnable.checked;
+        if (playerPicksCard) {
+            gameMessageSpan.innerText = '👑 Player picks card mode: After ready check, a player will choose the winning card.';
+        } else {
+            gameMessageSpan.innerText = 'Player picks card disabled.';
+        }
+        setTimeout(() => { if (gameMessageSpan.innerText.includes('Player picks')) gameMessageSpan.innerText = 'Ready.'; }, 2500);
+        markStateDirty();
+    });
+
+    // ========== OPEN/CLOSE JOINING ==========
+    openJoiningBtn.addEventListener('click', () => {
+        joiningOpen = true;
+        openJoiningBtn.classList.add('joining-open');
+        closeJoiningBtn.classList.remove('joining-closed');
+        saveState();
+        gameMessageSpan.innerText = 'Joining is OPEN';
+        setTimeout(() => { if (gameMessageSpan.innerText === 'Joining is OPEN') gameMessageSpan.innerText = 'Ready.'; }, 2000);
+    });
+    closeJoiningBtn.addEventListener('click', () => {
+        joiningOpen = false;
+        closeJoiningBtn.classList.add('joining-closed');
+        openJoiningBtn.classList.remove('joining-open');
+        saveState();
+        gameMessageSpan.innerText = 'Joining is CLOSED';
+        setTimeout(() => { if (gameMessageSpan.innerText === 'Joining is CLOSED') gameMessageSpan.innerText = 'Ready.'; }, 2000);
+    });
+    if (joiningOpen) openJoiningBtn.classList.add('joining-open');
+    else closeJoiningBtn.classList.add('joining-closed');
+
+    // ========== PERSISTENCE ==========
+    function saveState() {
+        if (!isLoggedIn || !currentChannel) return;
+        localStorage.setItem(getStorageKey('aceRaceState'), JSON.stringify({
+            participants: participants.map(p => ({ name: p.name, id: p.id, lastSeen: p.lastSeen })),
+            selectedPlayer1: selectedPlayer1 ? { name: selectedPlayer1.name, id: selectedPlayer1.id } : null,
+            selectedPlayer2: selectedPlayer2 ? { name: selectedPlayer2.name, id: selectedPlayer2.id } : null,
+            currentMode, keyword, inactivityMinutes, kickToken, currentChannel, isLoggedIn,
+            presetWinEnabled, presetCardCode, playerPicksCard, joiningOpen,
+            winnerHistory
+        }));
+    }
+
+    function loadState() {
+        const saved = localStorage.getItem(getStorageKey('aceRaceState'));
+        if (!saved) return;
+        try {
+            const s = JSON.parse(saved);
+            if (!s.isLoggedIn || !s.currentChannel) return;
+            participants = s.participants || [];
+            selectedPlayer1 = s.selectedPlayer1;
+            selectedPlayer2 = s.selectedPlayer2;
+            currentMode = s.currentMode || 'keyword';
+            keyword = s.keyword || '!ace';
+            inactivityMinutes = s.inactivityMinutes || 1;
+            kickToken = s.kickToken;
+            currentChannel = s.currentChannel;
+            currentChannelKey = currentChannel;
+            isLoggedIn = s.isLoggedIn;
+            if (s.presetWinEnabled !== undefined) presetWinEnabled = s.presetWinEnabled;
+            if (s.presetCardCode) presetCardCode = s.presetCardCode;
+            if (s.playerPicksCard !== undefined) playerPicksCard = s.playerPicksCard;
+            if (s.joiningOpen !== undefined) joiningOpen = s.joiningOpen;
+            if (s.winnerHistory) winnerHistory = s.winnerHistory;
+            updateWinnerHistoryPanel();
+            if (currentChannel) channelNameInput.value = currentChannel;
+            modeIndicator.innerText = keyword;
+            keywordInput.value = keyword;
+            inactivitySlider.value = inactivityMinutes;
+            inactivityValue.innerText = inactivityMinutes;
+            presetWinEnable.checked = presetWinEnabled;
+            presetCardInput.disabled = !presetWinEnabled;
+            if (presetCardCode) { presetCardInput.value = presetCardCode; updatePresetBadge(); }
+            if (playerPicksEnable) playerPicksEnable.checked = playerPicksCard;
+            if (currentMode === 'keyword') {
+                radioKeyword.checked = true; keywordSettingsDiv.style.display = 'block'; activeSettingsDiv.style.display = 'none';
+            } else {
+                radioActive.checked = true; keywordSettingsDiv.style.display = 'none'; activeSettingsDiv.style.display = 'block'; startInactivityChecker();
+            }
+            if (isLoggedIn && currentChannel) {
+                userInfoArea.innerHTML = `<div class="user-info"><div class="user-details">Logged in as <strong>${currentChannel}</strong></div></div>`;
+                setConnectionStatus(`🟢 Logged in as ${currentChannel}`, 'connected');
+                loginBtn.textContent = 'Disconnect';
+                startKickBrowserChat(currentChannel);
+            }
+            renderParticipants(); updateSelectedDisplay(); resetGameVisualsOnly();
+            if (joiningOpen) openJoiningBtn.classList.add('joining-open');
+            else closeJoiningBtn.classList.add('joining-closed');
+        } catch (e) { console.warn('Load state error', e); }
+    }
+
+    // ========== CHAT ==========
+    let chatInitialized = false;
+    let lastConnectedChannel = null;
+
+    async function resolveKickChatroomId(channelName) {
+        channelName = channelName.trim().replace(/^@/, '');
+        const endpoints = [
+            `https://kick.com/api/v2/channels/${encodeURIComponent(channelName)}`,
+            `https://kick.com/api/v1/channels/${encodeURIComponent(channelName)}`
+        ];
+        for (const ep of endpoints) {
+            try {
+                const res = await fetch(ep, { cache: 'no-store' });
+                if (!res.ok) continue;
+                const json = await res.json();
+                const id = json?.chatroom?.id || json?.data?.chatroom?.id || json?.chatroom_id || json?.room?.id;
+                if (id) return id;
+            } catch (e) { /* skip */ }
+        }
+        try {
+            const pageRes = await fetch(`https://kick.com/${encodeURIComponent(channelName)}`, { cache: 'no-store', headers: { 'Accept': 'text/html' } });
+            if (pageRes.ok) {
+                const html = await pageRes.text();
+                const m = html.match(/"chatroom"\s*:\s*\{[^}]*"id"\s*:\s*"?(\d+)"?/);
+                if (m && m[1]) return m[1];
+            }
+        } catch (e) { /* skip */ }
+        throw new Error('Unable to resolve Kick chatroom ID');
+    }
+
+    function stopKickBrowserChat() {
+        if (reconnectTimer) { clearTimeout(reconnectTimer); reconnectTimer = null; }
+        reconnectAttempt = 0;
+        if (kickBrowserSocket) { try { kickBrowserSocket.close(); } catch (e) {} kickBrowserSocket = null; }
+        chatInitialized = false;
+        lastConnectedChannel = null;
+    }
+
+    // FIXED: Always log messages, but joining only when open
+    function handleChatMessage(username, content) {
+        if (!username || !content) return;
+        if (isDuplicateMessage(username, content)) return; // prevent duplicates
+        // Always log chat messages for history
+        addChatMessage(username, content);
+        
+        // Only process joining if open
+        if (!joiningOpen) return;
+        
+        const kl = keyword.toLowerCase();
+        if (currentMode === 'keyword') {
+            if (kl === '' || content.toLowerCase() === kl || content.toLowerCase().startsWith(kl + ' ')) addParticipant(username);
+        } else {
+            if (!participants.some(p => p.name.toLowerCase() === username.toLowerCase())) addParticipant(username);
+            else updateParticipantSeen(username);
+        }
+        if (window._readyCheckCallback) window._readyCheckCallback(username, content);
+    }
+
+    async function startKickBrowserChat(channelName) {
+        if (kickBrowserSocket && kickBrowserSocket.readyState === WebSocket.OPEN && currentChannel === channelName) {
+            console.log('Already connected to', channelName);
+            return;
+        }
+        stopKickBrowserChat();
+        if (manualDisconnect) return;
+        try {
+            setConnectionStatus(`🔌 Resolving channel ${channelName}...`, 'connected');
+            const chatroomId = await resolveKickChatroomId(channelName);
+            setConnectionStatus(`🔌 Connecting to ${channelName} chat...`, 'connected');
+            const pusherUrl = 'wss://ws-us2.pusher.com/app/32cbd69e4b950bf97679?protocol=7&client=js&version=8.4.0&flash=false';
+            const wsChat = new WebSocket(pusherUrl);
+            wsChat.addEventListener('open', () => {
+                wsChat.send(JSON.stringify({ event: 'pusher:subscribe', data: { auth: '', channel: `chatrooms.${chatroomId}.v2` } }));
+                setConnectionStatus(`🟢 Listening to ${channelName}`, 'connected');
+                gameMessageSpan.innerText = `Listening for chat from #${channelName}`;
+                modeIndicator.innerText = currentMode === 'keyword' ? keyword : 'any message (active chatter)';
+                reconnectAttempt = 0;
+                chatInitialized = true;
+                lastConnectedChannel = channelName;
+            });
+            wsChat.addEventListener('message', (event) => {
+                try {
+                    const msg = JSON.parse(event.data);
+                    if (msg.event === 'App\\Events\\ChatMessageEvent') {
+                        const td = JSON.parse(msg.data);
+                        handleChatMessage(td?.sender?.username || td?.user?.username, td?.content?.trim());
+                    }
+                } catch (e) { /* ignore */ }
+            });
+            wsChat.addEventListener('close', () => {
+                setConnectionStatus(`🔴 Disconnected from ${channelName}`, 'failed');
+                chatInitialized = false;
+                lastConnectedChannel = null;
+                if (!manualDisconnect && currentChannel && isLoggedIn) {
+                    const delay = Math.min(1000 * Math.pow(1.5, reconnectAttempt), 30000);
+                    reconnectAttempt++;
+                    setConnectionStatus(`🔄 Reconnecting in ${Math.round(delay/1000)}s...`, 'reconnecting');
+                    reconnectTimer = setTimeout(() => startKickBrowserChat(currentChannel), delay);
+                }
+            });
+            wsChat.addEventListener('error', () => {
+                setConnectionStatus('❌ Kick chat error', 'failed');
+                chatInitialized = false;
+                lastConnectedChannel = null;
+                if (!manualDisconnect && currentChannel && isLoggedIn) {
+                    const delay = Math.min(1000 * Math.pow(1.5, reconnectAttempt), 30000);
+                    reconnectAttempt++;
+                    setConnectionStatus(`🔄 Reconnecting in ${Math.round(delay/1000)}s...`, 'reconnecting');
+                    reconnectTimer = setTimeout(() => startKickBrowserChat(currentChannel), delay);
+                }
+            });
+            kickBrowserSocket = wsChat;
+            currentChannel = channelName;
+            currentChannelKey = channelName;
+            saveState();
+        } catch (err) {
+            setConnectionStatus(`❌ ${err.message}`, 'failed');
+            gameMessageSpan.innerText = err.message;
+            if (!manualDisconnect && currentChannel && isLoggedIn) {
+                const delay = Math.min(1000 * Math.pow(1.5, reconnectAttempt), 30000);
+                reconnectAttempt++;
+                setConnectionStatus(`🔄 Reconnecting in ${Math.round(delay/1000)}s...`, 'reconnecting');
+                reconnectTimer = setTimeout(() => startKickBrowserChat(currentChannel), delay);
+            }
+        }
+    }
+
+    connectChannelBtn.addEventListener('click', () => {
+        if (!isLoggedIn) { gameMessageSpan.innerText = 'Please log in first.'; return; }
+        const channel = channelNameInput.value.trim();
+        if (!channel) { gameMessageSpan.innerText = 'Enter a channel name.'; return; }
+        currentChannel = channel;
+        currentChannelKey = channel;
+        manualDisconnect = false;
+        startKickBrowserChat(currentChannel); saveState();
+    });
+
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) return;
+        reconnectAttempt = 0;
+        if (currentChannel && isLoggedIn && !manualDisconnect) {
+            if (!kickBrowserSocket || kickBrowserSocket.readyState > 1) {
+                setConnectionStatus('🔄 Tab refocused, reconnecting...', 'reconnecting');
+                startKickBrowserChat(currentChannel);
+            }
+        }
+        if (isDuelActive && !duelWinner && deck.length > 0) {
+            if (drawTimeout) clearTimeout(drawTimeout);
+            drawTimeout = setTimeout(drawStep, 100);
+        }
+    });
+
+    // ========== LIVE TIMER ==========
+    setInterval(() => {
+        document.querySelectorAll('.participant-time[data-lastseen]').forEach(el => {
+            const ts = parseFloat(el.dataset.lastseen);
+            if (ts) el.textContent = '⏱️ ' + timeAgo(ts);
+        });
+    }, 1000);
+
+    // ========== MODE ==========
+    function applyMode() {
+        if (currentMode === 'active') startInactivityChecker();
+        else if (inactivityInterval) { clearInterval(inactivityInterval); inactivityInterval = null; }
+        renderParticipants(); saveState();
+    }
+    radioKeyword.addEventListener('change', () => {
+        if (!radioKeyword.checked) return;
+        currentMode = 'keyword'; keywordSettingsDiv.style.display = 'block'; activeSettingsDiv.style.display = 'none';
+        modeIndicator.innerText = keyword || '!ace'; applyMode();
+    });
+    radioActive.addEventListener('change', () => {
+        if (!radioActive.checked) return;
+        currentMode = 'active'; keywordSettingsDiv.style.display = 'none'; activeSettingsDiv.style.display = 'block';
+        modeIndicator.innerText = 'any message (active chatter)'; applyMode();
+    });
+    keywordInput.addEventListener('input', (e) => { keyword = e.target.value.trim(); if (currentMode === 'keyword') modeIndicator.innerText = keyword || 'any message'; saveState(); });
+    setKeywordBtn.addEventListener('click', () => {
+        keyword = keywordInput.value.trim();
+        if (currentMode === 'keyword') modeIndicator.innerText = keyword || 'any message';
+        gameMessageSpan.innerText = `Keyword set to "${keyword}"`;
+        setTimeout(() => { if (gameMessageSpan.innerText.includes('Keyword set')) gameMessageSpan.innerText = 'Ready.'; }, 2000); saveState();
+    });
+    inactivitySlider.addEventListener('input', (e) => {
+        inactivityMinutes = parseFloat(e.target.value); inactivityValue.innerText = inactivityMinutes;
+        if (currentMode === 'active') startInactivityChecker(); saveState();
+    });
+
+    // ========== INACTIVITY CHECKER ==========
+    function startInactivityChecker() {
+        if (inactivityInterval) clearInterval(inactivityInterval);
+        inactivityInterval = setInterval(() => {
+            if (currentMode !== 'active') return;
+            if (isDuelActive) return;
+            const now = Date.now();
+            const timeoutMs = inactivityMinutes * 60 * 1000;
+            let removed = false;
+            const newParticipants = participants.filter(p => {
+                const isSelected = (selectedPlayer1 && selectedPlayer1.id === p.id) ||
+                                   (selectedPlayer2 && selectedPlayer2.id === p.id);
+                if (isSelected) return true;
+                const inactive = (now - p.lastSeen) > timeoutMs;
+                if (inactive) {
+                    console.log(`[Inactivity] Removing ${p.name}`);
+                    removed = true;
+                    return false;
+                }
+                return true;
+            });
+            if (removed) {
+                participants = newParticipants;
+                if (selectedPlayer1 && !participants.some(p => p.id === selectedPlayer1.id)) selectedPlayer1 = null;
+                if (selectedPlayer2 && !participants.some(p => p.id === selectedPlayer2.id)) selectedPlayer2 = null;
+                renderParticipants(); updateSelectedDisplay(); resetGameVisualsOnly();
+                gameMessageSpan.innerText = "Inactive participants removed";
+                setTimeout(() => { if (gameMessageSpan.innerText === "Inactive participants removed") gameMessageSpan.innerText = 'Ready.'; }, 3000);
+                saveState();
+            }
+        }, 2000);
+    }
+
+    // ========== WINNER ==========
+    function shootConfettiPiece() {
+        const c = document.createElement('div'); c.className = 'confetti-piece';
+        c.style.cssText = `left:${Math.random()*window.innerWidth}px;top:-20px;background:hsl(${Math.random()*360},80%,60%);width:${Math.random()*10+4}px;height:${Math.random()*10+4}px;border-radius:${Math.random()>.5?'50%':'0'}`;
+        document.body.appendChild(c);
+        c.animate([{ transform: 'translateY(0px) rotate(0deg)', opacity: 1 }, { transform: `translateY(${window.innerHeight+100}px) rotate(${Math.random()*360}deg)`, opacity: 0 }], { duration: 1500 + Math.random() * 1000, easing: 'cubic-bezier(0.2,0.9,0.4,1)' }).onfinish = () => c.remove();
+    }
+    function shootConfetti() { for (let i = 0; i < 100; i++) setTimeout(shootConfettiPiece, i * 15); }
+
+    // ========== WINNER OVERLAY (only winner's chat, no ready-check messages) ==========
+    function showWinnerOverlay(winnerName, winnerMessages) {
+        if (currentWinnerOverlay) currentWinnerOverlay.remove();
+
+        // Get winner's own messages from history (old messages)
+        const winnersOwnChat = fullChatLog
+            .filter(entry => entry.username.toLowerCase() === winnerName.toLowerCase())
+            .slice(0, 30)
+            .map(entry => `<div>[${entry.timestamp}] ${escapeHtml(entry.message)}</div>`)
+            .join('');
+        const chatLogHtml = winnersOwnChat.length ? winnersOwnChat : '<div>No recent messages from this winner in the chat log.</div>';
+
+        const overlay = document.createElement('div');
+        overlay.className = 'winner-overlay';
+        overlay.innerHTML = `
+            <div class="winner-card">
+                <h1>🏆 WINNER! 🏆</h1>
+                <div class="winner-name">${escapeHtml(winnerName)}</div>
+                <div class="winner-chat-log">
+                    <strong>📝 ${escapeHtml(winnerName)}'s chat messages (last 30)</strong>
+                    <div class="winner-main-chat" style="margin-top: 10px;">${chatLogHtml}</div>
+                </div>
+                <button id="closeWinnerBtn" style="margin-top:20px;padding:12px 32px;border-radius:60px;background:#19C6FD;border:none;font-weight:700;cursor:pointer;">Continue</button>
+            </div>`;
+        document.body.appendChild(overlay);
+        currentWinnerOverlay = overlay;
+        currentWinnerName = winnerName;
+        const close = () => { overlay.remove(); currentWinnerOverlay = null; currentWinnerName = null; };
+        overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
+        document.getElementById('closeWinnerBtn').addEventListener('click', close);
+    }
+
+    // ========== SINGLE WINNER PICKER (wheel animation) ==========
+    function pickSingleWinner() {
+        if (isDuelActive) {
+            gameMessageSpan.innerText = "Stop the current duel first.";
+            return;
+        }
+        if (participants.length === 0) {
+            gameMessageSpan.innerText = "No participants to pick from.";
+            return;
+        }
+
+        // ---- FAIR SELECTION: shuffle participants using crypto ----
+        let shuffled = [...participants];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const randomIndex = crypto.getRandomValues(new Uint32Array(1))[0] % (i + 1);
+            [shuffled[i], shuffled[randomIndex]] = [shuffled[randomIndex], shuffled[i]];
+        }
+        let winner = shuffled[0];
+        if (participants.length > 1 && lastSingleWinner && winner.name === lastSingleWinner) {
+            winner = shuffled[1] || shuffled[0];
+        }
+        const winnerName = winner.name;
+        lastSingleWinner = winnerName;
+
+        // ---- BUILD REPEATED LIST ----
+        const names = participants.map(p => p.name);
+        const repeatFactor = 100;
+        let repeated = [];
+        for (let i = 0; i < repeatFactor; i++) repeated.push(...names);
+        const totalItems = repeated.length;
+        const minIndex = 25;
+        const maxIndex = totalItems - 25;
+
+        let targetIdx = -1;
+        for (let i = minIndex; i <= maxIndex; i++) {
+            if (repeated[i] === winnerName) {
+                targetIdx = i;
+                break;
+            }
+        }
+        if (targetIdx === -1) targetIdx = minIndex;
+
+        // ---- CREATE OVERLAY ----
+        const overlay = document.createElement('div');
+        overlay.className = 'wheel-overlay';
+        overlay.innerHTML = `
+            <div class="wheel-container" style="max-width: 500px;">
+                <div class="wheel-title">🎁 Picking a Winner</div>
+                <div class="wheel-viewport" style="height: 200px; position: relative; overflow: hidden;">
+                    <div id="singleWheelScroller" class="wheel-scroller"></div>
+                    <div class="wheel-pointer"></div>
+                </div>
+                <div id="wheelResult" style="margin-top:20px;font-size:1.2rem;color:#19C6FD;"></div>
+                <button id="closeWheelBtn" style="margin-top:20px;padding:8px 24px;background:#19C6FD;border:none;border-radius:60px;font-weight:bold;">Close</button>
+            </div>`;
+        document.body.appendChild(overlay);
+
+        const scroller = document.getElementById('singleWheelScroller');
+        scroller.innerHTML = repeated.map(n => `<div class="wheel-item">${escapeHtml(n)}</div>`).join('');
+        scroller.offsetHeight; // force reflow
+
+        const firstItem = scroller.querySelector('.wheel-item');
+        const itemHeight = firstItem.getBoundingClientRect().height;
+        const viewportHeight = 200;
+        const centerOffset = (viewportHeight / 2) - (itemHeight / 2);
+
+        let targetOffset = -(targetIdx * itemHeight) + centerOffset;
+        const maxOffset = -(0 * itemHeight) + centerOffset;
+        const minOffset = -((totalItems-1) * itemHeight) + centerOffset;
+        targetOffset = Math.min(maxOffset, Math.max(minOffset, targetOffset));
+
+        // ---- DRAMATIC WHEEL ANIMATION (8–12 sec, extremely fast start, smooth stop) ----
+        const duration = Math.random() * 4 + 8;   // 8–12 sec
+        scroller.style.transition = `transform ${duration}s cubic-bezier(0.05, 0.95, 0.2, 1)`;
+        scroller.style.transform = `translateY(${targetOffset}px)`;
+
+        const resultDiv = document.getElementById('wheelResult');
+        scroller.addEventListener('transitionend', () => {
+            resultDiv.innerHTML = `WINNER: ${escapeHtml(winnerName)}`;
+            playWinSound();
+            shootConfetti();
+            addWinnerToHistory(winnerName, "picked as single winner");
+            showWinnerOverlay(winnerName, []);
+        }, { once: true });
+
+        document.getElementById('closeWheelBtn').addEventListener('click', () => overlay.remove());
+        setTimeout(() => { if (overlay.parentNode) overlay.remove(); }, 15000);
+    }
+
+    // ========== PARTICIPANTS ==========
+    function addParticipant(username, timestamp) {
+        const name = username.trim();
+        if (!name || participants.some(p => p.name.toLowerCase() === name.toLowerCase())) return false;
+        const id = Date.now() + Math.random();
+        const lastSeen = timestamp || Date.now();
+        participants.push({ name, id, lastSeen });
+        const isP1 = selectedPlayer1 && selectedPlayer1.id === id;
+        const isP2 = selectedPlayer2 && selectedPlayer2.id === id;
+        const cls = isP1 ? 'selected-player1' : isP2 ? 'selected-player2' : '';
+        const timeHtml = (currentMode === 'active' && !isP1 && !isP2) ? `<span class="participant-time" data-lastseen="${lastSeen}">⏱️ ${timeAgo(lastSeen)}</span>` : (isP1 || isP2 ? `<span class="participant-time">🛡️ Protected</span>` : '');
+        const div = document.createElement('div');
+        div.className = `participant-item ${cls}`;
+        div.setAttribute('data-id', id);
+        div.innerHTML = `<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;"><span class="participant-name">${escapeHtml(name)}</span>${timeHtml}</div><div><button class="remove-participant" data-id="${id}">✖</button></div>`;
+        participantListDiv.appendChild(div);
+        attachParticipantEvents(div);
+        participantCountSpan.innerText = participants.length;
+        markStateDirty(); return true;
+    }
+
+    function updateParticipantSeen(name) {
+        const p = participants.find(p => p.name.toLowerCase() === name.toLowerCase());
+        if (!p) return;
+        p.lastSeen = Date.now();
+        const item = participantListDiv.querySelector(`.participant-item[data-id="${p.id}"]`);
+        if (item && currentMode === 'active') {
+            const timeSpan = item.querySelector('.participant-time');
+            if (timeSpan && timeSpan.dataset.lastseen) {
+                timeSpan.dataset.lastseen = p.lastSeen;
+                timeSpan.textContent = `⏱️ ${timeAgo(p.lastSeen)}`;
+            }
+        }
+        markStateDirty();
+    }
+
+    function attachParticipantEvents(div) {
+        const removeBtn = div.querySelector('.remove-participant');
+        if (removeBtn) {
+            removeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const id = parseFloat(removeBtn.getAttribute('data-id'));
+                participants = participants.filter(p => p.id !== id);
+                if (selectedPlayer1 && selectedPlayer1.id === id) selectedPlayer1 = null;
+                if (selectedPlayer2 && selectedPlayer2.id === id) selectedPlayer2 = null;
+                div.remove(); participantCountSpan.innerText = participants.length;
+                updateSelectedDisplay(); resetGameVisualsOnly();
+                startReadyCheckContainer.style.display = (selectedPlayer1 && selectedPlayer2) ? 'block' : 'none';
+                markStateDirty();
+            });
+        }
+        div.addEventListener('click', (e) => {
+            if (e.target.classList.contains('remove-participant')) return;
+            const id = parseFloat(div.getAttribute('data-id'));
+            const p = participants.find(x => x.id === id);
+            if (!p) return;
+            if (!selectedPlayer1) { selectedPlayer1 = p; gameMessageSpan.innerText = `${p.name} selected as Player 1`; playDing(); }
+            else if (!selectedPlayer2 && selectedPlayer1.id !== p.id) { selectedPlayer2 = p; gameMessageSpan.innerText = `${p.name} selected as Player 2`; playDing(); }
+            else if (selectedPlayer1.id === p.id) { selectedPlayer1 = null; gameMessageSpan.innerText = 'Player 1 deselected'; }
+            else if (selectedPlayer2 && selectedPlayer2.id === p.id) { selectedPlayer2 = null; gameMessageSpan.innerText = 'Player 2 deselected'; }
+            else { gameMessageSpan.innerText = 'Already have two players. Deselect one first.'; }
+            updateSelectedDisplay(); renderParticipants();
+            startReadyCheckContainer.style.display = (selectedPlayer1 && selectedPlayer2) ? 'block' : 'none';
+            markStateDirty();
+        });
+    }
+
+    function timeAgo(timestamp) {
+        const seconds = Math.floor((Date.now() - timestamp) / 1000);
+        if (seconds < 60) return `${seconds}s ago`;
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+        return `${minutes}m ${remainingSeconds}s ago`;
+    }
+
+    function renderParticipants() {
+        participantListDiv.innerHTML = '';
+        participants.forEach(p => {
+            const isP1 = selectedPlayer1 && selectedPlayer1.id === p.id;
+            const isP2 = selectedPlayer2 && selectedPlayer2.id === p.id;
+            const cls = isP1 ? 'selected-player1' : isP2 ? 'selected-player2' : '';
+            const lastSeen = p.lastSeen || Date.now();
+            const timeHtml = (currentMode === 'active' && !isP1 && !isP2) ? `<span class="participant-time" data-lastseen="${lastSeen}">⏱️ ${timeAgo(lastSeen)}</span>` : (isP1 || isP2 ? `<span class="participant-time">🛡️ Protected</span>` : '');
+            const div = document.createElement('div');
+            div.className = `participant-item ${cls}`;
+            div.setAttribute('data-id', p.id);
+            div.innerHTML = `<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;"><span class="participant-name">${escapeHtml(p.name)}</span>${timeHtml}</div><div><button class="remove-participant" data-id="${p.id}">✖</button></div>`;
+            participantListDiv.appendChild(div); attachParticipantEvents(div);
+        });
+        participantCountSpan.innerText = participants.length;
+    }
+
+    function escapeHtml(str) { return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[m] || m); }
+    function updateSelectedDisplay() {
+        selectedDisplayDiv.innerHTML = selectedPlayer1 && selectedPlayer2 ? `SELECTED: ${escapeHtml(selectedPlayer1.name)} VS ${escapeHtml(selectedPlayer2.name)}`
+            : selectedPlayer1 ? `Player 1: ${escapeHtml(selectedPlayer1.name)}`
+            : selectedPlayer2 ? `Player 2: ${escapeHtml(selectedPlayer2.name)}`
+            : 'No duelists. Click on participants or use "Pick Two Random".';
+        p1NameSpan.innerText = selectedPlayer1 ? selectedPlayer1.name : "—";
+        p2NameSpan.innerText = selectedPlayer2 ? selectedPlayer2.name : "—";
+        markStateDirty();
+    }
+
+    // ========== WHEEL SELECTOR (for picking two random) ==========
+    function showWheelSelector() {
+        if (participants.length < 2) {
+            gameMessageSpan.innerText = "Need at least 2 participants";
+            return false;
+        }
+
+        // ---- FAIR SELECTION: shuffle participants using crypto ----
+        let shuffled = [...participants];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const randomIndex = crypto.getRandomValues(new Uint32Array(1))[0] % (i + 1);
+            [shuffled[i], shuffled[randomIndex]] = [shuffled[randomIndex], shuffled[i]];
+        }
+        let p1 = shuffled[0];
+        let p2 = shuffled[1];
+        if (p1 === p2 && participants.length > 1) {
+            p2 = shuffled[2] || shuffled[1];
+        }
+
+        // Avoid back-to-back same pair
+        if (lastSelectedPair && participants.length > 2) {
+            const currentPair = [p1.name, p2.name].sort().join('|');
+            if (currentPair === lastSelectedPair) {
+                p1 = shuffled[2];
+                p2 = shuffled[3] || shuffled[0];
+                if (p1 === p2) p2 = shuffled.find(p => p !== p1);
+            }
+        }
+        lastSelectedPair = [p1.name, p2.name].sort().join('|');
+
+        // ---- BUILD WHEEL (original structure) ----
+        const overlay = document.createElement('div');
+        overlay.className = 'wheel-overlay';
+        overlay.innerHTML = `
+            <div class="wheel-container">
+                <div class="wheel-title">⚡ Selecting Duelists ⚡</div>
+                <div class="wheels">
+                    <div class="wheel">
+                        <div class="wheel-label">Player 1</div>
+                        <div class="wheel-viewport">
+                            <div id="wheel1Scroller" class="wheel-scroller"></div>
+                            <div class="wheel-pointer"></div>
+                        </div>
+                    </div>
+                    <div class="wheel">
+                        <div class="wheel-label">Player 2</div>
+                        <div class="wheel-viewport">
+                            <div id="wheel2Scroller" class="wheel-scroller"></div>
+                            <div class="wheel-pointer"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        document.body.appendChild(overlay);
+
+        const names = participants.map(p => p.name);
+        const repeatFactor = 100;
+        let repeated = [];
+        for (let i = 0; i < repeatFactor; i++) repeated.push(...names);
+
+        const w1 = document.getElementById('wheel1Scroller');
+        const w2 = document.getElementById('wheel2Scroller');
+        w1.innerHTML = repeated.map(n => `<div class="wheel-item">${escapeHtml(n)}</div>`).join('');
+        w2.innerHTML = repeated.map(n => `<div class="wheel-item">${escapeHtml(n)}</div>`).join('');
+
+        const firstItem = w1.querySelector('.wheel-item');
+        const itemHeight = firstItem.getBoundingClientRect().height;
+        const viewportHeight = 120;
+        const centerOffset = (viewportHeight / 2) - (itemHeight / 2);
+        const totalItems = repeated.length;
+
+        // Find valid indices (25 to totalItems-25) for p1 and p2
+        const minIndex = 25;
+        const maxIndex = totalItems - 25;
+        let idx1 = -1, idx2 = -1;
+        for (let i = minIndex; i <= maxIndex; i++) {
+            if (repeated[i] === p1.name) {
+                idx1 = i;
+                break;
+            }
+        }
+        if (idx1 === -1) idx1 = minIndex;
+        for (let i = minIndex; i <= maxIndex; i++) {
+            if (repeated[i] === p2.name && i !== idx1) {
+                idx2 = i;
+                break;
+            }
+        }
+        if (idx2 === -1) {
+            for (let i = minIndex; i <= maxIndex; i++) {
+                if (repeated[i] === p2.name) {
+                    idx2 = i;
+                    break;
+                }
+            }
+        }
+        if (idx2 === -1) idx2 = (idx1 + 1) % totalItems;
+
+        // ---- DRAMATIC WHEEL ANIMATION (8–12 sec, extremely fast start, smooth stop) ----
+        const d1 = Math.random() * 4 + 8;   // 8–12 sec
+        const d2 = Math.random() * 4 + 8;
+        w1.style.transition = `transform ${d1}s cubic-bezier(0.05, 0.95, 0.2, 1)`;
+        w2.style.transition = `transform ${d2}s cubic-bezier(0.05, 0.95, 0.2, 1)`;
+        w1.style.transform = `translateY(${-(idx1 * itemHeight) + centerOffset}px)`;
+        w2.style.transform = `translateY(${-(idx2 * itemHeight) + centerOffset}px)`;
+
+        playWheelSpinSound();
+
+        let stopped = 0;
+        function onStop() {
+            stopped++;
+            if (stopped !== 2) return;
+            overlay.remove();
+            selectedPlayer1 = p1;
+            selectedPlayer2 = p2;
+            updateSelectedDisplay();
+            renderParticipants();
+            resetGameVisualsOnly();
+            gameMessageSpan.innerText = `Selected: ${p1.name} vs ${p2.name}`;
+            startReadyCheckContainer.style.display = 'block';
+            showReadyCheckOverlay(selectedPlayer1, selectedPlayer2);
+            markStateDirty();
+            playDing();
+        }
+
+        w1.addEventListener('transitionend', onStop, { once: true });
+        w2.addEventListener('transitionend', onStop, { once: true });
+        setTimeout(() => {
+            if (stopped < 2) {
+                stopped = 2;
+                onStop();
+            }
+        }, (Math.max(d1, d2) * 1000) + 200);
+        return true;
+    }
+
+    // ========== READY CHECK OVERLAY ==========
+    function showReadyCheckOverlay(player1, player2) {
+        if (!player1 || !player2) return;
+        if (readyOverlayElement) readyOverlayElement.remove();
+        readyCheckPlayers = [player1, player2];
+        readyStatus = [false, false];
+        readyMessageLogs = [[], []];
+        if (readyTimerIntervals[0]) clearInterval(readyTimerIntervals[0]);
+        if (readyTimerIntervals[1]) clearInterval(readyTimerIntervals[1]);
+        readyCheckActive = true;
+
+        function getPlayerOldMessages(playerName) {
+            return fullChatLog
+                .filter(entry => entry.username.toLowerCase() === playerName.toLowerCase())
+                .slice(0, 30)
+                .map(entry => `<div>[${entry.timestamp}] ${escapeHtml(entry.message)}</div>`)
+                .join('');
+        }
+
+        const oldMessages0 = getPlayerOldMessages(player1.name);
+        const oldMessages1 = getPlayerOldMessages(player2.name);
+
+        const overlay = document.createElement('div');
+        overlay.className = 'ready-overlay';
+        overlay.innerHTML = `
+            <div class="ready-container">
+                <div class="ready-title">⚡ Ready Check ⚡</div>
+                <div class="ready-players">
+                    <div class="ready-player-card" data-player="0">
+                        <div class="ready-player-name">${escapeHtml(readyCheckPlayers[0].name)}</div>
+                        <div id="readyStatus0" class="ready-status waiting">⏳ Waiting for message...</div>
+                        <div class="timer-bar-container"><div id="timerBar0" class="timer-bar" style="width:100%"></div></div>
+                        <div id="readyTimer0" class="ready-timer">30s left</div>
+                        <div class="ready-chat-log" id="readyLog0">
+                            <strong>📝 ${escapeHtml(player1.name)}'s messages</strong>
+                            <div class="ready-messages-container0" style="margin-top:5px;">${oldMessages0 || '<div>No recent messages</div>'}</div>
+                        </div>
+                        <button id="replaceBtn0" class="ready-replace-btn">🔄 Replace Player</button>
+                    </div>
+                    <div class="ready-player-card" data-player="1">
+                        <div class="ready-player-name">${escapeHtml(readyCheckPlayers[1].name)}</div>
+                        <div id="readyStatus1" class="ready-status waiting">⏳ Waiting for message...</div>
+                        <div class="timer-bar-container"><div id="timerBar1" class="timer-bar" style="width:100%"></div></div>
+                        <div id="readyTimer1" class="ready-timer">30s left</div>
+                        <div class="ready-chat-log" id="readyLog1">
+                            <strong>📝 ${escapeHtml(player2.name)}'s messages</strong>
+                            <div class="ready-messages-container1" style="margin-top:5px;">${oldMessages1 || '<div>No recent messages</div>'}</div>
+                        </div>
+                        <button id="replaceBtn1" class="ready-replace-btn">🔄 Replace Player</button>
+                    </div>
+                </div>
+                <div class="ready-start-battle" style="display:flex;gap:15px;justify-content:center;">
+                    <button id="forceStartBtn">Start Anyway</button>
+                    <button id="startBattleBtn" style="display:none;">Start Battle</button>
+                </div>
+                <div class="ready-cancel"><button id="cancelReadyBtn">Cancel</button></div>
+            </div>`;
+        document.body.appendChild(overlay);
+        readyOverlayElement = overlay;
+
+        const msgContainers = [
+            overlay.querySelector('.ready-messages-container0'),
+            overlay.querySelector('.ready-messages-container1')
+        ];
+
+        function startTimer(idx, secs) {
+            secs = secs || 30; let left = secs;
+            const te = $(`readyTimer${idx}`), be = $(`timerBar${idx}`);
+            const iv = setInterval(() => {
+                if (!readyCheckActive) { clearInterval(iv); return; }
+                if (readyStatus[idx]) { clearInterval(iv); be.style.width = '100%'; te.textContent = '✅ Ready!'; return; }
+                left--; te.textContent = `${left}s left`;
+                be.style.width = `${Math.max(0, (left / secs) * 100)}%`;
+                if (left <= 0) { clearInterval(iv); te.textContent = 'Expired'; be.style.width = '0%'; }
+            }, 1000);
+            readyTimerIntervals[idx] = iv;
+        }
+        startTimer(0); startTimer(1);
+
+        function replacePlayer(idx) {
+            if (!readyCheckActive) return;
+            const avail = participants.filter(p => !readyCheckPlayers.map(x => x.name.toLowerCase()).includes(p.name.toLowerCase()));
+            if (!avail.length) return;
+            const newPlayer = avail[Math.floor(Math.random() * avail.length)];
+            readyCheckPlayers[idx] = newPlayer;
+            readyStatus[idx] = false;
+            readyMessageLogs[idx] = [];
+            const card = overlay.querySelector(`.ready-player-card[data-player="${idx}"]`);
+            card.querySelector('.ready-player-name').innerHTML = escapeHtml(newPlayer.name);
+            const se = $(`readyStatus${idx}`); se.className = 'ready-status waiting'; se.textContent = '⏳ Waiting for message...';
+            const oldMsgs = fullChatLog.filter(e => e.username.toLowerCase() === newPlayer.name.toLowerCase())
+                .slice(0,30).map(e => `<div>[${e.timestamp}] ${escapeHtml(e.message)}</div>`).join('');
+            msgContainers[idx].innerHTML = oldMsgs || '<div>No recent messages</div>';
+            if (readyTimerIntervals[idx]) clearInterval(readyTimerIntervals[idx]);
+            startTimer(idx);
+        }
+
+        $('replaceBtn0').addEventListener('click', () => replacePlayer(0));
+        $('replaceBtn1').addEventListener('click', () => replacePlayer(1));
+        $('cancelReadyBtn').addEventListener('click', () => {
+            readyCheckActive = false; overlay.remove();
+            if (readyTimerIntervals[0]) clearInterval(readyTimerIntervals[0]);
+            if (readyTimerIntervals[1]) clearInterval(readyTimerIntervals[1]);
+        });
+
+        const forceStartBtn = $('forceStartBtn'), startBattleBtn = $('startBattleBtn');
+
+        function proceedAfterReadyCheck() {
+            if (playerPicksCard) {
+                const pickIdx = Math.random() < 0.5 ? 0 : 1;
+                const picker = readyCheckPlayers[pickIdx];
+                showPickCardOverlay(picker);
+            } else {
+                selectedPlayer1 = readyCheckPlayers[0]; selectedPlayer2 = readyCheckPlayers[1];
+                updateSelectedDisplay(); resetGameVisualsOnly();
+                gameMessageSpan.innerText = 'Starting battle!';
+                startAceDuel(); markStateDirty();
+            }
+        }
+
+        forceStartBtn.addEventListener('click', () => {
+            readyCheckActive = false; overlay.remove();
+            if (readyTimerIntervals[0]) clearInterval(readyTimerIntervals[0]);
+            if (readyTimerIntervals[1]) clearInterval(readyTimerIntervals[1]);
+            proceedAfterReadyCheck();
+        });
+
+        window._readyCheckCallback = (username, content) => {
+            if (!readyCheckActive) return;
+            for (let i = 0; i < 2; i++) {
+                if (!readyCheckPlayers[i] || readyCheckPlayers[i].name.toLowerCase() !== username.toLowerCase()) continue;
+                if (!readyStatus[i]) {
+                    readyStatus[i] = true;
+                    const se = $(`readyStatus${i}`); se.className = 'ready-status ready'; se.textContent = '✅ Ready!';
+                    if (readyTimerIntervals[i]) clearInterval(readyTimerIntervals[i]);
+                    const te = $(`readyTimer${i}`), be = $(`timerBar${i}`);
+                    te.textContent = 'Ready!'; if (be) be.style.width = '100%';
+                }
+                readyMessageLogs[i].push({ message: content, timestamp: new Date().toLocaleTimeString() });
+                const msgDiv = document.createElement('div');
+                msgDiv.innerHTML = `[${new Date().toLocaleTimeString()}] ${escapeHtml(content)}`;
+                msgContainers[i].appendChild(msgDiv);
+                msgContainers[i].scrollTop = msgContainers[i].scrollHeight;
+                break;
+            }
+            if (readyStatus[0] && readyStatus[1]) { forceStartBtn.style.display = 'none'; startBattleBtn.style.display = 'block'; }
+        };
+
+        startBattleBtn.addEventListener('click', () => {
+            if (!readyStatus[0] || !readyStatus[1]) { gameMessageSpan.innerText = "Both players must be ready first or click 'Start Anyway'!"; return; }
+            readyCheckActive = false; overlay.remove();
+            if (readyTimerIntervals[0]) clearInterval(readyTimerIntervals[0]);
+            if (readyTimerIntervals[1]) clearInterval(readyTimerIntervals[1]);
+            proceedAfterReadyCheck();
+        });
+    }
+
+    // ========== PLAYER PICKS CARD OVERLAY ==========
+    let pickOverlayElement = null;
+
+    function showPickCardOverlay(picker) {
+        if (pickOverlayElement) pickOverlayElement.remove();
+        const overlay = document.createElement('div');
+        overlay.className = 'pick-overlay';
+        overlay.innerHTML = `
+            <div class="pick-container">
+                <span class="pick-crown">👑</span>
+                <div class="pick-title">Player Picks the Winning Card!</div>
+                <div class="pick-player-name">${escapeHtml(picker.name)}</div>
+                <div style="color:#94a3b8;font-size:0.95rem;">Type the winning card and confirm.</div>
+                <div class="pick-card-display" id="pickCardDisplay">?</div>
+                <div class="pick-input-group">
+                    <input type="text" id="pickCardInput" placeholder="e.g., 7D" maxlength="3" autofocus>
+                    <button id="pickConfirmBtn">Confirm</button>
+                </div>
+                <div id="pickFeedback" class="pick-feedback"></div>
+            </div>`;
+        document.body.appendChild(overlay);
+        pickOverlayElement = overlay;
+
+        const input = $('pickCardInput');
+        const feedback = $('pickFeedback');
+        const display = $('pickCardDisplay');
+        const confirmBtn = $('pickConfirmBtn');
+
+        function loadCardImage(rank, suitLetter) {
+            display.innerHTML = '';
+            display.className = 'pick-card-display filled';
+            const img = new Image();
+            img.style.cssText = 'width:100%;height:100%;object-fit:contain;border-radius:14px;background:#1e293b;';
+            img.onload = function() { display.innerHTML = ''; display.appendChild(img); };
+            img.onerror = function() { display.textContent = rank + suitFull[suitLetter]; };
+            img.src = getCardImageUrl(rank, suitLetter);
+        }
+
+        input.addEventListener('input', () => {
+            let val = input.value.toUpperCase().trim();
+            const match = val.match(/^([0-9]+|A|K|Q|J)([HDCS])$/);
+            if (match) {
+                loadCardImage(match[1], match[2]);
+            } else if (val === '') {
+                display.innerHTML = '?';
+                display.className = 'pick-card-display';
+            } else {
+                display.innerHTML = val;
+                display.className = 'pick-card-display';
+            }
+            feedback.className = 'pick-feedback';
+            feedback.textContent = '';
+        });
+
+        function confirmCard() {
+            let val = input.value.toUpperCase().trim();
+            const match = val.match(/^([0-9]+|A|K|Q|J)([HDCS])$/);
+            if (!match) {
+                feedback.className = 'pick-feedback error';
+                feedback.textContent = '❌ Invalid format. Use e.g. 5D, AH, KS, 10C';
+                return;
+            }
+            feedback.className = 'pick-feedback success';
+            feedback.textContent = '✅ Card confirmed! Starting duel...';
+            loadCardImage(match[1], match[2]);
+            input.disabled = true;
+            confirmBtn.disabled = true;
+
+            presetCardCode = val;
+            presetWinEnabled = true;
+            presetWinEnable.checked = true;
+            presetCardInput.value = val;
+            presetCardInput.disabled = false;
+            updatePresetBadge();
+
+            setTimeout(() => {
+                overlay.remove();
+                pickOverlayElement = null;
+                selectedPlayer1 = readyCheckPlayers[0];
+                selectedPlayer2 = readyCheckPlayers[1];
+                updateSelectedDisplay(); resetGameVisualsOnly();
+                gameMessageSpan.innerText = `Winning card: ${val}! Starting duel...`;
+                startAceDuel(); markStateDirty();
+            }, 1200);
+        }
+
+        confirmBtn.addEventListener('click', confirmCard);
+        input.addEventListener('keydown', (e) => { if (e.key === 'Enter') confirmCard(); });
+        input.focus();
+    }
+
+    // ========== DUEL (with lag fixes) ==========
+    function buildAndShuffleDeck() {
+        let d = [];
+        for (const s of allSuits) for (const r of allRanks) d.push({ rank: r, suitLetter: s, display: r + suitFull[s], code: r + s });
+        for (let i = d.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [d[i], d[j]] = [d[j], d[i]]; }
+        return d;
+    }
+
+    function resetGameVisualsOnly() {
+        if (drawTimeout) clearTimeout(drawTimeout);
+        isDuelActive = false; duelWinner = null; currentTurn = 0; deck = [];
+        showCardBack(p1CardSlot);
+        showCardBack(p2CardSlot);
+        p1WinnerBadge.innerHTML = ''; p2WinnerBadge.innerHTML = '';
+        // Remove any winner highlight
+        document.getElementById('player1Card').classList.remove('winner-highlight');
+        document.getElementById('player2Card').classList.remove('winner-highlight');
+        turnStatusSpan.innerText = 'No active duel'; deckStatusSpan.innerText = 'Deck: 0';
+        gameMessageSpan.innerText = 'Ready.';
+        // Remove any turn highlight (we don't use active-turn anymore)
+        document.querySelectorAll('.player-card').forEach(c => c.classList.remove('active-turn'));
+    }
+
+    function stopDrawingAndResetGame() { if (drawTimeout) clearTimeout(drawTimeout); isDuelActive = false; duelWinner = null; }
+
+    function showCardBack(slot) {
+        if (cardBackAvailable) {
+            slot.innerHTML = `<img class="card-back-img" src="${CARD_BACK_URL}" alt="card back">`;
+        } else {
+            slot.innerHTML = '<div class="card-placeholder">🂠</div>';
+        }
+    }
+
+    // Fixed: preload next card to reduce lag
+    function renderCardToSlot(slot, card) {
+        if (!card) { slot.innerHTML = '<div class="card-placeholder">NO CARD</div>'; return; }
+        slot.innerHTML = '';
+        const flipper = document.createElement('div');
+        flipper.className = 'card-flipper';
+        flipper.innerHTML = `
+            <div class="card-flipper-inner">
+                <div class="card-back">${cardBackAvailable ? `<img class="card-back-img" src="${CARD_BACK_URL}" alt="back">` : '<div class="card-placeholder" style="border:none;background:transparent;">🂠</div>'}</div>
+                <div class="card-front"><div class="card-placeholder">${card.display}</div></div>
+            </div>`;
+        slot.appendChild(flipper);
+        const inner = flipper.querySelector('.card-flipper-inner');
+        const img = new Image();
+        img.className = 'card-image loaded';
+        img.alt = card.display;
+        img.style.cssText = 'width:100%;height:100%;object-fit:contain;border-radius:12px;background:#1e293b;';
+        img.onload = function () {
+            const front = inner.querySelector('.card-front');
+            front.innerHTML = '';
+            front.appendChild(img);
+            requestAnimationFrame(() => {
+                inner.classList.add('flipped');
+                playFlipSound();
+            });
+        };
+        img.onerror = function () {
+            requestAnimationFrame(() => {
+                inner.classList.add('flipped');
+                playFlipSound();
+            });
+        };
+        img.src = getCardImageUrl(card.rank, card.suitLetter);
+    }
+
+    function drawStep() {
+        if (!isDuelActive || duelWinner) return;
+        if (drawCount > 52) { gameMessageSpan.innerText = '⚠️ Draw limit reached. Stopping duel.'; stopDrawingAndResetGame(); resetGameVisualsOnly(); return; }
+        if (deck.length === 0) { gameMessageSpan.innerText = "Deck empty! Reshuffling."; deck = buildAndShuffleDeck(); deckStatusSpan.innerText = 'Deck: ' + deck.length; }
+        const cp = currentTurn === 0 ? selectedPlayer1 : selectedPlayer2;
+        if (!cp) { stopDrawingAndResetGame(); return; }
+        const card = deck.pop(); drawCount++;
+        deckStatusSpan.innerText = 'Deck: ' + deck.length + ' cards';
+        if (currentTurn === 0) renderCardToSlot(p1CardSlot, card); else renderCardToSlot(p2CardSlot, card);
+        playDrawSound();
+
+        // Preload next two cards to reduce lag on next flip
+        if (deck.length > 1) {
+            const nextCard1 = deck[deck.length - 1];
+            const nextCard2 = deck[deck.length - 2];
+            const img1 = new Image(); img1.src = getCardImageUrl(nextCard1.rank, nextCard1.suitLetter);
+            const img2 = new Image(); img2.src = getCardImageUrl(nextCard2.rank, nextCard2.suitLetter);
+        } else if (deck.length === 1) {
+            const nextCard = deck[deck.length - 1];
+            const img = new Image(); img.src = getCardImageUrl(nextCard.rank, nextCard.suitLetter);
+        }
+
+        let isWin = false;
+        let winReason = '';
+        if (presetWinEnabled && presetCardCode) {
+            if (card.code === presetCardCode) {
+                isWin = true;
+                winReason = `drew the preset card ${presetCardCode}!`;
+            }
+        } else {
+            if (card.rank === 'A') {
+                isWin = true;
+                winReason = 'drew an ACE!';
+            }
+        }
+
+        if (isWin) {
+            duelWinner = { name: cp.name, side: currentTurn }; isDuelActive = false;
+            if (drawTimeout) clearTimeout(drawTimeout);
+            turnStatusSpan.innerText = `WINNER: ${cp.name} ${winReason}`;
+            gameMessageSpan.innerText = `${cp.name} pulled the winning card! Victory!`;
+            if (currentTurn === 0) p1WinnerBadge.innerHTML = '<div class="winner-badge">WINNER</div>'; else p2WinnerBadge.innerHTML = '<div class="winner-badge">WINNER</div>';
+            document.querySelectorAll('.player-card').forEach(c => c.classList.remove('active-turn'));
+
+            // Apply winner highlight for 1.5 seconds, then overlay
+            const winnerCard = currentTurn === 0 ? document.getElementById('player1Card') : document.getElementById('player2Card');
+            winnerCard.classList.add('winner-highlight');
+            shootConfetti();
+            addWinnerToHistory(cp.name, winReason);
+            setTimeout(() => {
+                winnerCard.classList.remove('winner-highlight');
+                showWinnerOverlay(cp.name, []);
+            }, 1500);
+            drawCount = 0; return;
+        }
+
+        currentTurn = currentTurn === 0 ? 1 : 0;
+        turnStatusSpan.innerText = 'Next: ' + (currentTurn === 0 ? selectedPlayer1.name : selectedPlayer2.name) + ' draws...';
+        // We do NOT add active-turn class anymore
+        if (isDuelActive && !duelWinner) { if (drawTimeout) clearTimeout(drawTimeout); drawTimeout = setTimeout(drawStep, 650); }
+    }
+
+    function startAceDuel() {
+        if (!selectedPlayer1 || !selectedPlayer2) { gameMessageSpan.innerText = "Select two duelists first!"; return; }
+        if (isDuelActive) { gameMessageSpan.innerText = "Duel already in progress!"; return; }
+        if (!cardsLoaded) { gameMessageSpan.innerText = "Cards still loading, please wait..."; return; }
+        if (drawTimeout) clearTimeout(drawTimeout);
+        drawCount = 0;
+        p1WinnerBadge.innerHTML = ''; p2WinnerBadge.innerHTML = '';
+        showCardBack(p1CardSlot);
+        showCardBack(p2CardSlot);
+        document.getElementById('player1Card').classList.remove('winner-highlight');
+        document.getElementById('player2Card').classList.remove('winner-highlight');
+        duelWinner = null; deck = buildAndShuffleDeck(); isDuelActive = true; currentTurn = 0;
+        const winMsg = presetWinEnabled && presetCardCode ? `(winning card: ${presetCardCode})` : '(first Ace wins)';
+        turnStatusSpan.innerText = `DUEL START! ${selectedPlayer1.name} draws first ${winMsg}`;
+        deckStatusSpan.innerText = 'Deck: ' + deck.length + ' | SHUFFLED';
+        document.querySelectorAll('.player-card').forEach(c => c.classList.remove('active-turn'));
+        drawTimeout = setTimeout(drawStep, 400);
+    }
+
+    function resetDuel() { if (drawTimeout) clearTimeout(drawTimeout); isDuelActive = false; duelWinner = null; currentTurn = 0; deck = []; drawCount = 0; showCardBack(p1CardSlot); showCardBack(p2CardSlot); p1WinnerBadge.innerHTML = ''; p2WinnerBadge.innerHTML = ''; turnStatusSpan.innerText = 'Duel reset.'; deckStatusSpan.innerText = 'Deck: 0'; gameMessageSpan.innerText = 'Reset. Press START.'; document.querySelectorAll('.player-card').forEach(c => c.classList.remove('active-turn')); document.getElementById('player1Card').classList.remove('winner-highlight'); document.getElementById('player2Card').classList.remove('winner-highlight'); }
+    function newDuelSamePlayers() { if (selectedPlayer1 && selectedPlayer2) { resetDuel(); startAceDuel(); } else gameMessageSpan.innerText = "No players selected."; }
+    function clearAllParticipants() { if (!confirm("Clear all?")) return; participants = []; selectedPlayer1 = null; selectedPlayer2 = null; renderParticipants(); updateSelectedDisplay(); resetGameVisualsOnly(); startReadyCheckContainer.style.display = 'none'; if (inactivityInterval) { clearInterval(inactivityInterval); inactivityInterval = null; } saveState(); }
+    function manualJoin() { const n = participantName.value.trim(); if (!n) return; addParticipant(n); participantName.value = ''; gameMessageSpan.innerText = n + ' joined!'; }
+
+    // ========== EVENT LISTENERS ==========
+    pickRandomBtn.addEventListener('click', () => {
+        if (isDuelActive) { gameMessageSpan.innerText = "Stop current duel first."; return; }
+        if (participants.length < 2) { gameMessageSpan.innerText = "Need at least 2 participants."; return; }
+        showWheelSelector();
+    });
+    pickSingleWinnerBtn.addEventListener('click', pickSingleWinner);
+    startReadyCheckBtn.addEventListener('click', () => {
+        if (selectedPlayer1 && selectedPlayer2) showReadyCheckOverlay(selectedPlayer1, selectedPlayer2);
+        else gameMessageSpan.innerText = "Select two players first";
+    });
+    joinBtn.addEventListener('click', manualJoin);
+    clearAllBtn.addEventListener('click', clearAllParticipants);
+    startDuelBtn.addEventListener('click', startAceDuel);
+    resetDuelBtn.addEventListener('click', resetDuel);
+    stopDrawBtn.addEventListener('click', () => { stopDrawingAndResetGame(); resetGameVisualsOnly(); gameMessageSpan.innerText = "Stopped."; });
+    newDuelSameBtn.addEventListener('click', newDuelSamePlayers);
+
+    // ========== IFRAME / STANDALONE AUTH ==========
+    let isIframe = window.parent !== window;
+
+    function handleTokenFromParent(event) {
+        if (event.data.type === 'KICK_TOKEN') {
+            const newToken = event.data.token;
+            const newChannel = event.data.channel;
+            if (chatInitialized && lastConnectedChannel === newChannel && kickBrowserSocket && kickBrowserSocket.readyState === WebSocket.OPEN) {
+                console.log('Already connected to', newChannel, '- ignoring duplicate token');
+                return;
+            }
+            kickToken = newToken;
+            currentChannel = newChannel;
+            currentChannelKey = newChannel;
+            if (currentChannel) {
+                userInfoArea.innerHTML = `<div class="user-info"><div class="user-details">Logged in as <strong>${currentChannel}</strong></div></div>`;
+                setConnectionStatus(`Logged in as ${currentChannel}`, 'connected');
+                loginBtn.textContent = 'Disconnect';
+                startKickBrowserChat(currentChannel);
+                chatInitialized = true;
+                lastConnectedChannel = currentChannel;
+            } else {
+                userInfoArea.innerHTML = `<div>Logged in to Kick. Enter a channel to connect.</div>`;
+                setConnectionStatus('Logged in to Kick', 'connected');
+                chatInitialized = false;
+                lastConnectedChannel = null;
+            }
+            isLoggedIn = true;
+            saveState();
+        }
+    }
+
+    if (isIframe) {
+        window.addEventListener('message', handleTokenFromParent);
+        window.parent.postMessage({ type: 'IFRAME_READY' }, '*');
+    }
+
+    if (!isIframe) {
+        loginBtn.addEventListener('click', () => {
+            if (isLoggedIn) {
+                manualDisconnect = true;
+                if (reconnectTimer) clearTimeout(reconnectTimer);
+                isLoggedIn = false; kickToken = null; currentChannel = null; currentChannelKey = '';
+                userInfoArea.innerHTML = '';
+                setConnectionStatus('Not logged in', 'disconnected');
+                loginBtn.textContent = 'Login with Kick';
+                participants = []; selectedPlayer1 = null; selectedPlayer2 = null;
+                readyCheckPlayers = [null, null]; readyStatus = [false, false]; readyMessageLogs = [[], []];
+                if (readyOverlayElement) readyOverlayElement.remove();
+                readyCheckActive = false;
+                if (currentWinnerOverlay) currentWinnerOverlay.remove();
+                currentWinnerOverlay = null; currentWinnerName = null;
+                stopKickBrowserChat();
+                if (inactivityInterval) { clearInterval(inactivityInterval); inactivityInterval = null; }
+                renderParticipants(); updateSelectedDisplay(); resetGameVisualsOnly();
+                gameMessageSpan.innerText = 'Disconnected.';
+                if (window._readyCheckCallback) delete window._readyCheckCallback;
+                localStorage.removeItem(getStorageKey('aceRaceState'));
+                return;
+            }
+            manualDisconnect = false;
+            window.open('/auth/kick', 'KickLogin', 'width=600,height=700');
+        });
+
+        window.addEventListener('message', (event) => {
+            if (event.data.type === 'KICK_TOKEN') {
+                manualDisconnect = false;
+                kickToken = event.data.token;
+                currentChannel = event.data.channel;
+                currentChannelKey = currentChannel;
+                participants = [];
+                selectedPlayer1 = null; selectedPlayer2 = null;
+                readyCheckPlayers = [null, null]; readyStatus = [false, false]; readyMessageLogs = [[], []];
+                if (readyOverlayElement) readyOverlayElement.remove();
+                readyCheckActive = false;
+                if (currentWinnerOverlay) currentWinnerOverlay.remove();
+                currentWinnerOverlay = null; currentWinnerName = null;
+                if (inactivityInterval) { clearInterval(inactivityInterval); inactivityInterval = null; }
+                if (currentChannel) {
+                    userInfoArea.innerHTML = `<div class="user-info"><div class="user-details">Logged in as <strong>${currentChannel}</strong></div></div>`;
+                    setConnectionStatus(`Logged in as ${currentChannel}`, 'connected');
+                    gameMessageSpan.innerText = `Connected to ${currentChannel} chat. Waiting for messages...`;
+                    startKickBrowserChat(currentChannel);
+                } else {
+                    userInfoArea.innerHTML = `<div>Logged in to Kick. Enter a channel to connect.</div>`;
+                    setConnectionStatus('Logged in to Kick', 'connected');
+                    gameMessageSpan.innerText = 'Logged in. Enter a channel name and press Connect.';
+                }
+                loginBtn.textContent = 'Disconnect';
+                isLoggedIn = true;
+                localStorage.removeItem(getStorageKey('aceRaceState'));
+                renderParticipants(); updateSelectedDisplay(); resetGameVisualsOnly();
+                startReadyCheckContainer.style.display = 'none';
+                saveState();
+            }
+        });
+    }
+
+    connectChannelBtn.addEventListener('click', () => {
+        if (!isLoggedIn) { alert('Please log in first.'); return; }
+        const channel = channelNameInput.value.trim();
+        if (!channel) { alert('Enter a channel name.'); return; }
+        currentChannel = channel;
+        currentChannelKey = channel;
+        manualDisconnect = false;
+        startKickBrowserChat(currentChannel);
+        saveState();
+    });
+
+    // ========== INIT ==========
+    renderParticipants();
+    radioKeyword.checked = true;
+    currentMode = 'keyword';
+    keywordSettingsDiv.style.display = 'block';
+    activeSettingsDiv.style.display = 'none';
+    modeIndicator.innerText = keyword || '!ace';
+    loadState();
+    setTimeout(() => { showCardBack(p1CardSlot); showCardBack(p2CardSlot); }, 100);
+
+    if (isIframe) {
+        const kickPanel = document.getElementById('kickPanelGame');
+        if (kickPanel) kickPanel.style.display = 'none';
+    }
+
+    // Disable start duel until cards are loaded
+    startDuelBtn.disabled = true;
+    gameMessageSpan.innerText = 'Loading cards…';
+    preloadAllCards();
+</script>
+</body>
+</html>

@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slot War Overlay</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: transparent !important;
+            font-family: 'Poppins', 'Segoe UI', sans-serif;
+            margin: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .overlay-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 20px;
+            gap: 0;
+        }
+        .team-panel {
+            width: 400px;
+            height: 1000px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            border-radius: 20px;
+            padding: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+        .team-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 12px;
+            color: white;
+            text-shadow: 0 0 4px black;
+        }
+        .team-a .team-title { color: #ffffff; }
+        .team-b .team-title { color: #ffffff; }
+        
+        .ticker-container {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+        }
+        .ticker-list {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding: 8px;
+            will-change: transform;
+        }
+        .ticker-item {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 8px 12px;
+            border-radius: 24px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            white-space: nowrap;
+        }
+        .member-name {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .member-points {
+            background: #19C6FD;
+            color: black;
+            border-radius: 20px;
+            padding: 0 8px;
+            font-weight: bold;
+            margin-left: 8px;
+        }
+        .slot-info {
+            margin-top: 12px;
+            padding: 12px;
+            background: rgba(0,0,0,0.6);
+            border-radius: 12px;
+            text-align: center;
+        }
+        .slot-info img {
+            width: 100px;
+            height: 140px;
+            object-fit: contain;
+            border-radius: 12px;
+            margin: 4px auto;
+            display: block;
+        }
+        .slot-name {
+            font-size: 1.2rem;
+            color: #ddd;
+            margin-top: 8px;
+            font-weight: bold;
+        }
+        .command {
+            font-size: 1.2rem;
+            background: #1a2a4f;
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 40px;
+            margin-top: 10px;
+            color: #19C6FD;
+            font-weight: bold;
+        }
+        .center-stats {
+            width: 320px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #278cbb;
+            border-radius: 24px;
+            padding: 24px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            flex-shrink: 0;
+            margin: 0 auto;
+        }
+        .bet-card {
+            background: rgba(0,0,0,0.5);
+            border-radius: 24px;
+            padding: 16px;
+        }
+        .bet-label {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ffffff;
+        }
+        .bet-count {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: black;
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 60px;
+            margin-top: 12px;
+            color: white;
+        }
+        .debug {
+            font-size: 10px;
+            color: #aaa;
+            margin-top: 16px;
+        }
+    </style>
+</head>
+<body>
+<div class="overlay-container">
+    <!-- TEAM A -->
+    <div class="team-panel team-a">
+        <div class="team-title">TEAM A</div>
+        <div id="teamATicker" class="ticker-container">
+            <div id="teamAList" class="ticker-list"></div>
+        </div>
+        <div id="slotAInfo" class="slot-info">
+            <img id="slotAImg" src="" style="display: none;">
+            <div id="slotAName" class="slot-name">No slot</div>
+            <div class="command">Bet !A</div>
+        </div>
+    </div>
+
+    <!-- MIDDLE -->
+    <div class="center-stats">
+        <div class="bet-card">
+            <div class="bet-label">BET !A</div>
+            <div id="teamACount" class="bet-count">0</div>
+        </div>
+        <div class="bet-card">
+            <div class="bet-label">BET !B</div>
+            <div id="teamBCount" class="bet-count">0</div>
+        </div>
+        <div class="debug" id="updateTime">waiting...</div>
+    </div>
+
+    <!-- TEAM B -->
+    <div class="team-panel team-b">
+        <div class="team-title">TEAM B</div>
+        <div id="teamBTicker" class="ticker-container">
+            <div id="teamBList" class="ticker-list"></div>
+        </div>
+        <div id="slotBInfo" class="slot-info">
+            <img id="slotBImg" src="" style="display: none;">
+            <div id="slotBName" class="slot-name">No slot</div>
+            <div class="command">Bet !B</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[m] || m);
+    }
+
+    let currentParticipants = [];
+    let currentSlots = { teamA: null, teamB: null };
+
+    // Circular infinite ticker – no reset, no jump (unchanged)
+    class CircularTicker {
+        constructor(containerId, listId) {
+            this.container = document.getElementById(containerId);
+            this.listEl = document.getElementById(listId);
+            this.items = [];
+            this.itemHeightSum = 0;
+            this.itemHeights = [];
+            this.scrollOffset = 0;
+            this.animationId = null;
+            this.speed = 0.8;
+            this.paused = false;
+            this.pauseTimeout = null;
+            this.containerHeight = 0;
+            
+            this.container.addEventListener('wheel', () => this.pauseFor(3000));
+            this.container.addEventListener('touchmove', () => this.pauseFor(3000));
+        }
+        
+        setItems(itemsArray) {
+            this.items = [...itemsArray];
+            this.render();
+            this.calcHeights();
+            this.scrollOffset = 0;
+            this.listEl.style.transform = `translateY(0px)`;
+            if (this.animationId) cancelAnimationFrame(this.animationId);
+            this.start();
+        }
+        
+        render() {
+            this.listEl.innerHTML = '';
+            if (this.items.length === 0) {
+                const emptyDiv = document.createElement('div');
+                emptyDiv.textContent = 'No members';
+                emptyDiv.style.textAlign = 'center';
+                emptyDiv.style.color = '#aaa';
+                emptyDiv.style.padding = '20px';
+                this.listEl.appendChild(emptyDiv);
+                return;
+            }
+            this.items.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'ticker-item';
+                div.innerHTML = `<span class="member-name">${escapeHtml(item.name)}</span><span class="member-points">${item.points || 0}</span>`;
+                this.listEl.appendChild(div);
+            });
+        }
+        
+        calcHeights() {
+            if (!this.listEl) return;
+            const children = this.listEl.children;
+            this.itemHeights = [];
+            let total = 0;
+            for (let i = 0; i < children.length; i++) {
+                const h = children[i].offsetHeight + 6;
+                this.itemHeights.push(h);
+                total += h;
+            }
+            this.itemHeightSum = total;
+            this.containerHeight = this.container.clientHeight;
+        }
+        
+        start() {
+            const step = () => {
+                if (!this.paused && this.items.length > 0 && this.itemHeightSum > this.containerHeight) {
+                    this.scrollOffset += this.speed;
+                    while (this.scrollOffset >= this.itemHeights[0] && this.itemHeights.length > 0) {
+                        this.scrollOffset -= this.itemHeights[0];
+                        this.rotateList();
+                    }
+                    this.listEl.style.transform = `translateY(-${this.scrollOffset}px)`;
+                }
+                this.animationId = requestAnimationFrame(step);
+            };
+            this.animationId = requestAnimationFrame(step);
+        }
+        
+        rotateList() {
+            if (this.listEl.children.length === 0) return;
+            const firstChild = this.listEl.children[0];
+            this.listEl.appendChild(firstChild);
+            const firstHeight = this.itemHeights.shift();
+            this.itemHeights.push(firstHeight);
+            this.itemHeightSum = this.itemHeights.reduce((a,b) => a + b, 0);
+        }
+        
+        pauseFor(ms) {
+            if (this.pauseTimeout) clearTimeout(this.pauseTimeout);
+            this.paused = true;
+            this.pauseTimeout = setTimeout(() => {
+                this.paused = false;
+            }, ms);
+        }
+        
+        resize() {
+            this.calcHeights();
+            while (this.scrollOffset >= this.itemHeights[0] && this.itemHeights.length > 0) {
+                this.scrollOffset -= this.itemHeights[0];
+                this.rotateList();
+            }
+            this.listEl.style.transform = `translateY(-${this.scrollOffset}px)`;
+        }
+    }
+    
+    let tickerA = null;
+    let tickerB = null;
+    
+    function renderOverlay() {
+        const teamA = currentParticipants.filter(p => p.team === 'A');
+        const teamB = currentParticipants.filter(p => p.team === 'B');
+        document.getElementById('teamACount').innerText = teamA.length;
+        document.getElementById('teamBCount').innerText = teamB.length;
+        
+        if (tickerA) tickerA.setItems(teamA);
+        if (tickerB) tickerB.setItems(teamB);
+        
+        document.getElementById('updateTime').innerHTML = `updated: ${new Date().toLocaleTimeString()}<br>total: ${currentParticipants.length}`;
+    }
+    
+    function renderSlots() {
+        const slotA = currentSlots.teamA;
+        const slotB = currentSlots.teamB;
+        const imgA = document.getElementById('slotAImg');
+        const nameA = document.getElementById('slotAName');
+        if (slotA && slotA.image_url) {
+            imgA.src = slotA.image_url;
+            imgA.style.display = 'block';
+            nameA.innerText = slotA.name;
+        } else {
+            imgA.style.display = 'none';
+            nameA.innerText = 'No slot';
+        }
+        const imgB = document.getElementById('slotBImg');
+        const nameB = document.getElementById('slotBName');
+        if (slotB && slotB.image_url) {
+            imgB.src = slotB.image_url;
+            imgB.style.display = 'block';
+            nameB.innerText = slotB.name;
+        } else {
+            imgB.style.display = 'none';
+            nameB.innerText = 'No slot';
+        }
+    }
+    
+    function observeResize() {
+        const resizeObserver = new ResizeObserver(() => {
+            if (tickerA) tickerA.resize();
+            if (tickerB) tickerB.resize();
+        });
+        if (tickerA?.container) resizeObserver.observe(tickerA.container);
+        if (tickerB?.container) resizeObserver.observe(tickerB.container);
+    }
+    
+    // ----- HTTP polling instead of WebSocket -----
+    async function refreshParticipants() {
+        try {
+            const res = await fetch('/api/participants', { cache: 'no-store' });
+            if (res.ok) {
+                const data = await res.json();
+                if (JSON.stringify(data) !== JSON.stringify(currentParticipants)) {
+                    currentParticipants = data;
+                    renderOverlay();
+                }
+            }
+        } catch(e) { console.warn('Fetch participants error', e); }
+    }
+    
+    async function refreshSlots() {
+        try {
+            const res = await fetch('/api/slots', { cache: 'no-store' });
+            if (res.ok) {
+                const data = await res.json();
+                if (JSON.stringify(data) !== JSON.stringify(currentSlots)) {
+                    currentSlots = data;
+                    renderSlots();
+                }
+            }
+        } catch(e) { console.warn('Fetch slots error', e); }
+    }
+    
+    // Poll every 500ms
+    setInterval(() => {
+        refreshParticipants();
+        refreshSlots();
+    }, 500);
+    
+    // Initial calls
+    refreshParticipants();
+    refreshSlots();
+    
+    // Initialize tickers after DOM is ready
+    window.addEventListener('DOMContentLoaded', () => {
+        tickerA = new CircularTicker('teamATicker', 'teamAList');
+        tickerB = new CircularTicker('teamBTicker', 'teamBList');
+        observeResize();
+        // Force a resize after a short delay
+        setTimeout(() => {
+            if (tickerA) tickerA.resize();
+            if (tickerB) tickerB.resize();
+        }, 200);
+    });
+</script>
+</body>
+</html>
