@@ -1,0 +1,434 @@
+{
+  "allTime": {
+    "topChatters": {},
+    "totalPoints": 2602,
+    "totalWinners": 17,
+    "mostWins": {},
+    "lastUpdated": 1782378388010
+  },
+  "sessions": [
+    {
+      "sessionId": "default_2026-06-25_1782369726618",
+      "date": "2026-06-25T06:42:42.565Z",
+      "totalPoints": 10,
+      "chatCount": 9,
+      "winnerCount": 0,
+      "topChatters": [
+        {
+          "username": "mhmad_XD1",
+          "points": 2,
+          "messages": 2
+        },
+        {
+          "username": "GhostyyEUW",
+          "points": 1,
+          "messages": 1
+        },
+        {
+          "username": "nubbles",
+          "points": 1,
+          "messages": 1
+        },
+        {
+          "username": "BadRudeBoi",
+          "points": 1,
+          "messages": 1
+        },
+        {
+          "username": "YaWhatEver",
+          "points": 1,
+          "messages": 1
+        }
+      ],
+      "winners": []
+    },
+    {
+      "sessionId": "xqc_2026-06-25_1782369762442",
+      "date": "2026-06-25T06:43:35.724Z",
+      "totalPoints": 26,
+      "chatCount": 22,
+      "winnerCount": 1,
+      "topChatters": [
+        {
+          "username": "obi_doncannolii",
+          "points": 2,
+          "messages": 2
+        },
+        {
+          "username": "Fossabot",
+          "points": 2,
+          "messages": 2
+        },
+        {
+          "username": "Cashemz",
+          "points": 2,
+          "messages": 2
+        },
+        {
+          "username": "Long_Lost_Son_Of_xQc",
+          "points": 2,
+          "messages": 2
+        },
+        {
+          "username": "shishkashit",
+          "points": 1,
+          "messages": 1
+        }
+      ],
+      "winners": [
+        {
+          "username": "docRant1",
+          "points": 1,
+          "timestamp": 1782369815723
+        }
+      ]
+    },
+    {
+      "sessionId": "default_2026-06-25_1782371300073",
+      "date": "2026-06-25T07:08:48.879Z",
+      "totalPoints": 20,
+      "chatCount": 16,
+      "winnerCount": 0,
+      "topChatters": [
+        {
+          "username": "Hamburgerpolice",
+          "points": 2,
+          "messages": 2
+        },
+        {
+          "username": "Daiyusha",
+          "points": 2,
+          "messages": 2
+        },
+        {
+          "username": "kunisama",
+          "points": 2,
+          "messages": 2
+        },
+        {
+          "username": "Lechaan128",
+          "points": 2,
+          "messages": 2
+        },
+        {
+          "username": "EddieGFromTekken3",
+          "points": 1,
+          "messages": 1
+        }
+      ],
+      "winners": []
+    },
+    {
+      "sessionId": "default_2026-06-25_1782371460390",
+      "date": "2026-06-25T07:11:43.287Z",
+      "totalPoints": 22,
+      "chatCount": 19,
+      "winnerCount": 1,
+      "topChatters": [
+        {
+          "username": "Lechaan128",
+          "points": 2,
+          "messages": 2
+        },
+        {
+          "username": "ThisNameUnavailable",
+          "points": 2,
+          "messages": 2
+        },
+        {
+          "username": "YaWhatEver",
+          "points": 2,
+          "messages": 2
+        },
+        {
+          "username": "ishtarfgo",
+          "points": 1,
+          "messages": 1
+        },
+        {
+          "username": "cantfeel999",
+          "points": 1,
+          "messages": 1
+        }
+      ],
+      "winners": [
+        {
+          "username": "ThisNameUnavailable",
+          "points": 1,
+          "timestamp": 1782371503275
+        }
+      ]
+    },
+    {
+      "sessionId": "default_2026-06-25_1782371460390",
+      "date": "2026-06-25T07:12:29.222Z",
+      "totalPoints": 63,
+      "chatCount": 39,
+      "winnerCount": 2,
+      "topChatters": [
+        {
+          "username": "YaWhatEver",
+          "points": 6,
+          "messages": 6
+        },
+        {
+          "username": "BoneManSasha",
+          "points": 5,
+          "messages": 5
+        },
+        {
+          "username": "Lechaan128",
+          "points": 3,
+          "messages": 3
+        },
+        {
+          "username": "awa_xo",
+          "points": 3,
+          "messages": 3
+        },
+        {
+          "username": "shishkashit",
+          "points": 3,
+          "messages": 3
+        }
+      ],
+      "winners": [
+        {
+          "username": "Lechaan128",
+          "points": 3,
+          "timestamp": 1782371549221
+        },
+        {
+          "username": "ThisNameUnavailable",
+          "points": 1,
+          "timestamp": 1782371503275
+        }
+      ]
+    },
+    {
+      "sessionId": "default_2026-06-25_1782371460390",
+      "date": "2026-06-25T07:20:03.300Z",
+      "totalPoints": 681,
+      "chatCount": 283,
+      "winnerCount": 2,
+      "topChatters": [
+        {
+          "username": "awa_xo",
+          "points": 20,
+          "messages": 20
+        },
+        {
+          "username": "cantfeel999",
+          "points": 19,
+          "messages": 19
+        },
+        {
+          "username": "redco9",
+          "points": 15,
+          "messages": 15
+        },
+        {
+          "username": "Daiyusha",
+          "points": 14,
+          "messages": 14
+        },
+        {
+          "username": "YaWhatEver",
+          "points": 12,
+          "messages": 12
+        }
+      ],
+      "winners": [
+        {
+          "username": "Lechaan128",
+          "points": 3,
+          "timestamp": 1782371549221
+        },
+        {
+          "username": "ThisNameUnavailable",
+          "points": 1,
+          "timestamp": 1782371503275
+        }
+      ]
+    },
+    {
+      "sessionId": "default_2026-06-25_1782372912275",
+      "date": "2026-06-25T07:35:38.273Z",
+      "totalPoints": 23,
+      "chatCount": 22,
+      "winnerCount": 0,
+      "topChatters": [
+        {
+          "username": "x_XDarkstar",
+          "points": 2
+        },
+        {
+          "username": "Paygornos",
+          "points": 1
+        },
+        {
+          "username": "LostJuicer",
+          "points": 1
+        },
+        {
+          "username": "DangoIsHere",
+          "points": 1
+        },
+        {
+          "username": "Loolubhai",
+          "points": 1
+        }
+      ],
+      "winners": []
+    },
+    {
+      "sessionId": "xqc_2026-06-25_1782372938259",
+      "date": "2026-06-25T07:36:02.751Z",
+      "totalPoints": 31,
+      "chatCount": 30,
+      "winnerCount": 1,
+      "topChatters": [
+        {
+          "username": "EUHarry",
+          "points": 2
+        },
+        {
+          "username": "otit",
+          "points": 1
+        },
+        {
+          "username": "gettejon",
+          "points": 1
+        },
+        {
+          "username": "giblert",
+          "points": 1
+        },
+        {
+          "username": "21yungantonia",
+          "points": 1
+        }
+      ],
+      "winners": [
+        {
+          "username": "gettejon",
+          "points": 1
+        }
+      ]
+    },
+    {
+      "sessionId": "xqc_2026-06-25_1782378356426",
+      "date": "2026-06-25T09:06:28.010Z",
+      "totalPoints": 74,
+      "chatCount": 67,
+      "winnerCount": 0,
+      "topChatters": [
+        {
+          "username": "MRKGG",
+          "points": 3
+        },
+        {
+          "username": "arico",
+          "points": 2
+        },
+        {
+          "username": "omg123311221",
+          "points": 2
+        },
+        {
+          "username": "Sylk",
+          "points": 2
+        },
+        {
+          "username": "hibachiteriyaki",
+          "points": 2
+        }
+      ],
+      "winners": []
+    }
+  ],
+  "channelData": {
+    "xqc": {
+      "allTime": {
+        "topChatters": {
+          "MRKGG": {
+            "totalPoints": 1,
+            "totalMessages": 1,
+            "wins": 0
+          },
+          "youneverknow": {
+            "totalPoints": 1,
+            "totalMessages": 1,
+            "wins": 0
+          },
+          "Hypernova123": {
+            "totalPoints": 1,
+            "totalMessages": 1,
+            "wins": 0
+          },
+          "hibachiteriyaki": {
+            "totalPoints": 1,
+            "totalMessages": 1,
+            "wins": 0
+          },
+          "Brenden99": {
+            "totalPoints": 1,
+            "totalMessages": 1,
+            "wins": 0
+          },
+          "MoFoJoe": {
+            "totalPoints": 1,
+            "totalMessages": 1,
+            "wins": 0
+          },
+          "office_lady_feet": {
+            "totalPoints": 1,
+            "totalMessages": 1,
+            "wins": 0
+          },
+          "WaiitWhoo": {
+            "totalPoints": 1,
+            "totalMessages": 1,
+            "wins": 0
+          }
+        },
+        "totalPoints": 8,
+        "totalWinners": 0,
+        "mostWins": {},
+        "lastUpdated": 1782378388010
+      },
+      "sessions": [
+        {
+          "sessionId": "xqc_2026-06-25_1782378356426",
+          "date": "2026-06-25T09:06:28.010Z",
+          "totalPoints": 74,
+          "chatCount": 67,
+          "winnerCount": 0,
+          "topChatters": [
+            {
+              "username": "MRKGG",
+              "points": 3
+            },
+            {
+              "username": "arico",
+              "points": 2
+            },
+            {
+              "username": "omg123311221",
+              "points": 2
+            },
+            {
+              "username": "Sylk",
+              "points": 2
+            },
+            {
+              "username": "hibachiteriyaki",
+              "points": 2
+            }
+          ],
+          "winners": []
+        }
+      ]
+    }
+  }
+}

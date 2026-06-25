@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const http = require('http');
 const WebSocket = require('ws');
+const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 const compression = require('compression');
@@ -23,7 +24,64 @@ app.use(compression());
 app.use(express.json());
 app.use('/assets', express.static(path.join(__dirname, 'assets'), { maxAge: '7d', immutable: true }));
 app.use(express.static(path.join(__dirname, 'public')));
+// ========== CHATTER DATA MANAGEMENT ==========
+const CHATTER_DATA_FILE = path.join(__dirname, 'chatter-data.json');
 
+let chatterData = {
+    allTime: {
+        topChatters: {},
+        totalPoints: 0,
+        totalWinners: 0,
+        mostWins: {},
+        lastUpdated: null
+    },
+    sessions: [],
+    channelData: {}
+};
+
+// Load existing data if file exists
+function loadChatterData() {
+    try {
+        if (fs.existsSync(CHATTER_DATA_FILE)) {
+            const data = fs.readFileSync(CHATTER_DATA_FILE, 'utf8');
+            if (data.trim()) {
+                const parsed = JSON.parse(data);
+                chatterData = parsed;
+                console.log('📊 Loaded chatter data from file');
+                console.log(`   ${Object.keys(chatterData.allTime?.topChatters || {}).length} all-time chatters`);
+                console.log(`   ${(chatterData.sessions || []).length} sessions saved`);
+            } else {
+                console.log('📊 Chatter data file is empty, using default');
+            }
+        } else {
+            console.log('📊 No chatter-data.json found, will create on first save');
+        }
+    } catch (e) {
+        console.error('Error loading chatter data:', e);
+    }
+}
+
+function saveChatterData() {
+    try {
+        fs.writeFileSync(CHATTER_DATA_FILE, JSON.stringify(chatterData, null, 2));
+        console.log('💾 Saved chatter data to:', CHATTER_DATA_FILE);
+    } catch (e) {
+        console.error('Error saving chatter data:', e);
+    }
+}
+
+// Load on startup
+loadChatterData();
+
+// Auto-save every 30 seconds
+setInterval(saveChatterData, 30000);
+
+// Save on process exit
+process.on('SIGINT', () => {
+    console.log('Saving chatter data before exit...');
+    saveChatterData();
+    process.exit(0);
+});
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'merged.html'));
 });
@@ -100,6 +158,216 @@ const KICK_CLIENT_ID = process.env.KICK_CLIENT_ID;
 const KICK_CLIENT_SECRET = process.env.KICK_CLIENT_SECRET;
 const REDIRECT_URI = process.env.KICK_REDIRECT_URI || 'http://localhost:3000/auth/kick/callback';
 const pendingLogins = new Map();
+// ========== CHATTER POINTS API ==========
+
+// Save all-time data from client
+app.post('/api/chatter/alltime', express.json(), (req, res) => {
+    try {
+        const { channel, data } = req.body;
+        
+        if (!channel || !data) {
+            return res.status(400).json({ error: 'Missing channel or data' });
+        }
+        
+        // Initialize channel data if needed
+        if (!chatterData.channelData[channel]) {
+            chatterData.channelData[channel] = {
+                allTime: {
+                    topChatters: {},
+                    totalPoints: 0,
+                    totalWinners: 0,
+                    mostWins: {}
+                },
+                sessions: []
+            };
+        }
+        
+        const channelData = chatterData.channelData[channel];
+        
+        // Update all-time stats (merge client data)
+        if (data.topChatters) {
+            for (const [username, stats] of Object.entries(data.topChatters)) {
+                if (!channelData.allTime.topChatters[username]) {
+                    channelData.allTime.topChatters[username] = {
+                        totalPoints: 0,
+                        totalMessages: 0,
+                        wins: 0
+                    };
+                }
+                const existing = channelData.allTime.topChatters[username];
+                existing.totalPoints += stats.totalPoints || stats.points || 0;
+                existing.totalMessages += stats.totalMessages || stats.messages || 0;
+                existing.wins += stats.wins || 0;
+            }
+        }
+        
+        // Update total points
+        if (data.totalPoints) {
+            channelData.allTime.totalPoints += data.totalPoints;
+            chatterData.allTime.totalPoints += data.totalPoints;
+        }
+        
+        // Update total winners
+        if (data.totalWinners) {
+            channelData.allTime.totalWinners += data.totalWinners;
+            chatterData.allTime.totalWinners += data.totalWinners;
+        }
+        
+        // Update most wins
+        if (data.mostWins) {
+            for (const [username, wins] of Object.entries(data.mostWins)) {
+                if (!channelData.allTime.mostWins[username]) {
+                    channelData.allTime.mostWins[username] = 0;
+                }
+                channelData.allTime.mostWins[username] += wins;
+            }
+        }
+        
+        // Add session to history
+        if (data.sessionData) {
+            const sessionEntry = {
+                sessionId: data.sessionData.sessionId || Date.now().toString(),
+                date: new Date().toISOString(),
+                totalPoints: data.sessionData.totalPoints || 0,
+                chatCount: data.sessionData.chatCount || 0,
+                winnerCount: data.sessionData.winnerCount || 0,
+                topChatters: data.sessionData.topChatters || [],
+                winners: data.sessionData.winners || []
+            };
+            
+            channelData.sessions.push(sessionEntry);
+            
+            // Keep last 50 sessions per channel
+            if (channelData.sessions.length > 50) {
+                channelData.sessions = channelData.sessions.slice(-50);
+            }
+            
+            // Also keep global sessions list
+            if (!chatterData.sessions) {
+                chatterData.sessions = [];
+            }
+            chatterData.sessions.push(sessionEntry);
+            if (chatterData.sessions.length > 100) {
+                chatterData.sessions = chatterData.sessions.slice(-100);
+            }
+        }
+        
+        channelData.allTime.lastUpdated = Date.now();
+        chatterData.allTime.lastUpdated = Date.now();
+        
+        // Save to file
+        saveChatterData();
+        
+        res.json({ 
+            ok: true,
+            message: 'All-time data saved successfully'
+        });
+    } catch (err) {
+        console.error('Error saving all-time data:', err);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// Get all-time data for a channel
+app.get('/api/chatter/alltime/:channel', (req, res) => {
+    try {
+        const channel = req.params.channel;
+        
+        if (!chatterData.channelData[channel]) {
+            return res.json({
+                channel: channel,
+                allTime: {
+                    topChatters: {},
+                    totalPoints: 0,
+                    totalWinners: 0,
+                    mostWins: {}
+                },
+                sessions: []
+            });
+        }
+        
+        const channelData = chatterData.channelData[channel];
+        res.json({
+            channel: channel,
+            allTime: channelData.allTime,
+            sessions: channelData.sessions.slice(-10) // Last 10 sessions
+        });
+    } catch (err) {
+        console.error('Error fetching all-time data:', err);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// Get session history (paginated)
+app.get('/api/chatter/sessions/:channel', (req, res) => {
+    try {
+        const channel = req.params.channel;
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        
+        if (!chatterData.channelData[channel]) {
+            return res.json({ sessions: [], total: 0, page: 1, limit: limit });
+        }
+        
+        const sessions = chatterData.channelData[channel].sessions || [];
+        const total = sessions.length;
+        const start = (page - 1) * limit;
+        const paginated = sessions.slice(-start - limit, sessions.length - start);
+        
+        res.json({
+            sessions: paginated.reverse(),
+            total: total,
+            page: page,
+            limit: limit
+        });
+    } catch (err) {
+        console.error('Error fetching sessions:', err);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// Reset all-time data for a channel (use with caution)
+app.post('/api/chatter/reset/:channel', express.json(), (req, res) => {
+    try {
+        const channel = req.params.channel;
+        const { confirm } = req.body;
+        
+        if (confirm !== 'YES_DELETE_ALL') {
+            return res.status(400).json({ error: 'Must confirm with "YES_DELETE_ALL"' });
+        }
+        
+        if (chatterData.channelData[channel]) {
+            // Archive before deleting
+            const archive = {
+                channel: channel,
+                deletedAt: new Date().toISOString(),
+                data: chatterData.channelData[channel]
+            };
+            
+            // Save archive
+            const archiveFile = CHATTER_DATA_FILE + '.archives';
+            let archives = [];
+            try {
+                if (fs.existsSync(archiveFile)) {
+                    archives = JSON.parse(fs.readFileSync(archiveFile, 'utf8'));
+                }
+            } catch (e) { /* ignore */ }
+            archives.push(archive);
+            fs.writeFileSync(archiveFile, JSON.stringify(archives, null, 2));
+            
+            // Delete channel data
+            delete chatterData.channelData[channel];
+            saveChatterData();
+            
+            res.json({ ok: true, message: `All data for ${channel} has been reset` });
+        } else {
+            res.json({ ok: true, message: `No data found for ${channel}` });
+        }
+    } catch (err) {
+        console.error('Error resetting data:', err);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
 
 function generateCodeVerifier() { return crypto.randomBytes(32).toString('base64url'); }
 function generateCodeChallenge(verifier) { return crypto.createHash('sha256').update(verifier).digest('base64url'); }
