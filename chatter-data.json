@@ -1,10 +1,10 @@
 {
   "allTime": {
     "topChatters": {},
-    "totalPoints": 2602,
+    "totalPoints": 10836,
     "totalWinners": 17,
     "mostWins": {},
-    "lastUpdated": 1782378388010
+    "lastUpdated": 1782422555444
   },
   "sessions": [
     {
@@ -345,57 +345,1783 @@
         }
       ],
       "winners": []
+    },
+    {
+      "sessionId": "default_2026-06-25_1782413930570",
+      "date": "2026-06-25T19:00:39.676Z",
+      "totalPoints": 3,
+      "chatCount": 1,
+      "winnerCount": 0,
+      "topChatters": [
+        {
+          "username": "todipro",
+          "points": 3
+        }
+      ],
+      "winners": []
+    },
+    {
+      "sessionId": "default_2026-06-25_1782414052062",
+      "date": "2026-06-25T19:02:46.449Z",
+      "totalPoints": 7,
+      "chatCount": 3,
+      "winnerCount": 0,
+      "topChatters": [
+        {
+          "username": "todipro",
+          "points": 3
+        },
+        {
+          "username": "tztwiz",
+          "points": 2
+        },
+        {
+          "username": "Fossabot",
+          "points": 2
+        }
+      ],
+      "winners": []
+    },
+    {
+      "sessionId": "default_2026-06-25_1782414052062",
+      "date": "2026-06-25T19:07:40.418Z",
+      "totalPoints": 9,
+      "chatCount": 4,
+      "winnerCount": 0,
+      "topChatters": [
+        {
+          "username": "tztwiz",
+          "points": 3
+        },
+        {
+          "username": "todipro",
+          "points": 3
+        },
+        {
+          "username": "Fossabot",
+          "points": 2
+        },
+        {
+          "username": "Smojavell",
+          "points": 1
+        }
+      ],
+      "winners": []
+    },
+    {
+      "sessionId": "default_2026-06-25_1782414490836",
+      "date": "2026-06-25T19:18:17.424Z",
+      "totalPoints": 3,
+      "chatCount": 2,
+      "winnerCount": 0,
+      "topChatters": [
+        {
+          "username": "Smojavell",
+          "points": 2
+        },
+        {
+          "username": "tztwiz",
+          "points": 1
+        }
+      ],
+      "winners": []
+    },
+    {
+      "sessionId": "default_2026-06-25_1782414490836",
+      "date": "2026-06-25T19:19:55.419Z",
+      "totalPoints": 4,
+      "chatCount": 2,
+      "winnerCount": 0,
+      "topChatters": [
+        {
+          "username": "Smojavell",
+          "points": 2
+        },
+        {
+          "username": "tztwiz",
+          "points": 2
+        }
+      ],
+      "winners": []
+    },
+    {
+      "sessionId": "default_2026-06-25_1782414490836",
+      "date": "2026-06-25T19:20:54.041Z",
+      "totalPoints": 5,
+      "chatCount": 2,
+      "winnerCount": 0,
+      "topChatters": [
+        {
+          "username": "tztwiz",
+          "points": 3
+        },
+        {
+          "username": "Smojavell",
+          "points": 2
+        }
+      ],
+      "winners": []
+    },
+    {
+      "sessionId": "default_2026-06-25_1782421498385",
+      "date": "2026-06-25T21:13:01.243Z",
+      "totalPoints": 151,
+      "chatCount": 87,
+      "winnerCount": 0,
+      "topChatters": [
+        {
+          "username": "MyrtleBot",
+          "points": 9
+        },
+        {
+          "username": "HANY_3RBiDCO",
+          "points": 6
+        },
+        {
+          "username": "BotRix",
+          "points": 6
+        },
+        {
+          "username": "ma_t_rix",
+          "points": 5
+        },
+        {
+          "username": "Aaaaco",
+          "points": 4
+        }
+      ],
+      "winners": []
+    },
+    {
+      "sessionId": "default_2026-06-25_1782421498385",
+      "date": "2026-06-25T21:22:35.444Z",
+      "totalPoints": 240,
+      "chatCount": 116,
+      "winnerCount": 0,
+      "topChatters": [
+        {
+          "username": "MyrtleBot",
+          "points": 18
+        },
+        {
+          "username": "BotRix",
+          "points": 11
+        },
+        {
+          "username": "ma_t_rix",
+          "points": 11
+        },
+        {
+          "username": "SALAH_ABDULLAH",
+          "points": 8
+        },
+        {
+          "username": "Khaloo_Yousef",
+          "points": 8
+        }
+      ],
+      "winners": []
     }
   ],
   "channelData": {
     "xqc": {
       "allTime": {
         "topChatters": {
+          "2": {
+            "totalPoints": 48,
+            "totalMessages": 48,
+            "wins": 0
+          },
           "MRKGG": {
-            "totalPoints": 1,
-            "totalMessages": 1,
+            "totalPoints": 139,
+            "totalMessages": 139,
             "wins": 0
           },
           "youneverknow": {
-            "totalPoints": 1,
-            "totalMessages": 1,
+            "totalPoints": 13,
+            "totalMessages": 13,
             "wins": 0
           },
           "Hypernova123": {
-            "totalPoints": 1,
-            "totalMessages": 1,
+            "totalPoints": 19,
+            "totalMessages": 19,
             "wins": 0
           },
           "hibachiteriyaki": {
-            "totalPoints": 1,
-            "totalMessages": 1,
+            "totalPoints": 73,
+            "totalMessages": 73,
             "wins": 0
           },
           "Brenden99": {
-            "totalPoints": 1,
-            "totalMessages": 1,
+            "totalPoints": 97,
+            "totalMessages": 97,
             "wins": 0
           },
           "MoFoJoe": {
-            "totalPoints": 1,
-            "totalMessages": 1,
+            "totalPoints": 31,
+            "totalMessages": 31,
             "wins": 0
           },
           "office_lady_feet": {
-            "totalPoints": 1,
-            "totalMessages": 1,
+            "totalPoints": 19,
+            "totalMessages": 19,
             "wins": 0
           },
           "WaiitWhoo": {
-            "totalPoints": 1,
-            "totalMessages": 1,
+            "totalPoints": 31,
+            "totalMessages": 31,
+            "wins": 0
+          },
+          "DiegoCraft26": {
+            "totalPoints": 48,
+            "totalMessages": 48,
+            "wins": 0
+          },
+          "rawly": {
+            "totalPoints": 30,
+            "totalMessages": 30,
+            "wins": 0
+          },
+          "TYRNT": {
+            "totalPoints": 24,
+            "totalMessages": 24,
+            "wins": 0
+          },
+          "awa_xo": {
+            "totalPoints": 36,
+            "totalMessages": 36,
+            "wins": 0
+          },
+          "desmond2112": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "TheLoveIcon": {
+            "totalPoints": 30,
+            "totalMessages": 30,
+            "wins": 0
+          },
+          "gizmoom": {
+            "totalPoints": 66,
+            "totalMessages": 66,
+            "wins": 0
+          },
+          "alloy0110": {
+            "totalPoints": 18,
+            "totalMessages": 18,
+            "wins": 0
+          },
+          "Ranganati": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "HUHHUHHUH": {
+            "totalPoints": 18,
+            "totalMessages": 18,
+            "wins": 0
+          },
+          "bearmang": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "WOJTEK_99PCT": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "whoisroro": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "bigdgavin23": {
+            "totalPoints": 180,
+            "totalMessages": 180,
+            "wins": 0
+          },
+          "ModsHateCharityLOL": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "gaySlop1234": {
+            "totalPoints": 36,
+            "totalMessages": 36,
+            "wins": 0
+          },
+          "ruuhsnow": {
+            "totalPoints": 42,
+            "totalMessages": 42,
+            "wins": 0
+          },
+          "Tacocat24": {
+            "totalPoints": 36,
+            "totalMessages": 36,
+            "wins": 0
+          },
+          "d_gac": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "SketchsBackshotWind": {
+            "totalPoints": 18,
+            "totalMessages": 18,
+            "wins": 0
+          },
+          "bo03lol": {
+            "totalPoints": 30,
+            "totalMessages": 30,
+            "wins": 0
+          },
+          "Daiyusha": {
+            "totalPoints": 72,
+            "totalMessages": 72,
+            "wins": 0
+          },
+          "lil_mower": {
+            "totalPoints": 36,
+            "totalMessages": 36,
+            "wins": 0
+          },
+          "Galf1": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "legionn": {
+            "totalPoints": 42,
+            "totalMessages": 42,
+            "wins": 0
+          },
+          "nicknewaccount4": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Nox_Ferox": {
+            "totalPoints": 78,
+            "totalMessages": 78,
+            "wins": 0
+          },
+          "KINGDAVE67": {
+            "totalPoints": 18,
+            "totalMessages": 18,
+            "wins": 0
+          },
+          "sidfurd": {
+            "totalPoints": 18,
+            "totalMessages": 18,
+            "wins": 0
+          },
+          "WWWMWWWMWWWMWWWMWWWMWWMWW": {
+            "totalPoints": 192,
+            "totalMessages": 192,
+            "wins": 0
+          },
+          "SouthAtlanta": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "dsrom": {
+            "totalPoints": 36,
+            "totalMessages": 36,
+            "wins": 0
+          },
+          "lolfunny1": {
+            "totalPoints": 30,
+            "totalMessages": 30,
+            "wins": 0
+          },
+          "GhostyyEUW": {
+            "totalPoints": 18,
+            "totalMessages": 18,
+            "wins": 0
+          },
+          "hedgehoglover16": {
+            "totalPoints": 42,
+            "totalMessages": 42,
+            "wins": 0
+          },
+          "gerrie28": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "youabsolutelegendaswell": {
+            "totalPoints": 30,
+            "totalMessages": 30,
+            "wins": 0
+          },
+          "thesilkstream": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "teziiy": {
+            "totalPoints": 24,
+            "totalMessages": 24,
+            "wins": 0
+          },
+          "xxohbxx": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Fakeman234": {
+            "totalPoints": 18,
+            "totalMessages": 18,
+            "wins": 0
+          },
+          "BigMrMesut": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "ILoveSlotsAhegao": {
+            "totalPoints": 72,
+            "totalMessages": 72,
+            "wins": 0
+          },
+          "Mustachewheel0": {
+            "totalPoints": 18,
+            "totalMessages": 18,
+            "wins": 0
+          },
+          "Mudrat": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "lil_Gupper": {
+            "totalPoints": 30,
+            "totalMessages": 30,
+            "wins": 0
+          },
+          "mattyy25": {
+            "totalPoints": 36,
+            "totalMessages": 36,
+            "wins": 0
+          },
+          "awire": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "Brooksbanks2255": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Nezzy006": {
+            "totalPoints": 24,
+            "totalMessages": 24,
+            "wins": 0
+          },
+          "Japt": {
+            "totalPoints": 18,
+            "totalMessages": 18,
+            "wins": 0
+          },
+          "xQcReinhardtShieldTurn": {
+            "totalPoints": 48,
+            "totalMessages": 48,
+            "wins": 0
+          },
+          "Xerox76": {
+            "totalPoints": 282,
+            "totalMessages": 282,
+            "wins": 0
+          },
+          "cornDogEnjoyer69": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "KIWI_CHIPS": {
+            "totalPoints": 60,
+            "totalMessages": 60,
+            "wins": 0
+          },
+          "Thunderfro": {
+            "totalPoints": 36,
+            "totalMessages": 36,
+            "wins": 0
+          },
+          "NatoshiSakamoto": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "BrokenJoz": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "zodarfw": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "blackboi96": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "omg123311221": {
+            "totalPoints": 24,
+            "totalMessages": 24,
+            "wins": 0
+          },
+          "myhappyending": {
+            "totalPoints": 18,
+            "totalMessages": 18,
+            "wins": 0
+          },
+          "haramturtle": {
+            "totalPoints": 30,
+            "totalMessages": 30,
+            "wins": 0
+          },
+          "SkuLL_SPIDEYY": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "elethora": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "Foskesounds": {
+            "totalPoints": 24,
+            "totalMessages": 24,
+            "wins": 0
+          },
+          "Harshsepi0l": {
+            "totalPoints": 18,
+            "totalMessages": 18,
+            "wins": 0
+          },
+          "Mertonk": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "playah99": {
+            "totalPoints": 18,
+            "totalMessages": 18,
+            "wins": 0
+          },
+          "ulucada": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "puzzler": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "yagami999": {
+            "totalPoints": 18,
+            "totalMessages": 18,
+            "wins": 0
+          },
+          "DickModerator": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "redco9": {
+            "totalPoints": 42,
+            "totalMessages": 42,
+            "wins": 0
+          },
+          "98_Lol_98": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Ronniebruz": {
+            "totalPoints": 24,
+            "totalMessages": 24,
+            "wins": 0
+          },
+          "beatdareaper": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Fossabot": {
+            "totalPoints": 34,
+            "totalMessages": 34,
+            "wins": 0
+          },
+          "Jakeisc0ld": {
+            "totalPoints": 48,
+            "totalMessages": 48,
+            "wins": 0
+          },
+          "EpsteinNr1": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "NoVaseline": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "oodknote": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Lancee1": {
+            "totalPoints": 24,
+            "totalMessages": 24,
+            "wins": 0
+          },
+          "makemerish": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "slosi123": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "XxShiftyxX": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "Kzkxf": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "JohnBarrelX": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "mizzoz07": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "supermomjombom": {
+            "totalPoints": 24,
+            "totalMessages": 24,
+            "wins": 0
+          },
+          "Br1ngtherain": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "familymolly": {
+            "totalPoints": 36,
+            "totalMessages": 36,
+            "wins": 0
+          },
+          "Servv": {
+            "totalPoints": 18,
+            "totalMessages": 18,
+            "wins": 0
+          },
+          "thespiralhero": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "FunnyBunny1738": {
+            "totalPoints": 18,
+            "totalMessages": 18,
+            "wins": 0
+          },
+          "Thepuffz": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "Gattz1": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "ay33x": {
+            "totalPoints": 24,
+            "totalMessages": 24,
+            "wins": 0
+          },
+          "fat_cock_inspector_xqcfan": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Rapasuu": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "anamioni": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "avbest": {
+            "totalPoints": 42,
+            "totalMessages": 42,
+            "wins": 0
+          },
+          "issue": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Drexil": {
+            "totalPoints": 48,
+            "totalMessages": 48,
+            "wins": 0
+          },
+          "poutine_roll": {
+            "totalPoints": 36,
+            "totalMessages": 36,
+            "wins": 0
+          },
+          "loddz": {
+            "totalPoints": 24,
+            "totalMessages": 24,
+            "wins": 0
+          },
+          "fesrless65": {
+            "totalPoints": 36,
+            "totalMessages": 36,
+            "wins": 0
+          },
+          "Col1993": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "Kian_phy": {
+            "totalPoints": 24,
+            "totalMessages": 24,
+            "wins": 0
+          },
+          "Luka873": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Akaachi": {
+            "totalPoints": 18,
+            "totalMessages": 18,
+            "wins": 0
+          },
+          "DominosCEO": {
+            "totalPoints": 24,
+            "totalMessages": 24,
+            "wins": 0
+          },
+          "arico": {
+            "totalPoints": 90,
+            "totalMessages": 90,
+            "wins": 0
+          },
+          "Hutchie90": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "badramen": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "yennork14": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Ohoya": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "lEATASS": {
+            "totalPoints": 18,
+            "totalMessages": 18,
+            "wins": 0
+          },
+          "SkylinexX": {
+            "totalPoints": 30,
+            "totalMessages": 30,
+            "wins": 0
+          },
+          "DarkDeadGoD": {
+            "totalPoints": 24,
+            "totalMessages": 24,
+            "wins": 0
+          },
+          "SebLoses": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "NoLuck": {
+            "totalPoints": 24,
+            "totalMessages": 24,
+            "wins": 0
+          },
+          "kobelle50": {
+            "totalPoints": 36,
+            "totalMessages": 36,
+            "wins": 0
+          },
+          "smeggyweggygoo": {
+            "totalPoints": 48,
+            "totalMessages": 48,
+            "wins": 0
+          },
+          "bizarregambler": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "agafu": {
+            "totalPoints": 18,
+            "totalMessages": 18,
+            "wins": 0
+          },
+          "JFLEXONKICK": {
+            "totalPoints": 18,
+            "totalMessages": 18,
+            "wins": 0
+          },
+          "XqcBiggestFan1": {
+            "totalPoints": 30,
+            "totalMessages": 30,
+            "wins": 0
+          },
+          "ryan4495": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "difinitri": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "eboole": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Yesma": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Luambu": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "tobylerone": {
+            "totalPoints": 30,
+            "totalMessages": 30,
+            "wins": 0
+          },
+          "granade2_0": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "Xpec0": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Elitebgula": {
+            "totalPoints": 30,
+            "totalMessages": 30,
+            "wins": 0
+          },
+          "Zuagmi": {
+            "totalPoints": 18,
+            "totalMessages": 18,
+            "wins": 0
+          },
+          "cuffemslockedupdad": {
+            "totalPoints": 18,
+            "totalMessages": 18,
+            "wins": 0
+          },
+          "kewwad": {
+            "totalPoints": 24,
+            "totalMessages": 24,
+            "wins": 0
+          },
+          "ricosmileyface": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Savageking47": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "HarpedOn": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Trikkyy": {
+            "totalPoints": 42,
+            "totalMessages": 42,
+            "wins": 0
+          },
+          "Adidas_Jimmy": {
+            "totalPoints": 36,
+            "totalMessages": 36,
+            "wins": 0
+          },
+          "Articulated": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "Ember0": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "thedurries": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "zeta374": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "flowerbridge": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "BrotherSabo": {
+            "totalPoints": 24,
+            "totalMessages": 24,
+            "wins": 0
+          },
+          "buffdawg": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "DavidVCC": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "MonclerCoat": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "res0lve": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Zorgc": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "Iemonn": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "Rossi11": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "langlang_yy": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Murasaki54": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "RGBrem": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "We_Seek_Silence": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "2nicemike": {
+            "totalPoints": 24,
+            "totalMessages": 24,
+            "wins": 0
+          },
+          "Glomper": {
+            "totalPoints": 24,
+            "totalMessages": 24,
+            "wins": 0
+          },
+          "joshyyy333": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Lunchbowl": {
+            "totalPoints": 18,
+            "totalMessages": 18,
+            "wins": 0
+          },
+          "DrQifsha": {
+            "totalPoints": 18,
+            "totalMessages": 18,
+            "wins": 0
+          },
+          "Mackerel_Tabby": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Obliviated1": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "redmage": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Boogiezz": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "spazzintroubIe": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "ihours": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "barrychuckle694": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Riot_Squirrel": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "todipro": {
+            "totalPoints": 45,
+            "totalMessages": 45,
+            "wins": 0
+          },
+          "littlemaldo": {
+            "totalPoints": 18,
+            "totalMessages": 18,
+            "wins": 0
+          },
+          "treeebig": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "Toki_NZ": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "FlaPk": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "praiseglokks": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Forsensh": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "eurois": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "DangoIsHere": {
+            "totalPoints": 18,
+            "totalMessages": 18,
+            "wins": 0
+          },
+          "qento": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Treyyfloyd": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "ethen": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "lukabrb": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "IBaa29": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Milos710": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "BigAlbo10": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "Morwynnn": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "yogie": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "SulleOG": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "TardRizzz": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "hammerx": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "eduarddr96": {
+            "totalPoints": 30,
+            "totalMessages": 30,
+            "wins": 0
+          },
+          "temrax": {
+            "totalPoints": 24,
+            "totalMessages": 24,
+            "wins": 0
+          },
+          "k_rb": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "bgonk": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "ionlywatchGoood": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "River916River": {
+            "totalPoints": 30,
+            "totalMessages": 30,
+            "wins": 0
+          },
+          "Tdog1590": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "beetlejuicesoup": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "overflow77": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "Hscott27": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "StarKayC": {
+            "totalPoints": 36,
+            "totalMessages": 36,
+            "wins": 0
+          },
+          "DrStevenBrulee": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "Fixlation": {
+            "totalPoints": 36,
+            "totalMessages": 36,
+            "wins": 0
+          },
+          "Startawar420": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "mrC1assic": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Keyz0219": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "zafrium": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Diong12": {
+            "totalPoints": 18,
+            "totalMessages": 18,
+            "wins": 0
+          },
+          "sanestkickviewer": {
+            "totalPoints": 30,
+            "totalMessages": 30,
+            "wins": 0
+          },
+          "MrPotterHD": {
+            "totalPoints": 18,
+            "totalMessages": 18,
+            "wins": 0
+          },
+          "Rolexsmart": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "gobben5": {
+            "totalPoints": 30,
+            "totalMessages": 30,
+            "wins": 0
+          },
+          "Supremecolor": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "xqzot": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "robergg": {
+            "totalPoints": 18,
+            "totalMessages": 18,
+            "wins": 0
+          },
+          "pharaohrxx": {
+            "totalPoints": 18,
+            "totalMessages": 18,
+            "wins": 0
+          },
+          "Grim_Something": {
+            "totalPoints": 24,
+            "totalMessages": 24,
+            "wins": 0
+          },
+          "loopy897": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "FinaIlyFree": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "onzuuu": {
+            "totalPoints": 24,
+            "totalMessages": 24,
+            "wins": 0
+          },
+          "xQcManager": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "OGhaszinator": {
+            "totalPoints": 24,
+            "totalMessages": 24,
+            "wins": 0
+          },
+          "HeirToTheShogun": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "crusnikmachine": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Snorlaxx_033": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Avocadoarecool": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "meaniepekka": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "MIKENT": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "ramfps": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Ash2k": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "huntemz": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "indie_rl": {
+            "totalPoints": 18,
+            "totalMessages": 18,
+            "wins": 0
+          },
+          "swayam_1095": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "cIownguy": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "SimoZcliplab_yt": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "togurt12345": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Bamballam": {
+            "totalPoints": 18,
+            "totalMessages": 18,
+            "wins": 0
+          },
+          "ArenTheGuy": {
+            "totalPoints": 24,
+            "totalMessages": 24,
+            "wins": 0
+          },
+          "Lildyl": {
+            "totalPoints": 36,
+            "totalMessages": 36,
+            "wins": 0
+          },
+          "iclkhedb4iclkmyn": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "JoseGtrxz": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Glonking": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "og_elysium": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Kikinplays": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "EJackUlayte": {
+            "totalPoints": 18,
+            "totalMessages": 18,
+            "wins": 0
+          },
+          "OGxDuel": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "C4_4": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Cartman1517": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "jamesld9": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "warcack": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Shellss": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Henxu": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "VYDEX": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "SuperNOOB65": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Binksy001": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "samurai_rawad": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "crtrmls": {
+            "totalPoints": 18,
+            "totalMessages": 18,
+            "wins": 0
+          },
+          "TheRefluence": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Lop899": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Blurth": {
+            "totalPoints": 30,
+            "totalMessages": 30,
+            "wins": 0
+          },
+          "Henges": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Who_cares420": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "yayabings": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "chatbox67": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "stokka": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "XavierLumen": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "dawid0129": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "shesaid_no": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Xcrud": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "ianite258": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "h8hur": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "LegendzIE": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "SimplyAlex777": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "savuriii": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Cardo0": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "weeaboosam": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "LULELULELULE": {
+            "totalPoints": 36,
+            "totalMessages": 36,
+            "wins": 0
+          },
+          "Hollow_Revenge": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "HengliHenry": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "heisenbergG17": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "trillzilla": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Sylk": {
+            "totalPoints": 18,
+            "totalMessages": 18,
+            "wins": 0
+          },
+          "Yoshinite": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "IceyRizzler": {
+            "totalPoints": 30,
+            "totalMessages": 30,
+            "wins": 0
+          },
+          "fartpoopyum": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "XQCsBANANPEEL": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "bobfromloblaws": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Ledfarmer": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "isiac1235": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "yowku": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "adobotrash": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "xkafi": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "sergious": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Daviddrake": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "lnj11": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "confettiangelfoodcake": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "pf_12ll": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "SirGuad": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "hassanLoL": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Phaerless": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "nzautism": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "tztwiz": {
+            "totalPoints": 20,
+            "totalMessages": 20,
+            "wins": 0
+          },
+          "Smojavell": {
+            "totalPoints": 10,
+            "totalMessages": 10,
             "wins": 0
           }
         },
-        "totalPoints": 8,
+        "totalPoints": 5883,
         "totalWinners": 0,
         "mostWins": {},
-        "lastUpdated": 1782378388010
+        "lastUpdated": 1782415254041
       },
       "sessions": [
         {
@@ -424,6 +2150,2364 @@
             {
               "username": "hibachiteriyaki",
               "points": 2
+            }
+          ],
+          "winners": []
+        },
+        {
+          "sessionId": "default_2026-06-25_1782413930570",
+          "date": "2026-06-25T19:00:39.676Z",
+          "totalPoints": 3,
+          "chatCount": 1,
+          "winnerCount": 0,
+          "topChatters": [
+            {
+              "username": "todipro",
+              "points": 3
+            }
+          ],
+          "winners": []
+        },
+        {
+          "sessionId": "default_2026-06-25_1782414052062",
+          "date": "2026-06-25T19:02:46.449Z",
+          "totalPoints": 7,
+          "chatCount": 3,
+          "winnerCount": 0,
+          "topChatters": [
+            {
+              "username": "todipro",
+              "points": 3
+            },
+            {
+              "username": "tztwiz",
+              "points": 2
+            },
+            {
+              "username": "Fossabot",
+              "points": 2
+            }
+          ],
+          "winners": []
+        },
+        {
+          "sessionId": "default_2026-06-25_1782414052062",
+          "date": "2026-06-25T19:07:40.418Z",
+          "totalPoints": 9,
+          "chatCount": 4,
+          "winnerCount": 0,
+          "topChatters": [
+            {
+              "username": "tztwiz",
+              "points": 3
+            },
+            {
+              "username": "todipro",
+              "points": 3
+            },
+            {
+              "username": "Fossabot",
+              "points": 2
+            },
+            {
+              "username": "Smojavell",
+              "points": 1
+            }
+          ],
+          "winners": []
+        },
+        {
+          "sessionId": "default_2026-06-25_1782414490836",
+          "date": "2026-06-25T19:18:17.424Z",
+          "totalPoints": 3,
+          "chatCount": 2,
+          "winnerCount": 0,
+          "topChatters": [
+            {
+              "username": "Smojavell",
+              "points": 2
+            },
+            {
+              "username": "tztwiz",
+              "points": 1
+            }
+          ],
+          "winners": []
+        },
+        {
+          "sessionId": "default_2026-06-25_1782414490836",
+          "date": "2026-06-25T19:19:55.419Z",
+          "totalPoints": 4,
+          "chatCount": 2,
+          "winnerCount": 0,
+          "topChatters": [
+            {
+              "username": "Smojavell",
+              "points": 2
+            },
+            {
+              "username": "tztwiz",
+              "points": 2
+            }
+          ],
+          "winners": []
+        },
+        {
+          "sessionId": "default_2026-06-25_1782414490836",
+          "date": "2026-06-25T19:20:54.041Z",
+          "totalPoints": 5,
+          "chatCount": 2,
+          "winnerCount": 0,
+          "topChatters": [
+            {
+              "username": "tztwiz",
+              "points": 3
+            },
+            {
+              "username": "Smojavell",
+              "points": 2
+            }
+          ],
+          "winners": []
+        }
+      ]
+    },
+    "maherco": {
+      "allTime": {
+        "topChatters": {
+          "2": {
+            "totalPoints": 16,
+            "totalMessages": 16,
+            "wins": 0
+          },
+          "MRKGG": {
+            "totalPoints": 46,
+            "totalMessages": 46,
+            "wins": 0
+          },
+          "youneverknow": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "Hypernova123": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "hibachiteriyaki": {
+            "totalPoints": 24,
+            "totalMessages": 24,
+            "wins": 0
+          },
+          "Brenden99": {
+            "totalPoints": 32,
+            "totalMessages": 32,
+            "wins": 0
+          },
+          "MoFoJoe": {
+            "totalPoints": 10,
+            "totalMessages": 10,
+            "wins": 0
+          },
+          "office_lady_feet": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "WaiitWhoo": {
+            "totalPoints": 10,
+            "totalMessages": 10,
+            "wins": 0
+          },
+          "DiegoCraft26": {
+            "totalPoints": 16,
+            "totalMessages": 16,
+            "wins": 0
+          },
+          "rawly": {
+            "totalPoints": 10,
+            "totalMessages": 10,
+            "wins": 0
+          },
+          "TYRNT": {
+            "totalPoints": 8,
+            "totalMessages": 8,
+            "wins": 0
+          },
+          "awa_xo": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "desmond2112": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "TheLoveIcon": {
+            "totalPoints": 10,
+            "totalMessages": 10,
+            "wins": 0
+          },
+          "gizmoom": {
+            "totalPoints": 22,
+            "totalMessages": 22,
+            "wins": 0
+          },
+          "alloy0110": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Ranganati": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "HUHHUHHUH": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "bearmang": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "WOJTEK_99PCT": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "whoisroro": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "bigdgavin23": {
+            "totalPoints": 60,
+            "totalMessages": 60,
+            "wins": 0
+          },
+          "ModsHateCharityLOL": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "gaySlop1234": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "ruuhsnow": {
+            "totalPoints": 14,
+            "totalMessages": 14,
+            "wins": 0
+          },
+          "Tacocat24": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "d_gac": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "SketchsBackshotWind": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "bo03lol": {
+            "totalPoints": 10,
+            "totalMessages": 10,
+            "wins": 0
+          },
+          "Daiyusha": {
+            "totalPoints": 24,
+            "totalMessages": 24,
+            "wins": 0
+          },
+          "lil_mower": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "Galf1": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "legionn": {
+            "totalPoints": 14,
+            "totalMessages": 14,
+            "wins": 0
+          },
+          "nicknewaccount4": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Nox_Ferox": {
+            "totalPoints": 26,
+            "totalMessages": 26,
+            "wins": 0
+          },
+          "KINGDAVE67": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "sidfurd": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "WWWMWWWMWWWMWWWMWWWMWWMWW": {
+            "totalPoints": 64,
+            "totalMessages": 64,
+            "wins": 0
+          },
+          "SouthAtlanta": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "dsrom": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "lolfunny1": {
+            "totalPoints": 10,
+            "totalMessages": 10,
+            "wins": 0
+          },
+          "GhostyyEUW": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "hedgehoglover16": {
+            "totalPoints": 14,
+            "totalMessages": 14,
+            "wins": 0
+          },
+          "gerrie28": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "youabsolutelegendaswell": {
+            "totalPoints": 10,
+            "totalMessages": 10,
+            "wins": 0
+          },
+          "thesilkstream": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "teziiy": {
+            "totalPoints": 8,
+            "totalMessages": 8,
+            "wins": 0
+          },
+          "xxohbxx": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Fakeman234": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "BigMrMesut": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "ILoveSlotsAhegao": {
+            "totalPoints": 24,
+            "totalMessages": 24,
+            "wins": 0
+          },
+          "Mustachewheel0": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Mudrat": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "lil_Gupper": {
+            "totalPoints": 10,
+            "totalMessages": 10,
+            "wins": 0
+          },
+          "mattyy25": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "awire": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "Brooksbanks2255": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Nezzy006": {
+            "totalPoints": 8,
+            "totalMessages": 8,
+            "wins": 0
+          },
+          "Japt": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "xQcReinhardtShieldTurn": {
+            "totalPoints": 16,
+            "totalMessages": 16,
+            "wins": 0
+          },
+          "Xerox76": {
+            "totalPoints": 94,
+            "totalMessages": 94,
+            "wins": 0
+          },
+          "cornDogEnjoyer69": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "KIWI_CHIPS": {
+            "totalPoints": 20,
+            "totalMessages": 20,
+            "wins": 0
+          },
+          "Thunderfro": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "NatoshiSakamoto": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "BrokenJoz": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "zodarfw": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "blackboi96": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "omg123311221": {
+            "totalPoints": 8,
+            "totalMessages": 8,
+            "wins": 0
+          },
+          "myhappyending": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "haramturtle": {
+            "totalPoints": 10,
+            "totalMessages": 10,
+            "wins": 0
+          },
+          "SkuLL_SPIDEYY": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "elethora": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "Foskesounds": {
+            "totalPoints": 8,
+            "totalMessages": 8,
+            "wins": 0
+          },
+          "Harshsepi0l": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Mertonk": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "playah99": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "ulucada": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "puzzler": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "yagami999": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "DickModerator": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "redco9": {
+            "totalPoints": 14,
+            "totalMessages": 14,
+            "wins": 0
+          },
+          "98_Lol_98": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Ronniebruz": {
+            "totalPoints": 8,
+            "totalMessages": 8,
+            "wins": 0
+          },
+          "beatdareaper": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Fossabot": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "Jakeisc0ld": {
+            "totalPoints": 16,
+            "totalMessages": 16,
+            "wins": 0
+          },
+          "EpsteinNr1": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "NoVaseline": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "oodknote": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Lancee1": {
+            "totalPoints": 8,
+            "totalMessages": 8,
+            "wins": 0
+          },
+          "makemerish": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "slosi123": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "XxShiftyxX": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "Kzkxf": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "JohnBarrelX": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "mizzoz07": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "supermomjombom": {
+            "totalPoints": 8,
+            "totalMessages": 8,
+            "wins": 0
+          },
+          "Br1ngtherain": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "familymolly": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "Servv": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "thespiralhero": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "FunnyBunny1738": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Thepuffz": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "Gattz1": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "ay33x": {
+            "totalPoints": 8,
+            "totalMessages": 8,
+            "wins": 0
+          },
+          "fat_cock_inspector_xqcfan": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Rapasuu": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "anamioni": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "avbest": {
+            "totalPoints": 14,
+            "totalMessages": 14,
+            "wins": 0
+          },
+          "issue": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Drexil": {
+            "totalPoints": 16,
+            "totalMessages": 16,
+            "wins": 0
+          },
+          "poutine_roll": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "loddz": {
+            "totalPoints": 8,
+            "totalMessages": 8,
+            "wins": 0
+          },
+          "fesrless65": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "Col1993": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "Kian_phy": {
+            "totalPoints": 8,
+            "totalMessages": 8,
+            "wins": 0
+          },
+          "Luka873": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Akaachi": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "DominosCEO": {
+            "totalPoints": 8,
+            "totalMessages": 8,
+            "wins": 0
+          },
+          "arico": {
+            "totalPoints": 30,
+            "totalMessages": 30,
+            "wins": 0
+          },
+          "Hutchie90": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "badramen": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "yennork14": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Ohoya": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "lEATASS": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "SkylinexX": {
+            "totalPoints": 10,
+            "totalMessages": 10,
+            "wins": 0
+          },
+          "DarkDeadGoD": {
+            "totalPoints": 8,
+            "totalMessages": 8,
+            "wins": 0
+          },
+          "SebLoses": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "NoLuck": {
+            "totalPoints": 8,
+            "totalMessages": 8,
+            "wins": 0
+          },
+          "kobelle50": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "smeggyweggygoo": {
+            "totalPoints": 16,
+            "totalMessages": 16,
+            "wins": 0
+          },
+          "bizarregambler": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "agafu": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "JFLEXONKICK": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "XqcBiggestFan1": {
+            "totalPoints": 10,
+            "totalMessages": 10,
+            "wins": 0
+          },
+          "ryan4495": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "difinitri": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "eboole": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Yesma": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Luambu": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "tobylerone": {
+            "totalPoints": 10,
+            "totalMessages": 10,
+            "wins": 0
+          },
+          "granade2_0": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "Xpec0": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Elitebgula": {
+            "totalPoints": 10,
+            "totalMessages": 10,
+            "wins": 0
+          },
+          "Zuagmi": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "cuffemslockedupdad": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "kewwad": {
+            "totalPoints": 8,
+            "totalMessages": 8,
+            "wins": 0
+          },
+          "ricosmileyface": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Savageking47": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "HarpedOn": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Trikkyy": {
+            "totalPoints": 14,
+            "totalMessages": 14,
+            "wins": 0
+          },
+          "Adidas_Jimmy": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "Articulated": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "Ember0": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "thedurries": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "zeta374": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "flowerbridge": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "BrotherSabo": {
+            "totalPoints": 8,
+            "totalMessages": 8,
+            "wins": 0
+          },
+          "buffdawg": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "DavidVCC": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "MonclerCoat": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "res0lve": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Zorgc": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "Iemonn": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "Rossi11": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "langlang_yy": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Murasaki54": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "RGBrem": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "We_Seek_Silence": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "2nicemike": {
+            "totalPoints": 8,
+            "totalMessages": 8,
+            "wins": 0
+          },
+          "Glomper": {
+            "totalPoints": 8,
+            "totalMessages": 8,
+            "wins": 0
+          },
+          "joshyyy333": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Lunchbowl": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "DrQifsha": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Mackerel_Tabby": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Obliviated1": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "redmage": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Boogiezz": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "spazzintroubIe": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "ihours": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "barrychuckle694": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Riot_Squirrel": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "todipro": {
+            "totalPoints": 16,
+            "totalMessages": 16,
+            "wins": 0
+          },
+          "littlemaldo": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "treeebig": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "Toki_NZ": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "FlaPk": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "praiseglokks": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Forsensh": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "eurois": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "DangoIsHere": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "qento": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Treyyfloyd": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "ethen": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "lukabrb": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "IBaa29": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Milos710": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "BigAlbo10": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "Morwynnn": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "yogie": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "SulleOG": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "TardRizzz": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "hammerx": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "eduarddr96": {
+            "totalPoints": 10,
+            "totalMessages": 10,
+            "wins": 0
+          },
+          "temrax": {
+            "totalPoints": 8,
+            "totalMessages": 8,
+            "wins": 0
+          },
+          "k_rb": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "bgonk": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "ionlywatchGoood": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "River916River": {
+            "totalPoints": 10,
+            "totalMessages": 10,
+            "wins": 0
+          },
+          "Tdog1590": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "beetlejuicesoup": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "overflow77": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "Hscott27": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "StarKayC": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "DrStevenBrulee": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "Fixlation": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "Startawar420": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "mrC1assic": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Keyz0219": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "zafrium": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Diong12": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "sanestkickviewer": {
+            "totalPoints": 10,
+            "totalMessages": 10,
+            "wins": 0
+          },
+          "MrPotterHD": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Rolexsmart": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "gobben5": {
+            "totalPoints": 10,
+            "totalMessages": 10,
+            "wins": 0
+          },
+          "Supremecolor": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "xqzot": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "robergg": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "pharaohrxx": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Grim_Something": {
+            "totalPoints": 8,
+            "totalMessages": 8,
+            "wins": 0
+          },
+          "loopy897": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "FinaIlyFree": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "onzuuu": {
+            "totalPoints": 8,
+            "totalMessages": 8,
+            "wins": 0
+          },
+          "xQcManager": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "OGhaszinator": {
+            "totalPoints": 8,
+            "totalMessages": 8,
+            "wins": 0
+          },
+          "HeirToTheShogun": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "crusnikmachine": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Snorlaxx_033": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Avocadoarecool": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "meaniepekka": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "MIKENT": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "ramfps": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Ash2k": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "huntemz": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "indie_rl": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "swayam_1095": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "cIownguy": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "SimoZcliplab_yt": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "togurt12345": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Bamballam": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "ArenTheGuy": {
+            "totalPoints": 8,
+            "totalMessages": 8,
+            "wins": 0
+          },
+          "Lildyl": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "iclkhedb4iclkmyn": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "JoseGtrxz": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Glonking": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "og_elysium": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Kikinplays": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "EJackUlayte": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "OGxDuel": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "C4_4": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Cartman1517": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "jamesld9": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "warcack": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Shellss": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Henxu": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "VYDEX": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "SuperNOOB65": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Binksy001": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "samurai_rawad": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "crtrmls": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "TheRefluence": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Lop899": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Blurth": {
+            "totalPoints": 10,
+            "totalMessages": 10,
+            "wins": 0
+          },
+          "Henges": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Who_cares420": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "yayabings": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "chatbox67": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "stokka": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "XavierLumen": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "dawid0129": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "shesaid_no": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Xcrud": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "ianite258": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "h8hur": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "LegendzIE": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "SimplyAlex777": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "savuriii": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Cardo0": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "weeaboosam": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "LULELULELULE": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "Hollow_Revenge": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "HengliHenry": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "heisenbergG17": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "trillzilla": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Sylk": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Yoshinite": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "IceyRizzler": {
+            "totalPoints": 10,
+            "totalMessages": 10,
+            "wins": 0
+          },
+          "fartpoopyum": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "XQCsBANANPEEL": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "bobfromloblaws": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Ledfarmer": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "isiac1235": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "yowku": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "adobotrash": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "xkafi": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "sergious": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Daviddrake": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "lnj11": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "confettiangelfoodcake": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "pf_12ll": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "SirGuad": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "hassanLoL": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Phaerless": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "nzautism": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "tztwiz": {
+            "totalPoints": 12,
+            "totalMessages": 12,
+            "wins": 0
+          },
+          "Smojavell": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "HANY_3RBiDCO": {
+            "totalPoints": 13,
+            "totalMessages": 13,
+            "wins": 0
+          },
+          "nafsia_Gaming": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "iMelsom": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "rasulahmed": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "Omar_escanor": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Aaaaco": {
+            "totalPoints": 8,
+            "totalMessages": 8,
+            "wins": 0
+          },
+          "Mo_0hamed": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "7rxl": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "momenskdjdkdjnd": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Gamer23h": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Eesyyy": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "ROY515": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "Amoona99": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "MyrtleBot": {
+            "totalPoints": 27,
+            "totalMessages": 27,
+            "wins": 0
+          },
+          "ALIKaree22": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "hadoukaki": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "zocratess": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "IM_3LAA": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Yazanco_32": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "Nadia12": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "CO_YASSIN_23": {
+            "totalPoints": 7,
+            "totalMessages": 7,
+            "wins": 0
+          },
+          "alinabill": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "xa7mad": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "NourAladdin": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Soldier_moon": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Hassan0011": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "adam_000011": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Alhsene": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Ameer22222": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "7AMDY1": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "AmerSaeed": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Yaman47": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "RaafatJ": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "Veromb": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "HamzeHamze321": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "ABDULLAH_AL": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "NayaHaddad": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "BotRix": {
+            "totalPoints": 17,
+            "totalMessages": 17,
+            "wins": 0
+          },
+          "hasankusai": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "ma_t_rix": {
+            "totalPoints": 16,
+            "totalMessages": 16,
+            "wins": 0
+          },
+          "ABOD_ALNSAR": {
+            "totalPoints": 3,
+            "totalMessages": 3,
+            "wins": 0
+          },
+          "Hocine207": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "MahdiDZpRO": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "SALAH_ABDULLAH": {
+            "totalPoints": 11,
+            "totalMessages": 11,
+            "wins": 0
+          },
+          "MOHMEDco2": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "osa12oo": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "14_910": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "ZAIN88X": {
+            "totalPoints": 8,
+            "totalMessages": 8,
+            "wins": 0
+          },
+          "z3anef": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Abdeee4Ko": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "osama2AI": {
+            "totalPoints": 6,
+            "totalMessages": 6,
+            "wins": 0
+          },
+          "Fadii96": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "JAZZERA": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "cvghjggg": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Sajad_32": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "Qamar94": {
+            "totalPoints": 8,
+            "totalMessages": 8,
+            "wins": 0
+          },
+          "Almdar_Ali": {
+            "totalPoints": 5,
+            "totalMessages": 5,
+            "wins": 0
+          },
+          "sa7er1232": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "JawadElsory": {
+            "totalPoints": 3,
+            "totalMessages": 3,
+            "wins": 0
+          },
+          "Nasser9455": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "omar09_77": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Y_M_G2": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "ZORO00102": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "omerer134": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "13al7": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "shumookh": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "Moayad_h": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "CO_Sultan1": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "ahmadkh2025": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Khaloo_Yousef": {
+            "totalPoints": 10,
+            "totalMessages": 10,
+            "wins": 0
+          },
+          "Hussein1900": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Muller_SY": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "AYMAN_BAD": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "t_a_r_e_qx": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "ddlyv0": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "cMeshal": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Qais_CUKUR": {
+            "totalPoints": 3,
+            "totalMessages": 3,
+            "wins": 0
+          },
+          "MontherNumanAssaf": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Youssef52yo": {
+            "totalPoints": 3,
+            "totalMessages": 3,
+            "wins": 0
+          },
+          "hueururueieieiirieie": {
+            "totalPoints": 3,
+            "totalMessages": 3,
+            "wins": 0
+          },
+          "tranzitco": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "maq131": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "abooodby2009": {
+            "totalPoints": 5,
+            "totalMessages": 5,
+            "wins": 0
+          },
+          "t4jn": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Abdellah_DZ_47": {
+            "totalPoints": 4,
+            "totalMessages": 4,
+            "wins": 0
+          },
+          "H_HH_HH": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "7ankaless": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "abrahem03": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "aminn_mo": {
+            "totalPoints": 1,
+            "totalMessages": 1,
+            "wins": 0
+          },
+          "ZTR91": {
+            "totalPoints": 1,
+            "totalMessages": 1,
+            "wins": 0
+          },
+          "KEN1CHI": {
+            "totalPoints": 3,
+            "totalMessages": 3,
+            "wins": 0
+          },
+          "Yanalsb": {
+            "totalPoints": 1,
+            "totalMessages": 1,
+            "wins": 0
+          },
+          "Xdhb": {
+            "totalPoints": 1,
+            "totalMessages": 1,
+            "wins": 0
+          },
+          "BM1567": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "Joe_gamer1": {
+            "totalPoints": 1,
+            "totalMessages": 1,
+            "wins": 0
+          },
+          "hassan22306": {
+            "totalPoints": 1,
+            "totalMessages": 1,
+            "wins": 0
+          },
+          "nur92": {
+            "totalPoints": 1,
+            "totalMessages": 1,
+            "wins": 0
+          },
+          "Cr7_ya": {
+            "totalPoints": 1,
+            "totalMessages": 1,
+            "wins": 0
+          },
+          "RAPHAEL1MR": {
+            "totalPoints": 1,
+            "totalMessages": 1,
+            "wins": 0
+          },
+          "Mo_0001": {
+            "totalPoints": 1,
+            "totalMessages": 1,
+            "wins": 0
+          },
+          "mohamadtal": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "HadyAssi": {
+            "totalPoints": 1,
+            "totalMessages": 1,
+            "wins": 0
+          },
+          "Guhr777": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "ALAAALSROUR": {
+            "totalPoints": 1,
+            "totalMessages": 1,
+            "wins": 0
+          },
+          "SPADACO": {
+            "totalPoints": 1,
+            "totalMessages": 1,
+            "wins": 0
+          },
+          "hasansoru": {
+            "totalPoints": 1,
+            "totalMessages": 1,
+            "wins": 0
+          },
+          "Q3omar": {
+            "totalPoints": 1,
+            "totalMessages": 1,
+            "wins": 0
+          },
+          "Rayyan9112": {
+            "totalPoints": 1,
+            "totalMessages": 1,
+            "wins": 0
+          },
+          "Abdullah021": {
+            "totalPoints": 1,
+            "totalMessages": 1,
+            "wins": 0
+          },
+          "nidal12166": {
+            "totalPoints": 1,
+            "totalMessages": 1,
+            "wins": 0
+          },
+          "Duhook": {
+            "totalPoints": 1,
+            "totalMessages": 1,
+            "wins": 0
+          },
+          "fadi_abdullah": {
+            "totalPoints": 1,
+            "totalMessages": 1,
+            "wins": 0
+          },
+          "aboud3003": {
+            "totalPoints": 1,
+            "totalMessages": 1,
+            "wins": 0
+          },
+          "zero_096": {
+            "totalPoints": 1,
+            "totalMessages": 1,
+            "wins": 0
+          },
+          "HANAN5": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          },
+          "bjjko": {
+            "totalPoints": 2,
+            "totalMessages": 2,
+            "wins": 0
+          }
+        },
+        "totalPoints": 2359,
+        "totalWinners": 0,
+        "mostWins": {},
+        "lastUpdated": 1782422555444
+      },
+      "sessions": [
+        {
+          "sessionId": "default_2026-06-25_1782421498385",
+          "date": "2026-06-25T21:13:01.243Z",
+          "totalPoints": 151,
+          "chatCount": 87,
+          "winnerCount": 0,
+          "topChatters": [
+            {
+              "username": "MyrtleBot",
+              "points": 9
+            },
+            {
+              "username": "HANY_3RBiDCO",
+              "points": 6
+            },
+            {
+              "username": "BotRix",
+              "points": 6
+            },
+            {
+              "username": "ma_t_rix",
+              "points": 5
+            },
+            {
+              "username": "Aaaaco",
+              "points": 4
+            }
+          ],
+          "winners": []
+        },
+        {
+          "sessionId": "default_2026-06-25_1782421498385",
+          "date": "2026-06-25T21:22:35.444Z",
+          "totalPoints": 240,
+          "chatCount": 116,
+          "winnerCount": 0,
+          "topChatters": [
+            {
+              "username": "MyrtleBot",
+              "points": 18
+            },
+            {
+              "username": "BotRix",
+              "points": 11
+            },
+            {
+              "username": "ma_t_rix",
+              "points": 11
+            },
+            {
+              "username": "SALAH_ABDULLAH",
+              "points": 8
+            },
+            {
+              "username": "Khaloo_Yousef",
+              "points": 8
             }
           ],
           "winners": []
