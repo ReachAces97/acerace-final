@@ -2045,773 +2045,987 @@
     // ========== CHATTER POINTS SYSTEM ==========
     // ============================================================
 
-    class ChatterPointsSystem {
-        constructor() {
-            this.chatters = new Map();
-            this.winnerHistory = [];
-            this.maxHistory = 10;
-            this.pointsEnabled = true;
-            this.sessionId = this.generateSessionId();
-            this.showAllTime = false;
-            
-            this.allTimeData = {
-                totalPoints: 0,
-                topChatters: new Map(),
-                totalWinners: 0,
-                mostWins: {},
-                sessionHistory: []
-            };
-            
-            this.loadSessionData();
-            this.loadAllTimeFromServer();
-            this.setupEventListeners();
+    // ============================================================
+// ========== CHATTER POINTS SYSTEM (NO MUTE) ==========
+// ============================================================
+
+class ChatterPointsSystem {
+    constructor() {
+        this.chatters = new Map();
+        this.winnerHistory = [];
+        this.maxHistory = 10;
+        this.pointsEnabled = true;
+        this.sessionId = this.generateSessionId();
+        this.showAllTime = false;
+        this.lastWinner = null; // Track last winner (skip 1 roll)
+        
+        // ===== SPAM FILTER & COOLDOWN SETTINGS =====
+        this.spamSettings = {
+            duplicateWindow: 30000,        // 30 seconds
+            rateLimitWindow: 60000,        // 1 minute
+            maxMessagesPerWindow: 5,       // Max 5 messages per minute
+            minMessageLength: 3,           // Minimum characters for points
+            cooldownBetweenPoints: 15000,  // 15 SECONDS between earning points
+            similarityThreshold: 0.8,      // 80% similarity = spam
+            pointsPerMessage: 1,           // Points per valid message
+            maxPointsPerMinute: 5          // Max points per minute per user
+        };
+        
+        // Track message history for spam detection
+        this.messageHistory = new Map(); // username -> [{message, timestamp}]
+        
+        this.allTimeData = {
+            totalPoints: 0,
+            topChatters: new Map(),
+            totalWinners: 0,
+            mostWins: {},
+            sessionHistory: []
+        };
+        
+        this.loadSessionData();
+        this.loadAllTimeFromServer();
+        this.setupEventListeners();
+    }
+    
+    generateSessionId() {
+        const channel = currentChannel || 'default';
+        const date = new Date().toISOString().split('T')[0];
+        return `${channel}_${date}_${Date.now()}`;
+    }
+    
+    async loadAllTimeFromServer() {
+        if (!currentChannel) {
+            this.loadAllTimeFallback();
+            return;
         }
         
-        generateSessionId() {
-            const channel = currentChannel || 'default';
-            const date = new Date().toISOString().split('T')[0];
-            return `${channel}_${date}_${Date.now()}`;
-        }
-        
-        async loadAllTimeFromServer() {
-            if (!currentChannel) {
+        try {
+            const response = await fetch(`/api/chatter/alltime/${encodeURIComponent(currentChannel)}`);
+            if (response.ok) {
+                const data = await response.json();
+                if (data.allTime) {
+                    this.allTimeData.totalPoints = data.allTime.totalPoints || 0;
+                    if (data.allTime.topChatters) {
+                        this.allTimeData.topChatters = new Map(Object.entries(data.allTime.topChatters));
+                    }
+                    this.allTimeData.totalWinners = data.allTime.totalWinners || 0;
+                    this.allTimeData.mostWins = data.allTime.mostWins || {};
+                    this.allTimeData.sessionHistory = data.sessions || [];
+                }
+                console.log('[All-Time] Loaded from server');
+                this.updateUI();
+            } else {
                 this.loadAllTimeFallback();
-                return;
             }
-            
-            try {
-                const response = await fetch(`/api/chatter/alltime/${encodeURIComponent(currentChannel)}`);
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.allTime) {
-                        this.allTimeData.totalPoints = data.allTime.totalPoints || 0;
-                        if (data.allTime.topChatters) {
-                            this.allTimeData.topChatters = new Map(Object.entries(data.allTime.topChatters));
-                        }
-                        this.allTimeData.totalWinners = data.allTime.totalWinners || 0;
-                        this.allTimeData.mostWins = data.allTime.mostWins || {};
-                        this.allTimeData.sessionHistory = data.sessions || [];
-                    }
-                    console.log('[All-Time] Loaded from server');
-                    this.updateUI();
-                } else {
-                    this.loadAllTimeFallback();
+        } catch (e) {
+            console.warn('[All-Time] Failed to load from server:', e);
+            this.loadAllTimeFallback();
+        }
+    }
+    
+    loadAllTimeFallback() {
+        try {
+            const saved = localStorage.getItem('chatterAllTimeFallback');
+            if (saved) {
+                const data = JSON.parse(saved);
+                this.allTimeData.totalPoints = data.totalPoints || 0;
+                if (data.topChatters) {
+                    this.allTimeData.topChatters = new Map(Object.entries(data.topChatters));
                 }
-            } catch (e) {
-                console.warn('[All-Time] Failed to load from server:', e);
-                this.loadAllTimeFallback();
+                this.allTimeData.totalWinners = data.totalWinners || 0;
+                this.allTimeData.mostWins = data.mostWins || {};
+                console.log('[All-Time] Loaded fallback from localStorage');
+                this.updateUI();
             }
-        }
-        
-        loadAllTimeFallback() {
-            try {
-                const saved = localStorage.getItem('chatterAllTimeFallback');
-                if (saved) {
-                    const data = JSON.parse(saved);
-                    this.allTimeData.totalPoints = data.totalPoints || 0;
-                    if (data.topChatters) {
-                        this.allTimeData.topChatters = new Map(Object.entries(data.topChatters));
-                    }
-                    this.allTimeData.totalWinners = data.totalWinners || 0;
-                    this.allTimeData.mostWins = data.mostWins || {};
-                    console.log('[All-Time] Loaded fallback from localStorage');
-                    this.updateUI();
-                }
-            } catch (e) { /* ignore */ }
-        }
-        
-        loadSessionData() {
-            try {
-                const saved = localStorage.getItem(`chatterSession_${this.sessionId}`);
-                if (saved) {
-                    const data = JSON.parse(saved);
-                    if (data.chatters) {
-                        for (const [username, stats] of Object.entries(data.chatters)) {
-                            this.chatters.set(username, stats);
-                        }
-                    }
-                    if (data.winnerHistory) {
-                        this.winnerHistory = data.winnerHistory;
-                    }
-                    console.log('[Session] Loaded:', this.chatters.size, 'chatters');
-                }
-            } catch (e) { /* ignore */ }
-        }
-        
-        saveSessionData() {
-            try {
-                const data = {
-                    sessionId: this.sessionId,
-                    chatters: Object.fromEntries(this.chatters),
-                    winnerHistory: this.winnerHistory,
-                    updatedAt: Date.now()
-                };
-                localStorage.setItem(`chatterSession_${this.sessionId}`, JSON.stringify(data));
-                localStorage.setItem('chatterCurrentSession', this.sessionId);
-            } catch (e) { /* ignore */ }
-        }
-        
-        saveAllTimeFallback() {
-            try {
-                const data = {
-                    totalPoints: this.allTimeData.totalPoints,
-                    topChatters: Object.fromEntries(this.allTimeData.topChatters),
-                    totalWinners: this.allTimeData.totalWinners,
-                    mostWins: this.allTimeData.mostWins
-                };
-                localStorage.setItem('chatterAllTimeFallback', JSON.stringify(data));
-            } catch (e) { /* ignore */ }
-        }
-        
-        async syncToServer() {
-            if (!currentChannel) return;
-            
-            try {
-                const sessionData = {
-                    sessionId: this.sessionId,
-                    date: new Date().toISOString(),
-                    totalPoints: this.getTotalPoints(),
-                    chatCount: this.chatters.size,
-                    winnerCount: this.winnerHistory.length,
-                    topChatters: this.getTopChatters(5).map(c => ({ username: c.username, points: c.points })),
-                    winners: this.winnerHistory.slice(0, 5).map(w => ({ username: w.username, points: w.points }))
-                };
-                
-                const payload = {
-                    topChatters: Object.fromEntries(this.allTimeData.topChatters),
-                    totalPoints: this.allTimeData.totalPoints,
-                    totalWinners: this.allTimeData.totalWinners,
-                    mostWins: this.allTimeData.mostWins,
-                    sessionData: sessionData
-                };
-                
-                const response = await fetch('/api/chatter/alltime', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        channel: currentChannel,
-                        data: payload
-                    })
-                });
-                
-                if (response.ok) {
-                    console.log('[All-Time] Synced to server');
-                    this.saveAllTimeFallback();
-                }
-            } catch (e) {
-                console.warn('[All-Time] Sync failed:', e);
-                this.saveAllTimeFallback();
-            }
-        }
-        
-        scheduleSync() {
-            if (this.syncTimer) clearTimeout(this.syncTimer);
-            this.syncTimer = setTimeout(() => {
-                this.syncToServer();
-                this.syncTimer = null;
-            }, 30000);
-        }
-        
-        async saveSessionToServer(sessionData) {
-            if (!currentChannel) return;
-            
-            try {
-                const payload = {
-                    topChatters: Object.fromEntries(this.allTimeData.topChatters),
-                    totalPoints: this.allTimeData.totalPoints,
-                    totalWinners: this.allTimeData.totalWinners,
-                    mostWins: this.allTimeData.mostWins,
-                    sessionData: sessionData
-                };
-                
-                const response = await fetch('/api/chatter/alltime', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        channel: currentChannel,
-                        data: payload
-                    })
-                });
-                
-                if (response.ok) {
-                    console.log('[Session] Saved to server');
-                    
-                    if (!this.allTimeData.sessionHistory) {
-                        this.allTimeData.sessionHistory = [];
-                    }
-                    this.allTimeData.sessionHistory.push({
-                        date: sessionData.date,
-                        chatCount: sessionData.chatCount,
-                        totalPoints: sessionData.totalPoints,
-                        winnerCount: sessionData.winnerCount,
-                        topChatters: sessionData.topChatters
-                    });
-                    
-                    if (this.allTimeData.sessionHistory.length > 50) {
-                        this.allTimeData.sessionHistory = this.allTimeData.sessionHistory.slice(-50);
-                    }
-                    
-                    this.saveAllTimeFallback();
-                    if (this.showAllTime) {
-                        this.renderAllTimeArchive();
+        } catch (e) { /* ignore */ }
+    }
+    
+    loadSessionData() {
+        try {
+            const saved = localStorage.getItem(`chatterSession_${this.sessionId}`);
+            if (saved) {
+                const data = JSON.parse(saved);
+                if (data.chatters) {
+                    for (const [username, stats] of Object.entries(data.chatters)) {
+                        this.chatters.set(username, stats);
                     }
                 }
-            } catch (e) {
-                console.warn('[Session] Save failed:', e);
-            }
-        }
-        
-        processMessage(username, content) {
-            if (!this.pointsEnabled || !username || !content) return false;
-            username = username.trim();
-            if (!username) return false;
-
-            const validation = this.validateMessage(username, content);
-            if (!validation.valid) return false;
-
-            if (!this.chatters.has(username)) {
-                this.chatters.set(username, {
-                    points: 0,
-                    messages: 0,
-                    lastMessages: [],
-                    lastMessageTime: 0
-                });
-            }
-
-            const chatter = this.chatters.get(username);
-            chatter.points += 1;
-            chatter.messages += 1;
-            chatter.lastMessageTime = Date.now();
-            chatter.lastMessages.push(content.trim());
-            if (chatter.lastMessages.length > 5) chatter.lastMessages.shift();
-
-            this.allTimeData.totalPoints += 1;
-            if (!this.allTimeData.topChatters.has(username)) {
-                this.allTimeData.topChatters.set(username, {
-                    totalPoints: 0,
-                    totalMessages: 0,
-                    wins: 0,
-                    firstSeen: Date.now(),
-                    lastSeen: Date.now()
-                });
-            }
-            const allTime = this.allTimeData.topChatters.get(username);
-            allTime.totalPoints += 1;
-            allTime.totalMessages += 1;
-            allTime.lastSeen = Date.now();
-
-            this.saveSessionData();
-            this.scheduleSync();
-            this.updateUI();
-            return true;
-        }
-        
-        validateMessage(username, content) {
-            const trimmed = content.trim();
-            if (!trimmed || !/[a-zA-Z]/.test(trimmed)) {
-                return { valid: false };
-            }
-            const textOnly = trimmed.replace(/[^a-zA-Z0-9]/g, '');
-            if (textOnly.length < 2) return { valid: false };
-
-            if (this.chatters.has(username)) {
-                const chatter = this.chatters.get(username);
-                if (chatter.lastMessages.some(msg => msg === trimmed)) {
-                    return { valid: false };
+                if (data.winnerHistory) {
+                    this.winnerHistory = data.winnerHistory;
                 }
-                if (Date.now() - chatter.lastMessageTime < 2000) {
-                    return { valid: false };
-                }
+                console.log('[Session] Loaded:', this.chatters.size, 'chatters');
             }
-            return { valid: true };
-        }
-        
-        getTopChatters(limit = 10) {
-            return Array.from(this.chatters.entries())
-                .sort((a, b) => b[1].points - a[1].points)
-                .slice(0, limit)
-                .map(([username, stats]) => ({ username, points: stats.points, messages: stats.messages }));
-        }
-        
-        getAllTimeTop(limit = 0) {
-            let entries = Array.from(this.allTimeData.topChatters.entries())
-                .sort((a, b) => b[1].totalPoints - a[1].totalPoints)
-                .filter(([_, stats]) => stats.totalPoints > 0);
-            
-            if (limit > 0) {
-                entries = entries.slice(0, limit);
-            }
-            
-            return entries.map(([username, stats]) => ({ 
-                username, 
-                totalPoints: stats.totalPoints,
-                totalMessages: stats.totalMessages || 0,
-                wins: stats.wins || 0,
-                firstSeen: stats.firstSeen || null,
-                lastSeen: stats.lastSeen || null
-            }));
-        }
-        
-        getTotalPoints() {
-            let total = 0;
-            for (const [, stats] of this.chatters) total += stats.points;
-            return total;
-        }
-        
-        getUserStats(username) {
-            if (!this.chatters.has(username)) return null;
-            const stats = this.chatters.get(username);
-            const top = this.getTopChatters(10);
-            const rank = top.findIndex(t => t.username === username) + 1;
-            
-            const allTimeStats = this.allTimeData.topChatters.get(username);
-            
-            return {
-                username,
-                points: stats.points,
-                messages: stats.messages,
-                rank: rank > 0 ? rank : null,
-                totalChatters: this.chatters.size,
-                allTimePoints: allTimeStats ? allTimeStats.totalPoints : 0,
-                allTimeWins: allTimeStats ? allTimeStats.wins : 0
+        } catch (e) { /* ignore */ }
+    }
+    
+    saveSessionData() {
+        try {
+            const data = {
+                sessionId: this.sessionId,
+                chatters: Object.fromEntries(this.chatters),
+                winnerHistory: this.winnerHistory,
+                updatedAt: Date.now()
             };
-        }
-        
-        getAllTimeSummary() {
-            return {
+            localStorage.setItem(`chatterSession_${this.sessionId}`, JSON.stringify(data));
+            localStorage.setItem('chatterCurrentSession', this.sessionId);
+        } catch (e) { /* ignore */ }
+    }
+    
+    saveAllTimeFallback() {
+        try {
+            const data = {
                 totalPoints: this.allTimeData.totalPoints,
-                totalChatters: this.allTimeData.topChatters.size,
+                topChatters: Object.fromEntries(this.allTimeData.topChatters),
                 totalWinners: this.allTimeData.totalWinners,
-                totalSessions: (this.allTimeData.sessionHistory || []).length
+                mostWins: this.allTimeData.mostWins
             };
-        }
+            localStorage.setItem('chatterAllTimeFallback', JSON.stringify(data));
+        } catch (e) { /* ignore */ }
+    }
+    
+    async syncToServer() {
+        if (!currentChannel) return;
         
-        exportAllUsers() {
-            const allUsers = this.getAllTimeTop(0);
-            return this.generateCSV(allUsers);
-        }
-        
-        exportTopUsers(n = 100) {
-            const topUsers = this.getAllTimeTop(n);
-            return this.generateCSV(topUsers);
-        }
-        
-        exportRecentUsers(days = 30) {
-            const cutoff = Date.now() - (days * 24 * 60 * 60 * 1000);
-            const allUsers = this.getAllTimeTop(0);
-            const recentUsers = allUsers.filter(u => u.lastSeen && u.lastSeen > cutoff);
-            return this.generateCSV(recentUsers);
-        }
-        
-        generateCSV(users) {
-            if (!users || users.length === 0) {
-                return 'No data available\n';
-            }
-            
-            let csv = 'Username,Total Points,Total Messages,Wins,First Seen,Last Seen,Rank\n';
-            
-            users.forEach((user, index) => {
-                const firstSeen = user.firstSeen ? new Date(user.firstSeen).toLocaleDateString() : '';
-                const lastSeen = user.lastSeen ? new Date(user.lastSeen).toLocaleDateString() : '';
-                csv += `"${user.username}",${user.totalPoints},${user.totalMessages || 0},${user.wins || 0},"${firstSeen}","${lastSeen}",${index + 1}\n`;
-            });
-            
-            return csv;
-        }
-        
-        downloadCSV(csv, filename = 'archive-data.csv') {
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            const url = URL.createObjectURL(blob);
-            link.href = url;
-            link.download = filename;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-        }
-        
-        rollWinnerWithWheel() {
-            const top10 = this.getTopChatters(10);
-            if (top10.length === 0) {
-                gameMessageSpan.innerText = 'No chatters to pick from!';
-                return;
-            }
-            
-            const totalWeight = top10.reduce((sum, t) => sum + t.points, 0);
-            let random = Math.random() * totalWeight;
-            let winner = top10[0];
-            for (const chatter of top10) {
-                random -= chatter.points;
-                if (random <= 0) {
-                    winner = chatter;
-                    break;
-                }
-            }
-            
-            const names = top10.map(t => t.username);
-            const repeatFactor = 80;
-            let repeated = [];
-            for (let i = 0; i < repeatFactor; i++) repeated.push(...names);
-            const totalItems = repeated.length;
-            
-            let targetIdx = -1;
-            const minIndex = 20;
-            const maxIndex = totalItems - 20;
-            for (let i = minIndex; i <= maxIndex; i++) {
-                if (repeated[i] === winner.username) {
-                    targetIdx = i;
-                    break;
-                }
-            }
-            if (targetIdx === -1) targetIdx = minIndex;
-            
-            const overlay = document.createElement('div');
-            overlay.className = 'wheel-overlay';
-            overlay.innerHTML = `
-                <div class="wheel-container" style="max-width: 500px;">
-                    <div class="wheel-title">Rolling Winner</div>
-                    <div class="wheel-viewport" style="height: 200px; position: relative; overflow: hidden;">
-                        <div id="rollWheelScroller" class="wheel-scroller"></div>
-                        <div class="wheel-pointer"></div>
-                    </div>
-                    <div id="rollWheelResult" style="margin-top:20px;font-size:1.2rem;color:#19C6FD;"></div>
-                    <button id="closeRollWheelBtn" style="margin-top:20px;padding:8px 24px;background:#19C6FD;border:none;border-radius:60px;font-weight:bold;color:white;cursor:pointer;">Close</button>
-                </div>
-            `;
-            document.body.appendChild(overlay);
-            
-            const scroller = document.getElementById('rollWheelScroller');
-            scroller.innerHTML = repeated.map(n => `<div class="wheel-item">${escapeHtml(n)}</div>`).join('');
-            scroller.offsetHeight;
-            
-            const firstItem = scroller.querySelector('.wheel-item');
-            const itemHeight = firstItem.getBoundingClientRect().height;
-            const viewportHeight = 200;
-            const centerOffset = (viewportHeight / 2) - (itemHeight / 2);
-            
-            let targetOffset = -(targetIdx * itemHeight) + centerOffset;
-            const maxOffset = -(0 * itemHeight) + centerOffset;
-            const minOffset = -((totalItems-1) * itemHeight) + centerOffset;
-            targetOffset = Math.min(maxOffset, Math.max(minOffset, targetOffset));
-            
-            const duration = Math.random() * 4 + 8;
-            scroller.style.transition = `transform ${duration}s cubic-bezier(0.05, 0.95, 0.2, 1)`;
-            scroller.style.transform = `translateY(${targetOffset}px)`;
-            
-            playWheelSpinSound();
-            
-            const resultDiv = document.getElementById('rollWheelResult');
-            scroller.addEventListener('transitionend', () => {
-                resultDiv.innerHTML = `WINNER: ${escapeHtml(winner.username)}`;
-                resultDiv.style.color = '#fbbf24';
-                resultDiv.style.fontSize = '1.5rem';
-                resultDiv.style.fontWeight = 'bold';
-                
-                playWinSound();
-                shootConfetti();
-                
-                this.recordWinner(winner.username, winner.points);
-                addWinnerToHistory(winner.username, `top 10 chatter roll (${winner.points} pts)`);
-                showWinnerOverlay(winner.username, []);
-                gameMessageSpan.innerText = `${winner.username} won the top 10 roll with ${winner.points} points!`;
-            }, { once: true });
-            
-            document.getElementById('closeRollWheelBtn').addEventListener('click', () => overlay.remove());
-            setTimeout(() => { if (overlay.parentNode) overlay.remove(); }, 15000);
-        }
-        
-        recordWinner(username, points) {
-            this.winnerHistory.unshift({ username, points, timestamp: Date.now() });
-            if (this.winnerHistory.length > this.maxHistory) this.winnerHistory.pop();
-            
-            if (!this.allTimeData.mostWins[username]) {
-                this.allTimeData.mostWins[username] = 0;
-            }
-            this.allTimeData.mostWins[username] += 1;
-            this.allTimeData.totalWinners += 1;
-            
-            if (this.allTimeData.topChatters.has(username)) {
-                const stats = this.allTimeData.topChatters.get(username);
-                stats.wins += 1;
-            }
-            
-            this.saveSessionData();
-            this.syncToServer();
-            this.updateUI();
-        }
-        
-        resetStream() {
-            if (this.chatters.size === 0 && this.winnerHistory.length === 0) {
-                gameMessageSpan.innerText = 'No data to reset. Stream is already fresh!';
-                return false;
-            }
-            
-            if (!confirm('Start a new stream session?\n\nThis will:\n- Archive current session data\n- Reset all points for everyone\n- Start a fresh competition')) {
-                return false;
-            }
-            
-            if (!confirm('Are you sure? Current points will be archived but reset for the new stream.')) {
-                return false;
-            }
-            
+        try {
             const sessionData = {
                 sessionId: this.sessionId,
                 date: new Date().toISOString(),
                 totalPoints: this.getTotalPoints(),
                 chatCount: this.chatters.size,
                 winnerCount: this.winnerHistory.length,
-                topChatters: this.getTopChatters(5).map(c => ({ 
-                    username: c.username, 
-                    points: c.points 
-                })),
-                winners: this.winnerHistory.slice(0, 5).map(w => ({ 
-                    username: w.username, 
-                    points: w.points 
-                }))
+                topChatters: this.getTopChatters(5).map(c => ({ username: c.username, points: c.points })),
+                winners: this.winnerHistory.slice(0, 5).map(w => ({ username: w.username, points: w.points }))
             };
             
-            this.saveSessionToServer(sessionData);
+            const payload = {
+                topChatters: Object.fromEntries(this.allTimeData.topChatters),
+                totalPoints: this.allTimeData.totalPoints,
+                totalWinners: this.allTimeData.totalWinners,
+                mostWins: this.allTimeData.mostWins,
+                sessionData: sessionData
+            };
             
-            this.chatters.clear();
-            this.winnerHistory = [];
-            this.sessionId = this.generateSessionId();
-            this.saveSessionData();
-            this.updateUI();
+            const response = await fetch('/api/chatter/alltime', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    channel: currentChannel,
+                    data: payload
+                })
+            });
             
-            gameMessageSpan.innerText = 'New stream session started! Fresh points for everyone!';
-            shootConfetti();
+            if (response.ok) {
+                console.log('[All-Time] Synced to server');
+                this.saveAllTimeFallback();
+            }
+        } catch (e) {
+            console.warn('[All-Time] Sync failed:', e);
+            this.saveAllTimeFallback();
+        }
+    }
+    
+    scheduleSync() {
+        if (this.syncTimer) clearTimeout(this.syncTimer);
+        this.syncTimer = setTimeout(() => {
+            this.syncToServer();
+            this.syncTimer = null;
+        }, 30000);
+    }
+    
+    async saveSessionToServer(sessionData) {
+        if (!currentChannel) return;
+        
+        try {
+            const payload = {
+                topChatters: Object.fromEntries(this.allTimeData.topChatters),
+                totalPoints: this.allTimeData.totalPoints,
+                totalWinners: this.allTimeData.totalWinners,
+                mostWins: this.allTimeData.mostWins,
+                sessionData: sessionData
+            };
+            
+            const response = await fetch('/api/chatter/alltime', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    channel: currentChannel,
+                    data: payload
+                })
+            });
+            
+            if (response.ok) {
+                console.log('[Session] Saved to server');
+                
+                if (!this.allTimeData.sessionHistory) {
+                    this.allTimeData.sessionHistory = [];
+                }
+                this.allTimeData.sessionHistory.push({
+                    date: sessionData.date,
+                    chatCount: sessionData.chatCount,
+                    totalPoints: sessionData.totalPoints,
+                    winnerCount: sessionData.winnerCount,
+                    topChatters: sessionData.topChatters
+                });
+                
+                if (this.allTimeData.sessionHistory.length > 50) {
+                    this.allTimeData.sessionHistory = this.allTimeData.sessionHistory.slice(-50);
+                }
+                
+                this.saveAllTimeFallback();
+                if (this.showAllTime) {
+                    this.renderAllTimeArchive();
+                }
+            }
+        } catch (e) {
+            console.warn('[Session] Save failed:', e);
+        }
+    }
+    
+    // ==============================================================
+    // ========== PROCESS MESSAGE WITH SPAM FILTER =========
+    // ==============================================================
+    
+    processMessage(username, content) {
+        if (!this.pointsEnabled || !username || !content) return false;
+        username = username.trim();
+        if (!username) return false;
+
+        // Spam filter checks
+        const spamCheck = this.checkSpam(username, content);
+        if (!spamCheck.valid) {
+            return false; // No points, but no mute either
+        }
+
+        const validation = this.validateMessage(username, content);
+        if (!validation.valid) {
+            this.addToMessageHistory(username, content);
+            return false;
+        }
+
+        if (!this.checkRateLimit(username)) {
+            return false;
+        }
+
+        if (!this.checkCooldown(username)) {
+            return false;
+        }
+
+        // Award points
+        const pointsAwarded = this.spamSettings.pointsPerMessage || 1;
+        
+        if (!this.chatters.has(username)) {
+            this.chatters.set(username, {
+                points: 0,
+                messages: 0,
+                lastMessages: [],
+                lastMessageTime: 0,
+                lastPointsTime: 0,
+                pointsEarned: 0
+            });
+        }
+
+        const chatter = this.chatters.get(username);
+        chatter.points += pointsAwarded;
+        chatter.messages += 1;
+        chatter.lastMessageTime = Date.now();
+        chatter.lastPointsTime = Date.now();
+        chatter.pointsEarned += pointsAwarded;
+        chatter.lastMessages.push(content.trim());
+        if (chatter.lastMessages.length > 10) chatter.lastMessages.shift();
+
+        // Update all-time stats
+        this.allTimeData.totalPoints += pointsAwarded;
+        if (!this.allTimeData.topChatters.has(username)) {
+            this.allTimeData.topChatters.set(username, {
+                totalPoints: 0,
+                totalMessages: 0,
+                wins: 0,
+                firstSeen: Date.now(),
+                lastSeen: Date.now()
+            });
+        }
+        const allTime = this.allTimeData.topChatters.get(username);
+        allTime.totalPoints += pointsAwarded;
+        allTime.totalMessages += 1;
+        allTime.lastSeen = Date.now();
+
+        this.addToMessageHistory(username, content);
+        this.saveSessionData();
+        this.scheduleSync();
+        this.updateUI();
+        return pointsAwarded;
+    }
+    
+    // ========== SPAM FILTER METHODS ==========
+    
+    checkSpam(username, content) {
+        const trimmed = content.trim();
+        
+        // Check spam phrases
+        if (this.isSpamPhrase(trimmed)) {
+            return { valid: false };
+        }
+        
+        // Check minimum length
+        const textOnly = trimmed.replace(/[^a-zA-Z]/g, '');
+        if (textOnly.length < this.spamSettings.minMessageLength) {
+            return { valid: false };
+        }
+        
+        // Check repeated characters
+        if (this.hasRepeatedChars(trimmed)) {
+            return { valid: false };
+        }
+        
+        // Check all caps spam
+        if (this.isAllCapsSpam(trimmed)) {
+            return { valid: false };
+        }
+        
+        // Check similarity with recent messages
+        if (this.hasSimilarRecentMessage(username, trimmed)) {
+            return { valid: false };
+        }
+        
+        // Check duplicate in history
+        if (this.hasDuplicateInHistory(username, trimmed)) {
+            return { valid: false };
+        }
+        
+        return { valid: true };
+    }
+    
+    isSpamPhrase(content) {
+        const lower = content.toLowerCase();
+        const spamPhrases = [
+            '!dice', '!slots', '!gamble', '!raffle',
+            '!giveaway', '!gift', '!win',
+            'aaaaaaaa', 'bbbbbbbb', 'cccccccc',
+            'test', 'testing', 'asdf', 'qwerty',
+            'lol', 'lmao', 'rofl', 'xd', 'xdd', 'xddd',
+            'gg', 'gz', 'gj',
+            'nice', 'cool', 'awesome',
+            'hello', 'hi', 'hey', 'sup',
+            'thank', 'thanks', 'ty',
+            'w', 'l', 'e', 'r', 't', 'y',
+            '????', '!!!!', '....'
+        ];
+        
+        if (spamPhrases.some(phrase => lower === phrase || lower.startsWith(phrase + ' ') || lower.endsWith(' ' + phrase))) {
             return true;
         }
-
-        async resetAllData() {
-            if (!currentChannel) {
-                gameMessageSpan.innerText = '❌ No channel connected!';
-                return;
-            }
-            
-            if (!confirm('⚠️ Clear ALL data for ' + currentChannel + '?\n\nThis will:\n- Delete all points\n- Delete all chatters\n- Delete all winners\n- Delete all sessions\n\nThis is for starting FRESH. Cannot be undone!')) {
-                return;
-            }
-            
-            if (!confirm('⚠️ TYPE "DELETE" to confirm: (This is permanent!)')) {
-                return;
-            }
-            
-            try {
-                const response = await fetch(`/api/chatter/reset/${encodeURIComponent(currentChannel)}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ confirm: 'YES_DELETE_ALL' })
-                });
-                
-                const result = await response.json();
-                
-                if (response.ok) {
-                    this.allTimeData.topChatters.clear();
-                    this.allTimeData.totalPoints = 0;
-                    this.allTimeData.totalWinners = 0;
-                    this.allTimeData.mostWins = {};
-                    this.allTimeData.sessionHistory = [];
-                    this.chatters.clear();
-                    this.winnerHistory = [];
-                    this.sessionId = this.generateSessionId();
-                    
-                    this.saveSessionData();
-                    this.saveAllTimeFallback();
-                    this.updateUI();
-                    
-                    gameMessageSpan.innerText = '✅ All data cleared! Ready for launch! 🚀';
-                    shootConfetti();
-                } else {
-                    gameMessageSpan.innerText = '❌ Failed: ' + (result.error || 'Unknown error');
-                }
-            } catch (e) {
-                gameMessageSpan.innerText = '❌ Error: ' + e.message;
-            }
+        
+        const letters = content.replace(/[^a-zA-Z]/g, '').length;
+        if (content.length > 0 && letters / content.length < 0.3 && content.length < 10) {
+            return true;
         }
         
-        setupEventListeners() {
-            const tabCurrent = document.getElementById('tabCurrent');
-            const tabAllTime = document.getElementById('tabAllTime');
-            const allTimeContent = document.getElementById('allTimeContent');
-            
-            if (tabCurrent && tabAllTime) {
-                tabCurrent.addEventListener('click', () => {
-                    this.showAllTime = false;
-                    tabCurrent.style.color = '#19C6FD';
-                    tabCurrent.style.borderBottom = '2px solid #19C6FD';
-                    tabAllTime.style.color = '#94a3b8';
-                    tabAllTime.style.borderBottom = '2px solid transparent';
-                    if (allTimeContent) allTimeContent.style.display = 'none';
-                    this.updateUI();
-                });
-                
-                tabAllTime.addEventListener('click', () => {
-                    this.showAllTime = true;
-                    tabAllTime.style.color = '#19C6FD';
-                    tabAllTime.style.borderBottom = '2px solid #19C6FD';
-                    tabCurrent.style.color = '#94a3b8';
-                    tabCurrent.style.borderBottom = '2px solid transparent';
-                    if (allTimeContent) allTimeContent.style.display = 'block';
-                    this.loadAllTimeFromServer();
-                    this.renderAllTimeArchive();
-                });
-            }
-            
-            const rollBtn = document.getElementById('rollWinnerBtn');
-            if (rollBtn) {
-                rollBtn.addEventListener('click', () => {
-                    this.rollWinnerWithWheel();
-                });
-            }
-            
-            const resetBtn = document.getElementById('resetStreamBtn');
-            if (resetBtn) {
-                resetBtn.addEventListener('click', () => {
-                    this.resetStream();
-                });
-            }
-            
-            const exportAllBtn = document.getElementById('exportAllBtn');
-            if (exportAllBtn) {
-                exportAllBtn.addEventListener('click', () => {
-                    const csv = this.exportAllUsers();
-                    const count = this.allTimeData.topChatters.size;
-                    this.downloadCSV(csv, `all-users-${currentChannel || 'stream'}-${Date.now()}.csv`);
-                    document.getElementById('exportStatus').textContent = `Exported ${count} users`;
-                    setTimeout(() => { document.getElementById('exportStatus').textContent = ''; }, 3000);
-                });
-            }
-            
-            const exportTopBtn = document.getElementById('exportTopBtn');
-            if (exportTopBtn) {
-                exportTopBtn.addEventListener('click', () => {
-                    const csv = this.exportTopUsers(100);
-                    this.downloadCSV(csv, `top-100-${currentChannel || 'stream'}-${Date.now()}.csv`);
-                    document.getElementById('exportStatus').textContent = 'Exported Top 100 users';
-                    setTimeout(() => { document.getElementById('exportStatus').textContent = ''; }, 3000);
-                });
-            }
-            
-            const exportRecentBtn = document.getElementById('exportRecentBtn');
-            if (exportRecentBtn) {
-                exportRecentBtn.addEventListener('click', () => {
-                    const csv = this.exportRecentUsers(30);
-                    const count = csv.split('\n').length - 2;
-                    this.downloadCSV(csv, `recent-30d-${currentChannel || 'stream'}-${Date.now()}.csv`);
-                    document.getElementById('exportStatus').textContent = `Exported ${count} recent users`;
-                    setTimeout(() => { document.getElementById('exportStatus').textContent = ''; }, 3000);
-                });
-            }
-
-            const resetAllDataBtn = document.getElementById('resetAllDataBtn');
-            if (resetAllDataBtn) {
-                resetAllDataBtn.addEventListener('click', () => {
-                    this.resetAllData();
-                });
-            }
-        }
-        
-        renderAllTimeArchive() {
-            const summary = this.getAllTimeSummary();
-            
-            document.getElementById('allTimeTotalPoints').textContent = summary.totalPoints.toLocaleString();
-            document.getElementById('allTimeChatters').textContent = summary.totalChatters.toLocaleString();
-            document.getElementById('allTimeWinners').textContent = summary.totalWinners.toLocaleString();
-            document.getElementById('allTimeSessions').textContent = summary.totalSessions.toLocaleString();
-            document.getElementById('allTimeUserCount').textContent = `${summary.totalChatters} users`;
-            
-            let allUsers = this.getAllTimeTop(0);
-            allUsers = allUsers.filter(u => u.totalPoints > 0);
-            
-            const container = document.getElementById('allTimeLeaderboardList');
-            if (allUsers.length === 0) {
-                container.innerHTML = '<div style="text-align: center; color: #94a3b8; padding: 20px; font-size: 0.9rem;">No data yet</div>';
+        return false;
+    }
+    
+    hasRepeatedChars(content) {
+        let repeats = 0;
+        let lastChar = '';
+        for (const char of content) {
+            if (char === lastChar && char.match(/[a-zA-Z]/)) {
+                repeats++;
+                if (repeats >= 4) return true;
             } else {
-                const maxPoints = allUsers[0]?.totalPoints || 1;
-                let html = `
-                    <div style="display:grid;grid-template-columns:35px 1fr 55px 40px;gap:4px;padding:6px 10px;border-bottom:1px solid rgba(255,255,255,0.06);font-size:0.65rem;color:#64748b;font-weight:600;">
-                        <span>Rank</span>
-                        <span>Username</span>
-                        <span style="text-align:right;">Points</span>
-                        <span style="text-align:right;">Wins</span>
-                    </div>
-                `;
-                const displayUsers = allUsers.slice(0, 50);
-                displayUsers.forEach((user, index) => {
-                    const rank = index + 1;
-                    let rankClass = '';
-                    let rankColor = '#64748b';
-                    if (rank === 1) { rankClass = 'rank-gold'; rankColor = '#fbbf24'; }
-                    else if (rank === 2) { rankClass = 'rank-silver'; rankColor = '#94a3b8'; }
-                    else if (rank === 3) { rankClass = 'rank-bronze'; rankColor = '#cd7f32'; }
-                    
-                    const winsText = user.wins > 0 ? `<span style="color:#fbbf24;font-size:0.6rem;text-align:right;">${user.wins}</span>` : `<span style="color:#64748b;font-size:0.6rem;text-align:right;">0</span>`;
-                    
-                    html += `
-                        <div class="${rankClass}" style="display:grid;grid-template-columns:35px 1fr 55px 40px;gap:4px;align-items:center;padding:4px 10px;border-radius:6px;margin:1px 0;font-size:0.8rem;">
-                            <span style="color:${rankColor};font-weight:600;">${rank}</span>
-                            <span style="color:#f1f5f9;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(user.username)}</span>
-                            <span style="color:#19C6FD;font-weight:600;text-align:right;">${user.totalPoints}</span>
-                            ${winsText}
-                        </div>
-                    `;
-                });
-                if (allUsers.length > 50) {
-                    html += `<div style="text-align:center;color:#64748b;font-size:0.65rem;padding:8px;">+ ${allUsers.length - 50} more users</div>`;
-                }
-                container.innerHTML = html;
-            }
-            
-            const sessionContainer = document.getElementById('allTimeSessionList');
-            const sessions = this.allTimeData.sessionHistory || [];
-            if (sessions.length === 0) {
-                sessionContainer.innerHTML = '<div style="text-align: center; color: #94a3b8; padding: 15px; font-size: 0.85rem;">No sessions yet</div>';
-            } else {
-                let html = '';
-                sessions.slice(-20).reverse().forEach((session) => {
-                    const date = new Date(session.date).toLocaleDateString();
-                    const topChatter = session.topChatters?.[0]?.username || '—';
-                    html += `
-                        <div style="display:grid;grid-template-columns:80px 1fr 60px 50px 70px;gap:4px;align-items:center;padding:4px 10px;border-bottom:1px solid rgba(255,255,255,0.04);font-size:0.7rem;">
-                            <span style="color:#94a3b8;">${date}</span>
-                            <span style="color:#64748b;">${session.chatCount || 0} chatters</span>
-                            <span style="color:#19C6FD;font-weight:600;">${session.totalPoints || 0} pts</span>
-                            <span style="color:#fbbf24;">${session.winnerCount || 0} wins</span>
-                            <span style="color:#64748b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(topChatter)}</span>
-                        </div>
-                    `;
-                });
-                sessionContainer.innerHTML = html;
+                repeats = 0;
+                lastChar = char;
             }
         }
+        return false;
+    }
+    
+    isAllCapsSpam(content) {
+        const letters = content.replace(/[^a-zA-Z]/g, '');
+        if (letters.length < 5) return false;
         
-        updateUI() {
-            this.updateTotalPoints();
-            this.updateSessionInfo();
-            this.renderYourStats();
-            this.renderRecentWinners();
+        const caps = content.replace(/[^A-Z]/g, '').length;
+        const lower = content.replace(/[^a-z]/g, '').length;
+        
+        return (caps / (caps + lower) > 0.7 && letters.length > 10);
+    }
+    
+    hasSimilarRecentMessage(username, content) {
+        if (!this.messageHistory.has(username)) return false;
+        
+        const history = this.messageHistory.get(username);
+        const recentMessages = history.slice(-5);
+        const similarityThreshold = this.spamSettings.similarityThreshold || 0.8;
+        
+        for (const entry of recentMessages) {
+            if (Date.now() - entry.timestamp > 60000) continue;
+            const similarity = this.calculateSimilarity(content, entry.message);
+            if (similarity > similarityThreshold && entry.message !== content) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    calculateSimilarity(str1, str2) {
+        const s1 = str1.toLowerCase();
+        const s2 = str2.toLowerCase();
+        
+        if (s1 === s2) return 1.0;
+        
+        const words1 = s1.split(/\s+/).filter(w => w.length > 1);
+        const words2 = s2.split(/\s+/).filter(w => w.length > 1);
+        
+        if (words1.length === 0 || words2.length === 0) {
+            const chars1 = new Set(s1.split(''));
+            const chars2 = new Set(s2.split(''));
+            const intersection = new Set([...chars1].filter(x => chars2.has(x)));
+            const union = new Set([...chars1, ...chars2]);
+            return intersection.size / union.size;
+        }
+        
+        const set1 = new Set(words1);
+        const set2 = new Set(words2);
+        const intersection = new Set([...set1].filter(x => set2.has(x)));
+        const union = new Set([...set1, ...set2]);
+        return intersection.size / union.size;
+    }
+    
+    hasDuplicateInHistory(username, content) {
+        if (!this.messageHistory.has(username)) return false;
+        const history = this.messageHistory.get(username);
+        const duplicateWindow = this.spamSettings.duplicateWindow || 30000;
+        return history.some(entry => 
+            entry.message === content && 
+            Date.now() - entry.timestamp < duplicateWindow
+        );
+    }
+    
+    checkRateLimit(username) {
+        if (!this.messageHistory.has(username)) return true;
+        const history = this.messageHistory.get(username);
+        const window = this.spamSettings.rateLimitWindow || 60000;
+        const maxMessages = this.spamSettings.maxMessagesPerWindow || 5;
+        const recentMessages = history.filter(entry => 
+            Date.now() - entry.timestamp < window
+        );
+        return recentMessages.length < maxMessages;
+    }
+    
+    checkCooldown(username) {
+        if (!this.chatters.has(username)) return true;
+        const chatter = this.chatters.get(username);
+        const cooldown = this.spamSettings.cooldownBetweenPoints || 15000; // 15 SECONDS
+        return Date.now() - (chatter.lastPointsTime || 0) >= cooldown;
+    }
+    
+    addToMessageHistory(username, content) {
+        if (!this.messageHistory.has(username)) {
+            this.messageHistory.set(username, []);
+        }
+        const history = this.messageHistory.get(username);
+        history.push({
+            message: content,
+            timestamp: Date.now()
+        });
+        if (history.length > 50) {
+            history.splice(0, history.length - 50);
+        }
+    }
+    
+    validateMessage(username, content) {
+        const trimmed = content.trim();
+        if (!trimmed || !/[a-zA-Z]/.test(trimmed)) {
+            return { valid: false };
+        }
+        const textOnly = trimmed.replace(/[^a-zA-Z0-9]/g, '');
+        if (textOnly.length < this.spamSettings.minMessageLength) {
+            return { valid: false };
+        }
+        if (this.chatters.has(username)) {
+            const chatter = this.chatters.get(username);
+            if (chatter.lastMessages.some(msg => msg === trimmed)) {
+                return { valid: false };
+            }
+            if (Date.now() - chatter.lastMessageTime < 2000) {
+                return { valid: false };
+            }
+        }
+        return { valid: true };
+    }
+    
+    // ==============================================================
+    // ========== WEIGHTED WINNER SELECTION (SKIP 1 ROLL) ==========
+    // ==============================================================
+    
+    // ==============================================================
+// ========== WEIGHTED WINNER SELECTION WITH WHEEL ANIMATION ==========
+// ==============================================================
+
+// ==============================================================
+// ========== WEIGHTED WINNER SELECTION WITH WHEEL ANIMATION ==========
+// ==============================================================
+
+// ==============================================================
+// ========== WEIGHTED WINNER SELECTION (SKIP 1 ROLL) ==========
+// ==============================================================
+
+// ========== FIXED WHEEL ANIMATION (USING ORIGINAL WORKING METHOD) ==========
+
+// ========== ROLL WINNER WITH WEIGHTED MATH (USING ORIGINAL ANIMATION) ==========
+
+// ==============================================================
+// ========== ROLL WINNER (USES EXACT SAME ANIMATION AS pickSingleWinner) ==========
+// ==============================================================
+
+rollWinnerWithWheel() {
+    // Get top 10 chatters
+    let top10 = this.getTopChatters(10);
+    
+    if (top10.length === 0) {
+        if (gameMessageSpan) gameMessageSpan.innerText = 'No chatters to pick from!';
+        return;
+    }
+    
+    // Filter out last winner (skip 1 roll)
+    let eligible = top10;
+    if (this.lastWinner) {
+        eligible = top10.filter(user => user.username !== this.lastWinner);
+    }
+    
+    if (eligible.length === 0) {
+        eligible = top10;
+    }
+    
+    // Create weighted list
+    const names = [];
+    eligible.forEach((user, index) => {
+        const rank = index + 1;
+        let weight = 10;
+        if (rank === 1) weight = 25;
+        else if (rank === 2) weight = 20;
+        else if (rank === 3) weight = 15;
+        
+        for (let i = 0; i < weight; i++) {
+            names.push(user.username);
+        }
+    });
+    
+    // Secure shuffle
+    function secureShuffle(array) {
+        const shuffled = [...array];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const randomIndex = crypto.getRandomValues(new Uint32Array(1))[0] % (i + 1);
+            [shuffled[i], shuffled[randomIndex]] = [shuffled[randomIndex], shuffled[i]];
+        }
+        return shuffled;
+    }
+    
+    const shuffledNames = secureShuffle(names);
+    
+    // Pick winner
+    const randomIndex = crypto.getRandomValues(new Uint32Array(1))[0] % shuffledNames.length;
+    const winnerName = shuffledNames[randomIndex];
+    const winner = top10.find(u => u.username === winnerName);
+    
+    if (!winner) {
+        const firstWinner = eligible[0];
+        this.lastWinner = firstWinner.username;
+        this.showWheelAnimation(firstWinner.username, top10);
+        return;
+    }
+    
+    this.lastWinner = winner.username;
+    this.showWheelAnimation(winner.username, top10);
+}
+
+// ==============================================================
+// ========== WHEEL ANIMATION (EXACT COPY OF pickSingleWinner) ==========
+// ==============================================================
+
+rollWinnerWithWheel() {
+    // Get top 10 chatters
+    let top10 = this.getTopChatters(10);
+    
+    if (top10.length === 0) {
+        if (gameMessageSpan) gameMessageSpan.innerText = 'No chatters to pick from!';
+        return;
+    }
+    
+    // Filter out last winner (skip 1 roll)
+    let eligible = top10;
+    if (this.lastWinner) {
+        eligible = top10.filter(user => user.username !== this.lastWinner);
+    }
+    
+    if (eligible.length === 0) {
+        eligible = top10;
+    }
+    
+    // ===== WEIGHTED SELECTION (PICK THE WINNER FIRST) =====
+    const weightedNames = [];
+    eligible.forEach((user, index) => {
+        const rank = index + 1;
+        let weight = 10;
+        if (rank === 1) weight = 25;
+        else if (rank === 2) weight = 20;
+        else if (rank === 3) weight = 15;
+        
+        for (let i = 0; i < weight; i++) {
+            weightedNames.push(user.username);
+        }
+    });
+    
+    // Secure shuffle
+    function secureShuffle(array) {
+        const shuffled = [...array];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const randomIndex = crypto.getRandomValues(new Uint32Array(1))[0] % (i + 1);
+            [shuffled[i], shuffled[randomIndex]] = [shuffled[randomIndex], shuffled[i]];
+        }
+        return shuffled;
+    }
+    
+    const shuffledWeighted = secureShuffle(weightedNames);
+    const randomIndex = crypto.getRandomValues(new Uint32Array(1))[0] % shuffledWeighted.length;
+    const winnerName = shuffledWeighted[randomIndex];
+    const winner = top10.find(u => u.username === winnerName);
+    
+    if (!winner) {
+        const firstWinner = eligible[0];
+        this.lastWinner = firstWinner.username;
+        this.showWheelAnimation(firstWinner.username, top10);
+        return;
+    }
+    
+    this.lastWinner = winner.username;
+    
+    // ===== NOW USE THE EXACT SAME ANIMATION AS pickSingleWinner =====
+    this.showWheelAnimation(winner.username, top10);
+}
+
+showWheelAnimation(winnerName, top10) {
+    // Build a simple list of ALL participants
+    const allNames = top10.map(u => u.username);
+    const repeatFactor = 100;
+    let repeated = [];
+    for (let i = 0; i < repeatFactor; i++) {
+        repeated = repeated.concat(allNames);
+    }
+    
+    // ===== FIND THE WINNER IN THE MIDDLE OF THE LIST =====
+    const totalItems = repeated.length;
+    const minIndex = Math.floor(totalItems * 0.3);   // Start at 30%
+    const maxIndex = Math.floor(totalItems * 0.7);   // End at 70%
+    
+    let targetIdx = -1;
+    for (let i = minIndex; i <= maxIndex; i++) {
+        if (repeated[i] === winnerName) {
+            targetIdx = i;
+            break;
+        }
+    }
+    // If not found, use the middle
+    if (targetIdx === -1) {
+        targetIdx = Math.floor(totalItems / 2);
+    }
+    
+    // ===== EXACT COPY OF pickSingleWinner OVERLAY =====
+    const overlay = document.createElement('div');
+    overlay.className = 'wheel-overlay';
+    overlay.innerHTML = `
+        <div class="wheel-container" style="max-width: 500px;">
+            <div class="wheel-title">🎯 Rolling Winner</div>
+            <div style="color:#94a3b8;font-size:0.85rem;margin-bottom:10px;">
+                🥇 #1: 25% | 🥈 #2: 20% | 🥉 #3: 15% | Others: 10%
+            </div>
+            <div class="wheel-viewport" style="height: 200px; position: relative; overflow: hidden;">
+                <div id="singleWheelScroller" class="wheel-scroller"></div>
+                <div class="wheel-pointer"></div>
+            </div>
+            <div id="wheelResult" style="margin-top:20px;font-size:1.2rem;color:#19C6FD;"></div>
+            <button id="closeWheelBtn" style="margin-top:20px;padding:8px 24px;background:#19C6FD;border:none;border-radius:60px;font-weight:bold;color:white;cursor:pointer;">Close</button>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+    
+    const scroller = document.getElementById('singleWheelScroller');
+    
+    // Build the wheel items
+    scroller.innerHTML = repeated.map(n => `<div class="wheel-item">${escapeHtml(n)}</div>`).join('');
+    scroller.offsetHeight;
+    
+    // Calculate positioning
+    const firstItem = scroller.querySelector('.wheel-item');
+    const itemHeight = firstItem.getBoundingClientRect().height;
+    const viewportHeight = 200;
+    const centerOffset = (viewportHeight / 2) - (itemHeight / 2);
+    
+    // ===== EXACT SAME CALCULATION AS pickSingleWinner =====
+    let targetOffset = -(targetIdx * itemHeight) + centerOffset;
+    const maxOffset = -(0 * itemHeight) + centerOffset;
+    const minOffset = -((totalItems-1) * itemHeight) + centerOffset;
+    targetOffset = Math.min(maxOffset, Math.max(minOffset, targetOffset));
+    
+    // ===== SAME DURATION AS pickSingleWinner =====
+    const duration = Math.random() * 4 + 8;
+    scroller.style.transition = `transform ${duration}s cubic-bezier(0.05, 0.95, 0.2, 1)`;
+    scroller.style.transform = `translateY(${targetOffset}px)`;
+    
+    // Play spin sound
+    playWheelSpinSound();
+    
+    const resultDiv = document.getElementById('wheelResult');
+    let animationEnded = false;
+    
+    // Handle animation end
+    scroller.addEventListener('transitionend', () => {
+        if (animationEnded) return;
+        animationEnded = true;
+        
+        const rank = top10.findIndex(u => u.username === winnerName) + 1;
+        const points = top10.find(u => u.username === winnerName)?.points || 0;
+        
+        let bonusText = '';
+        let rankEmoji = '';
+        if (rank === 1) { bonusText = '🏆 15% bonus!'; rankEmoji = '🥇'; }
+        else if (rank === 2) { bonusText = '🥈 10% bonus!'; rankEmoji = '🥈'; }
+        else if (rank === 3) { bonusText = '🥉 5% bonus!'; rankEmoji = '🥉'; }
+        
+        resultDiv.innerHTML = `
+            <div style="font-size:2rem;font-weight:800;color:#fbbf24;animation:bouncePop 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);">
+                🎉 WINNER 🎉
+            </div>
+            <div style="font-size:1.5rem;font-weight:700;color:#f1f5f9;margin-top:4px;">
+                ${escapeHtml(winnerName)}
+            </div>
+            <div style="font-size:0.9rem;color:#19C6FD;margin-top:4px;">
+                ${rankEmoji} Rank #${rank} ${bonusText} • ${points} points
+            </div>
+        `;
+        
+        playWinSound();
+        shootConfetti();
+        
+        this.recordWinner(winnerName, points);
+        addWinnerToHistory(winnerName, `weighted roll (rank #${rank})`);
+        
+        setTimeout(() => {
+            showWinnerOverlay(winnerName, []);
+        }, 800);
+        
+        if (gameMessageSpan) {
+            const rankText = rank <= 3 ? `Rank #${rank} with bonus!` : `Rank #${rank}`;
+            gameMessageSpan.innerText = `${winnerName} won (${rankText}) with ${points} points!`;
+        }
+    }, { once: true });
+    
+    // Close button
+    document.getElementById('closeWheelBtn').addEventListener('click', () => {
+        if (overlay.parentNode) overlay.remove();
+        if (!animationEnded) {
+            animationEnded = true;
+        }
+    });
+    
+    // Auto-close after 15 seconds
+    setTimeout(() => {
+        if (overlay.parentNode) {
+            overlay.remove();
+        }
+    }, 15000);
+}
+    
+    recordWinner(username, points) {
+        this.winnerHistory.unshift({ username, points, timestamp: Date.now() });
+        if (this.winnerHistory.length > this.maxHistory) this.winnerHistory.pop();
+        
+        if (!this.allTimeData.mostWins[username]) {
+            this.allTimeData.mostWins[username] = 0;
+        }
+        this.allTimeData.mostWins[username] += 1;
+        this.allTimeData.totalWinners += 1;
+        
+        if (this.allTimeData.topChatters.has(username)) {
+            const stats = this.allTimeData.topChatters.get(username);
+            stats.wins += 1;
+        }
+        
+        this.saveSessionData();
+        this.syncToServer();
+        this.updateUI();
+    }
+    
+    // ==============================================================
+    // ========== UI METHODS ==========
+    // ==============================================================
+    
+    getTopChatters(limit = 10) {
+        return Array.from(this.chatters.entries())
+            .sort((a, b) => b[1].points - a[1].points)
+            .slice(0, limit)
+            .map(([username, stats]) => ({ username, points: stats.points, messages: stats.messages }));
+    }
+    
+    getAllTimeTop(limit = 0) {
+        let entries = Array.from(this.allTimeData.topChatters.entries())
+            .sort((a, b) => b[1].totalPoints - a[1].totalPoints)
+            .filter(([_, stats]) => stats.totalPoints > 0);
+        
+        if (limit > 0) {
+            entries = entries.slice(0, limit);
+        }
+        
+        return entries.map(([username, stats]) => ({ 
+            username, 
+            totalPoints: stats.totalPoints,
+            totalMessages: stats.totalMessages || 0,
+            wins: stats.wins || 0,
+            firstSeen: stats.firstSeen || null,
+            lastSeen: stats.lastSeen || null
+        }));
+    }
+    
+    getTotalPoints() {
+        let total = 0;
+        for (const [, stats] of this.chatters) total += stats.points;
+        return total;
+    }
+    
+    getUserStats(username) {
+        if (!this.chatters.has(username)) return null;
+        const stats = this.chatters.get(username);
+        const top = this.getTopChatters(10);
+        const rank = top.findIndex(t => t.username === username) + 1;
+        
+        const allTimeStats = this.allTimeData.topChatters.get(username);
+        
+        return {
+            username,
+            points: stats.points,
+            messages: stats.messages,
+            rank: rank > 0 ? rank : null,
+            totalChatters: this.chatters.size,
+            allTimePoints: allTimeStats ? allTimeStats.totalPoints : 0,
+            allTimeWins: allTimeStats ? allTimeStats.wins : 0
+        };
+    }
+    
+    getAllTimeSummary() {
+        return {
+            totalPoints: this.allTimeData.totalPoints,
+            totalChatters: this.allTimeData.topChatters.size,
+            totalWinners: this.allTimeData.totalWinners,
+            totalSessions: (this.allTimeData.sessionHistory || []).length
+        };
+    }
+    
+    setupEventListeners() {
+        const tabCurrent = document.getElementById('tabCurrent');
+        const tabAllTime = document.getElementById('tabAllTime');
+        const allTimeContent = document.getElementById('allTimeContent');
+        
+        if (tabCurrent && tabAllTime) {
+            tabCurrent.addEventListener('click', () => {
+                this.showAllTime = false;
+                tabCurrent.style.color = '#19C6FD';
+                tabCurrent.style.borderBottom = '2px solid #19C6FD';
+                tabAllTime.style.color = '#94a3b8';
+                tabAllTime.style.borderBottom = '2px solid transparent';
+                if (allTimeContent) allTimeContent.style.display = 'none';
+                this.updateUI();
+            });
             
-            if (this.showAllTime) {
+            tabAllTime.addEventListener('click', () => {
+                this.showAllTime = true;
+                tabAllTime.style.color = '#19C6FD';
+                tabAllTime.style.borderBottom = '2px solid #19C6FD';
+                tabCurrent.style.color = '#94a3b8';
+                tabCurrent.style.borderBottom = '2px solid transparent';
+                if (allTimeContent) allTimeContent.style.display = 'block';
+                this.loadAllTimeFromServer();
                 this.renderAllTimeArchive();
-            } else {
-                this.renderLeaderboard();
-            }
+            });
         }
         
-        renderLeaderboard() {
-            const container = document.getElementById('leaderboardList');
-            if (!container) return;
-            
-            const top = this.getTopChatters(10);
-            if (top.length === 0) {
-                container.innerHTML = '<div style="text-align: center; color: #94a3b8; padding: 20px;">No chatters yet. Start chatting!</div>';
-                return;
-            }
-            
-            let html = '';
-            top.forEach((chatter, index) => {
+        const rollBtn = document.getElementById('rollWinnerBtn');
+        if (rollBtn) {
+            rollBtn.addEventListener('click', () => {
+                this.rollWinnerWithWheel();
+            });
+        }
+        
+        const resetBtn = document.getElementById('resetStreamBtn');
+        if (resetBtn) {
+            resetBtn.addEventListener('click', () => {
+                this.resetStream();
+            });
+        }
+        
+        const exportAllBtn = document.getElementById('exportAllBtn');
+        if (exportAllBtn) {
+            exportAllBtn.addEventListener('click', () => {
+                const csv = this.exportAllUsers();
+                const count = this.allTimeData.topChatters.size;
+                this.downloadCSV(csv, `all-users-${currentChannel || 'stream'}-${Date.now()}.csv`);
+                document.getElementById('exportStatus').textContent = `Exported ${count} users`;
+                setTimeout(() => { document.getElementById('exportStatus').textContent = ''; }, 3000);
+            });
+        }
+        
+        const exportTopBtn = document.getElementById('exportTopBtn');
+        if (exportTopBtn) {
+            exportTopBtn.addEventListener('click', () => {
+                const csv = this.exportTopUsers(100);
+                this.downloadCSV(csv, `top-100-${currentChannel || 'stream'}-${Date.now()}.csv`);
+                document.getElementById('exportStatus').textContent = 'Exported Top 100 users';
+                setTimeout(() => { document.getElementById('exportStatus').textContent = ''; }, 3000);
+            });
+        }
+        
+        const exportRecentBtn = document.getElementById('exportRecentBtn');
+        if (exportRecentBtn) {
+            exportRecentBtn.addEventListener('click', () => {
+                const csv = this.exportRecentUsers(30);
+                const count = csv.split('\n').length - 2;
+                this.downloadCSV(csv, `recent-30d-${currentChannel || 'stream'}-${Date.now()}.csv`);
+                document.getElementById('exportStatus').textContent = `Exported ${count} recent users`;
+                setTimeout(() => { document.getElementById('exportStatus').textContent = ''; }, 3000);
+            });
+        }
+
+        const resetAllDataBtn = document.getElementById('resetAllDataBtn');
+        if (resetAllDataBtn) {
+            resetAllDataBtn.addEventListener('click', () => {
+                this.resetAllData();
+            });
+        }
+    }
+    
+    renderAllTimeArchive() {
+        const summary = this.getAllTimeSummary();
+        
+        document.getElementById('allTimeTotalPoints').textContent = summary.totalPoints.toLocaleString();
+        document.getElementById('allTimeChatters').textContent = summary.totalChatters.toLocaleString();
+        document.getElementById('allTimeWinners').textContent = summary.totalWinners.toLocaleString();
+        document.getElementById('allTimeSessions').textContent = summary.totalSessions.toLocaleString();
+        document.getElementById('allTimeUserCount').textContent = `${summary.totalChatters} users`;
+        
+        let allUsers = this.getAllTimeTop(0);
+        allUsers = allUsers.filter(u => u.totalPoints > 0);
+        
+        const container = document.getElementById('allTimeLeaderboardList');
+        if (allUsers.length === 0) {
+            container.innerHTML = '<div style="text-align: center; color: #94a3b8; padding: 20px; font-size: 0.9rem;">No data yet</div>';
+        } else {
+            let html = `
+                <div style="display:grid;grid-template-columns:35px 1fr 55px 40px;gap:4px;padding:6px 10px;border-bottom:1px solid rgba(255,255,255,0.06);font-size:0.65rem;color:#64748b;font-weight:600;">
+                    <span>Rank</span>
+                    <span>Username</span>
+                    <span style="text-align:right;">Points</span>
+                    <span style="text-align:right;">Wins</span>
+                </div>
+            `;
+            const displayUsers = allUsers.slice(0, 50);
+            displayUsers.forEach((user, index) => {
                 const rank = index + 1;
                 let rankClass = '';
                 let rankColor = '#64748b';
@@ -2819,86 +3033,304 @@
                 else if (rank === 2) { rankClass = 'rank-silver'; rankColor = '#94a3b8'; }
                 else if (rank === 3) { rankClass = 'rank-bronze'; rankColor = '#cd7f32'; }
                 
+                const winsText = user.wins > 0 ? `<span style="color:#fbbf24;font-size:0.6rem;text-align:right;">${user.wins}</span>` : `<span style="color:#64748b;font-size:0.6rem;text-align:right;">0</span>`;
+                
                 html += `
-                    <div class="${rankClass}" style="display:flex;align-items:center;padding:6px 10px;border-radius:6px;margin:2px 0;">
-                        <span style="min-width:28px;font-weight:600;color:${rankColor};font-size:0.85rem;">${rank}</span>
-                        <span style="flex:1;font-weight:500;color:#f1f5f9;font-size:0.9rem;">${escapeHtml(chatter.username)}</span>
-                        <span style="font-weight:700;color:#19C6FD;font-size:0.9rem;">${chatter.points} pts</span>
+                    <div class="${rankClass}" style="display:grid;grid-template-columns:35px 1fr 55px 40px;gap:4px;align-items:center;padding:4px 10px;border-radius:6px;margin:1px 0;font-size:0.8rem;">
+                        <span style="color:${rankColor};font-weight:600;">${rank}</span>
+                        <span style="color:#f1f5f9;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(user.username)}</span>
+                        <span style="color:#19C6FD;font-weight:600;text-align:right;">${user.totalPoints}</span>
+                        ${winsText}
                     </div>
                 `;
             });
-            container.innerHTML = html;
-        }
-        
-        renderYourStats() {
-            const container = document.getElementById('yourStatsContainer');
-            if (!container) return;
-            let currentUser = currentChannel || null;
-            if (!currentUser) { container.style.display = 'none'; return; }
-            const stats = this.getUserStats(currentUser);
-            if (!stats) { container.style.display = 'none'; return; }
-            container.style.display = 'block';
-            document.getElementById('yourUsername').textContent = stats.username;
-            document.getElementById('yourPoints').textContent = stats.points;
-            document.getElementById('yourAllTimePoints').textContent = stats.allTimePoints || 0;
-            document.getElementById('yourMessages').textContent = stats.messages;
-            document.getElementById('yourRank').textContent = stats.rank ? `#${stats.rank} of ${stats.totalChatters}` : 'Not ranked';
-        }
-        
-        renderRecentWinners() {
-            const container = document.getElementById('recentWinnersList');
-            if (!container) return;
-            if (this.winnerHistory.length === 0) {
-                container.innerHTML = '<div style="color: #64748b;">No winners yet</div>';
-                return;
+            if (allUsers.length > 50) {
+                html += `<div style="text-align:center;color:#64748b;font-size:0.65rem;padding:8px;">+ ${allUsers.length - 50} more users</div>`;
             }
-            let html = '';
-            this.winnerHistory.slice(0, 5).forEach((winner, index) => {
-                const timeAgo = this.timeAgo(winner.timestamp);
-                html += `
-                    <div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
-                        <span>${index + 1}. ${escapeHtml(winner.username)}</span>
-                        <span style="color:#fbbf24;">${winner.points} pts</span>
-                        <span style="color:#64748b;font-size:0.65rem;">${timeAgo}</span>
-                    </div>
-                `;
-            });
             container.innerHTML = html;
         }
         
-        updateTotalPoints() {
-            const el = document.getElementById('totalPointsToday');
-            if (el) el.textContent = `Total: ${this.getTotalPoints()} pts`;
-        }
-        
-        updateSessionInfo() {
-            const dateEl = document.getElementById('sessionDate');
-            if (dateEl) dateEl.textContent = new Date().toLocaleDateString();
-            
-            const chattersEl = document.getElementById('sessionChatters');
-            if (chattersEl) chattersEl.textContent = this.chatters.size;
-            
-            const winnersEl = document.getElementById('sessionWinners');
-            if (winnersEl) winnersEl.textContent = this.winnerHistory.length;
-        }
-        
-        timeAgo(timestamp) {
-            const seconds = Math.floor((Date.now() - timestamp) / 1000);
-            if (seconds < 60) return `${seconds}s ago`;
-            const minutes = Math.floor(seconds / 60);
-            if (minutes < 60) return `${minutes}m ago`;
-            const hours = Math.floor(minutes / 60);
-            if (hours < 24) return `${hours}h ago`;
-            return `${Math.floor(hours / 24)}d ago`;
+        const sessionContainer = document.getElementById('allTimeSessionList');
+        const sessions = this.allTimeData.sessionHistory || [];
+        if (sessions.length === 0) {
+            sessionContainer.innerHTML = '<div style="text-align: center; color: #94a3b8; padding: 15px; font-size: 0.85rem;">No sessions yet</div>';
+        } else {
+            let html = '';
+            sessions.slice(-20).reverse().forEach((session) => {
+                const date = new Date(session.date).toLocaleDateString();
+                const topChatter = session.topChatters?.[0]?.username || '—';
+                html += `
+                    <div style="display:grid;grid-template-columns:80px 1fr 60px 50px 70px;gap:4px;align-items:center;padding:4px 10px;border-bottom:1px solid rgba(255,255,255,0.04);font-size:0.7rem;">
+                        <span style="color:#94a3b8;">${date}</span>
+                        <span style="color:#64748b;">${session.chatCount || 0} chatters</span>
+                        <span style="color:#19C6FD;font-weight:600;">${session.totalPoints || 0} pts</span>
+                        <span style="color:#fbbf24;">${session.winnerCount || 0} wins</span>
+                        <span style="color:#64748b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(topChatter)}</span>
+                    </div>
+                `;
+            });
+            sessionContainer.innerHTML = html;
         }
     }
+    
+    updateUI() {
+        this.updateTotalPoints();
+        this.updateSessionInfo();
+        this.renderYourStats();
+        this.renderRecentWinners();
+        
+        if (this.showAllTime) {
+            this.renderAllTimeArchive();
+        } else {
+            this.renderLeaderboard();
+        }
+    }
+    
+    renderLeaderboard() {
+        const container = document.getElementById('leaderboardList');
+        if (!container) return;
+        
+        const top = this.getTopChatters(10);
+        if (top.length === 0) {
+            container.innerHTML = '<div style="text-align: center; color: #94a3b8; padding: 20px;">No chatters yet. Start chatting!</div>';
+            return;
+        }
+        
+        let html = '';
+        top.forEach((chatter, index) => {
+            const rank = index + 1;
+            let rankClass = '';
+            let rankColor = '#64748b';
+            if (rank === 1) { rankClass = 'rank-gold'; rankColor = '#fbbf24'; }
+            else if (rank === 2) { rankClass = 'rank-silver'; rankColor = '#94a3b8'; }
+            else if (rank === 3) { rankClass = 'rank-bronze'; rankColor = '#cd7f32'; }
+            
+            let bonusText = '';
+            if (rank === 1) bonusText = '🔥 +15%';
+            else if (rank === 2) bonusText = '🔥 +10%';
+            else if (rank === 3) bonusText = '🔥 +5%';
+            
+            html += `
+                <div class="${rankClass}" style="display:flex;align-items:center;padding:6px 10px;border-radius:6px;margin:2px 0;">
+                    <span style="min-width:28px;font-weight:600;color:${rankColor};font-size:0.85rem;">${rank}</span>
+                    <span style="flex:1;font-weight:500;color:#f1f5f9;font-size:0.9rem;">${escapeHtml(chatter.username)}</span>
+                    <span style="font-weight:700;color:#19C6FD;font-size:0.9rem;">${chatter.points} pts</span>
+                    ${bonusText ? `<span style="font-size:0.65rem;color:#fbbf24;margin-left:6px;">${bonusText}</span>` : ''}
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+    }
+    
+    renderYourStats() {
+        const container = document.getElementById('yourStatsContainer');
+        if (!container) return;
+        let currentUser = currentChannel || null;
+        if (!currentUser) { container.style.display = 'none'; return; }
+        const stats = this.getUserStats(currentUser);
+        if (!stats) { container.style.display = 'none'; return; }
+        container.style.display = 'block';
+        document.getElementById('yourUsername').textContent = stats.username;
+        document.getElementById('yourPoints').textContent = stats.points;
+        document.getElementById('yourAllTimePoints').textContent = stats.allTimePoints || 0;
+        document.getElementById('yourMessages').textContent = stats.messages;
+        document.getElementById('yourRank').textContent = stats.rank ? `#${stats.rank} of ${stats.totalChatters}` : 'Not ranked';
+    }
+    
+    renderRecentWinners() {
+        const container = document.getElementById('recentWinnersList');
+        if (!container) return;
+        if (this.winnerHistory.length === 0) {
+            container.innerHTML = '<div style="color: #64748b;">No winners yet</div>';
+            return;
+        }
+        let html = '';
+        this.winnerHistory.slice(0, 5).forEach((winner, index) => {
+            const timeAgo = this.timeAgo(winner.timestamp);
+            html += `
+                <div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+                    <span>${index + 1}. ${escapeHtml(winner.username)}</span>
+                    <span style="color:#fbbf24;">${winner.points} pts</span>
+                    <span style="color:#64748b;font-size:0.65rem;">${timeAgo}</span>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+    }
+    
+    updateTotalPoints() {
+        const el = document.getElementById('totalPointsToday');
+        if (el) el.textContent = `Total: ${this.getTotalPoints()} pts`;
+    }
+    
+    updateSessionInfo() {
+        const dateEl = document.getElementById('sessionDate');
+        if (dateEl) dateEl.textContent = new Date().toLocaleDateString();
+        
+        const chattersEl = document.getElementById('sessionChatters');
+        if (chattersEl) chattersEl.textContent = this.chatters.size;
+        
+        const winnersEl = document.getElementById('sessionWinners');
+        if (winnersEl) winnersEl.textContent = this.winnerHistory.length;
+    }
+    
+    timeAgo(timestamp) {
+        const seconds = Math.floor((Date.now() - timestamp) / 1000);
+        if (seconds < 60) return `${seconds}s ago`;
+        const minutes = Math.floor(seconds / 60);
+        if (minutes < 60) return `${minutes}m ago`;
+        const hours = Math.floor(minutes / 60);
+        if (hours < 24) return `${hours}h ago`;
+        return `${Math.floor(hours / 24)}d ago`;
+    }
+    
+    resetStream() {
+        if (this.chatters.size === 0 && this.winnerHistory.length === 0) {
+            gameMessageSpan.innerText = 'No data to reset. Stream is already fresh!';
+            return false;
+        }
+        
+        if (!confirm('Start a new stream session?\n\nThis will:\n- Archive current session data\n- Reset all points for everyone\n- Start a fresh competition')) {
+            return false;
+        }
+        
+        if (!confirm('Are you sure? Current points will be archived but reset for the new stream.')) {
+            return false;
+        }
+        
+        const sessionData = {
+            sessionId: this.sessionId,
+            date: new Date().toISOString(),
+            totalPoints: this.getTotalPoints(),
+            chatCount: this.chatters.size,
+            winnerCount: this.winnerHistory.length,
+            topChatters: this.getTopChatters(5).map(c => ({ 
+                username: c.username, 
+                points: c.points 
+            })),
+            winners: this.winnerHistory.slice(0, 5).map(w => ({ 
+                username: w.username, 
+                points: w.points 
+            }))
+        };
+        
+        this.saveSessionToServer(sessionData);
+        
+        this.chatters.clear();
+        this.winnerHistory = [];
+        this.lastWinner = null;
+        this.messageHistory.clear();
+        this.sessionId = this.generateSessionId();
+        this.saveSessionData();
+        this.updateUI();
+        
+        gameMessageSpan.innerText = 'New stream session started! Fresh points for everyone!';
+        shootConfetti();
+        return true;
+    }
 
-    // ========== INITIALIZE CHATTER POINTS ==========
-    const chatterPoints = new ChatterPointsSystem();
-    window.chatterPoints = chatterPoints;
+    async resetAllData() {
+        if (!currentChannel) {
+            gameMessageSpan.innerText = '❌ No channel connected!';
+            return;
+        }
+        
+        if (!confirm('⚠️ Clear ALL data for ' + currentChannel + '?\n\nThis will:\n- Delete all points\n- Delete all chatters\n- Delete all winners\n- Delete all sessions\n\nThis is for starting FRESH. Cannot be undone!')) {
+            return;
+        }
+        
+        if (!confirm('⚠️ TYPE "DELETE" to confirm: (This is permanent!)')) {
+            return;
+        }
+        
+        try {
+            const response = await fetch(`/api/chatter/reset/${encodeURIComponent(currentChannel)}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ confirm: 'YES_DELETE_ALL' })
+            });
+            
+            const result = await response.json();
+            
+            if (response.ok) {
+                this.allTimeData.topChatters.clear();
+                this.allTimeData.totalPoints = 0;
+                this.allTimeData.totalWinners = 0;
+                this.allTimeData.mostWins = {};
+                this.allTimeData.sessionHistory = [];
+                this.chatters.clear();
+                this.winnerHistory = [];
+                this.lastWinner = null;
+                this.messageHistory.clear();
+                this.sessionId = this.generateSessionId();
+                
+                this.saveSessionData();
+                this.saveAllTimeFallback();
+                this.updateUI();
+                
+                gameMessageSpan.innerText = '✅ All data cleared! Ready for launch! 🚀';
+                shootConfetti();
+            } else {
+                gameMessageSpan.innerText = '❌ Failed: ' + (result.error || 'Unknown error');
+            }
+        } catch (e) {
+            gameMessageSpan.innerText = '❌ Error: ' + e.message;
+        }
+    }
+    
+    exportAllUsers() {
+        const allUsers = this.getAllTimeTop(0);
+        return this.generateCSV(allUsers);
+    }
+    
+    exportTopUsers(n = 100) {
+        const topUsers = this.getAllTimeTop(n);
+        return this.generateCSV(topUsers);
+    }
+    
+    exportRecentUsers(days = 30) {
+        const cutoff = Date.now() - (days * 24 * 60 * 60 * 1000);
+        const allUsers = this.getAllTimeTop(0);
+        const recentUsers = allUsers.filter(u => u.lastSeen && u.lastSeen > cutoff);
+        return this.generateCSV(recentUsers);
+    }
+    
+    generateCSV(users) {
+        if (!users || users.length === 0) {
+            return 'No data available\n';
+        }
+        let csv = 'Username,Total Points,Total Messages,Wins,First Seen,Last Seen,Rank\n';
+        users.forEach((user, index) => {
+            const firstSeen = user.firstSeen ? new Date(user.firstSeen).toLocaleDateString() : '';
+            const lastSeen = user.lastSeen ? new Date(user.lastSeen).toLocaleDateString() : '';
+            csv += `"${user.username}",${user.totalPoints},${user.totalMessages || 0},${user.wins || 0},"${firstSeen}","${lastSeen}",${index + 1}\n`;
+        });
+        return csv;
+    }
+    
+    downloadCSV(csv, filename = 'archive-data.csv') {
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    }
+}
 
-    console.log('[ChatterPoints] System initialized!');
-    console.log('🎯 Ace Race loaded with card suit background!');
+// ========== INITIALIZE CHATTER POINTS ==========
+const chatterPoints = new ChatterPointsSystem();
+window.chatterPoints = chatterPoints;
+
+console.log('[ChatterPoints] System initialized with:');
+console.log('   ✅ 15s point cooldown');
+console.log('   ✅ Skip 1 roll winner cooldown');
+console.log('   ✅ Weighted chances: #1:25%, #2:20%, #3:15%');
+console.log('   ✅ Full spam filter (no mute)');
+console.log('   ✅ Cryptographic random shuffling');
     </script>
 </body>
 </html>

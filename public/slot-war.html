@@ -3,14 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Slot War — Team Duel Game (Magic Edition)</title>
+    <title>Slot War — Team Duel Game</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Poppins:wght@400;600;800;900&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
-        body { font-family: 'Poppins', sans-serif; background: radial-gradient(ellipse 80% 50% at 20% 40%, rgba(25, 198, 253, 0.15), transparent), radial-gradient(ellipse 60% 80% at 80% 60%, rgba(6, 93, 230, 0.1), transparent), #0a0c12; min-height: 100vh; padding: 24px; color: #e2e8f0; }
-        .game-container { max-width: 1800px; width: 95%; margin: 0 auto; background: rgba(10, 14, 23, 0.6); backdrop-filter: blur(12px); border-radius: 48px; padding: 24px 28px; border: 1px solid rgba(25, 198, 253, 0.2); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4); }
-        .title { text-align: center; font-size: 3rem; font-weight: 800; font-family: 'Orbitron', monospace; background: linear-gradient(135deg, #19C6FD, #3b82f6); -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 8px; text-shadow: 0 0 20px rgba(25, 198, 253, 0.3); animation: titlePulse 1.5s infinite; }
-        @keyframes titlePulse { 0% { text-shadow: 0 0 5px #19C6FD; } 50% { text-shadow: 0 0 25px #19C6FD, 0 0 10px #3b82f6; } 100% { text-shadow: 0 0 5px #19C6FD; } }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #0a0c12;
+            min-height: 100vh;
+            padding: 24px;
+            color: #e2e8f0;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* ========== FLOATING BACKGROUND CANVAS ========== */
+        #bgCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            display: block;
+        }
+
+        .game-container {
+            position: relative;
+            z-index: 1;
+            max-width: 1800px;
+            width: 95%;
+            margin: 0 auto;
+            background: rgba(10, 14, 23, 0.45);
+            backdrop-filter: blur(8px);
+            border-radius: 48px;
+            padding: 24px 28px;
+            border: 1px solid rgba(25, 198, 253, 0.15);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        }
+
+        .title {
+            text-align: center;
+            font-size: 3rem;
+            font-weight: 800;
+            font-family: 'Orbitron', monospace;
+            background: linear-gradient(135deg, #19C6FD, #3b82f6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 8px;
+            text-shadow: 0 0 20px rgba(25, 198, 253, 0.3);
+        }
         .sub { text-align: center; margin-bottom: 28px; font-weight: 500; color: #94a3b8; }
         .three-columns { display: flex; flex-wrap: wrap; gap: 24px; }
         .left-column { flex: 1; min-width: 280px; }
@@ -34,7 +78,7 @@
         .slot-preview img { width: 140px; height: 196px; object-fit: contain; border-radius: 16px; background: #1e293b; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4); transition: transform 0.2s; }
         .slot-preview img:hover { transform: scale(1.02); }
         .slot-name { font-size: 1rem; margin-top: 8px; text-align: center; color: #cbd5e1; font-weight: 600; }
-        .btn, button:not(.remove-participant):not(.filter-actions button):not(.magic-btn) {
+        .btn, button:not(.remove-participant):not(.filter-actions button) {
             background: linear-gradient(135deg, #19C6FD, #3b82f6);
             color: white;
             border: none;
@@ -47,7 +91,7 @@
             width: 100%;
             margin-bottom: 8px;
         }
-        button:not(.remove-participant):not(.filter-actions button):not(.magic-btn):hover {
+        button:not(.remove-participant):not(.filter-actions button):hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(25, 198, 253, 0.4);
         }
@@ -89,7 +133,7 @@
         .action-buttons { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
         .action-group { display: flex; gap: 8px; }
         .action-group button { flex: 1; margin: 0; }
-        .random-slot-panel { text-align: center; }
+        .random-slot-panel { text-align: left; }
         .random-slot-buttons { display: flex; gap: 8px; margin-top: 12px; }
         .random-slot-buttons button { flex: 1; margin-bottom: 0; }
         .spin-animation-area { min-height: 150px; margin: 10px 0; display: flex; align-items: center; justify-content: center; }
@@ -152,434 +196,297 @@
             color: #fbbf24;
         }
 
-        /* ===== MAGIC SLOT PICKER STYLES ===== */
-        .magic-picker {
-            position: relative;
-            overflow: visible;
-        }
-
-        .magic-picker .card-container {
-            perspective: 800px;
-            width: 150px;
-            height: 210px;
-            margin: 15px auto;
-            position: relative;
-            z-index: 1;
-        }
-
-        .magic-picker .card {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            transform-style: preserve-3d;
-            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
-        }
-
-        .magic-picker .card.flipping {
-            animation: cardFlipFast 0.3s ease-in-out infinite;
-        }
-
-        .magic-picker .card.landing {
-            animation: cardLanding 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        @keyframes cardFlipFast {
-            0% { transform: rotateY(0deg) scale(1); }
-            50% { transform: rotateY(180deg) scale(0.95); }
-            100% { transform: rotateY(360deg) scale(1); }
-        }
-
-        @keyframes cardLanding {
-            0% { transform: rotateY(720deg) scale(1.2); }
-            50% { transform: rotateY(720deg) scale(1.1); }
-            100% { transform: rotateY(720deg) scale(1); }
-        }
-
-        .magic-picker .card-face {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
-            border-radius: 16px;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #1e293b;
-            border: 2px solid rgba(25, 198, 253, 0.3);
-        }
-
-        .magic-picker .card-front {
-            transform: rotateY(0deg);
-            background: #0f172a;
-        }
-
-        .magic-picker .card-front img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            padding: 5px;
-        }
-
-        .magic-picker .card-back {
-            transform: rotateY(180deg);
-            background: linear-gradient(135deg, #1a1a2e, #2a1a3e);
-            border: 3px solid #19C6FD;
-            box-shadow: inset 0 0 50px rgba(25, 198, 253, 0.1);
-        }
-
-        .magic-picker .card-back-content {
-            text-align: center;
-            color: #19C6FD;
-            font-family: 'Orbitron', monospace;
-            font-size: 0.9rem;
-            padding: 15px;
-        }
-
-        .magic-picker .card-back-content .icon {
-            font-size: 3rem;
-            margin-bottom: 8px;
-            animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-
-        /* ===== WAND FLOATING OVER CARD ===== */
-        .magic-picker .wand-wrapper {
-            position: relative;
-            height: 0;
-            z-index: 10;
-            pointer-events: none;
-            margin-top: -60px;
-        }
-
-        .magic-picker .wand-container {
-            position: absolute;
-            top: -30px;
-            left: 50%;
-            transform: translateX(-50%);
-            cursor: pointer;
-            pointer-events: all;
-            padding: 10px 20px;
-            transition: transform 0.3s ease;
-            display: inline-block;
-            width: auto;
-        }
-
-        .magic-picker .wand-container:hover {
-            transform: translateX(-50%) scale(1.05) translateY(-5px);
-        }
-
-        .magic-picker .wand-container:active {
-            transform: translateX(-50%) scale(0.95) translateY(5px);
-        }
-
-        .magic-picker .wand-image {
-            width: 70px;
-            height: auto;
-            filter: drop-shadow(0 0 30px rgba(25, 198, 253, 0.4)) drop-shadow(0 10px 20px rgba(0, 0, 0, 0.5));
-            transition: all 0.3s ease;
-            user-select: none;
-            animation: wandFloat 3s ease-in-out infinite;
-        }
-
-        @keyframes wandFloat {
-            0%, 100% { transform: translateY(0px) rotate(-5deg); }
-            50% { transform: translateY(-10px) rotate(5deg); }
-        }
-
-        .magic-picker .wand-container.waving .wand-image {
-            animation: wandWave 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-            filter: drop-shadow(0 0 50px rgba(25, 198, 253, 0.8)) drop-shadow(0 10px 20px rgba(0, 0, 0, 0.5));
-        }
-
-        @keyframes wandWave {
-            0% { transform: translateX(-30px) rotate(-60deg) scale(1.2); }
-            15% { transform: translateX(20px) rotate(40deg) scale(0.9); }
-            30% { transform: translateX(-20px) rotate(-40deg) scale(1.1); }
-            50% { transform: translateX(15px) rotate(30deg) scale(0.95); }
-            70% { transform: translateX(-10px) rotate(-20deg) scale(1.05); }
-            85% { transform: translateX(5px) rotate(10deg) scale(0.98); }
-            100% { transform: translateX(0px) rotate(0deg) scale(1); }
-        }
-
-        /* Sparkle trail around wand */
-        .magic-picker .wand-container.waving::before {
-            content: '';
-            position: absolute;
-            top: -20px;
-            left: -20px;
-            right: -20px;
-            bottom: -20px;
-            background: radial-gradient(ellipse at center, rgba(25, 198, 253, 0.15), transparent 70%);
-            border-radius: 50%;
-            animation: wandGlow 0.8s ease-out forwards;
-            pointer-events: none;
-        }
-
-        @keyframes wandGlow {
-            0% { transform: scale(0.5); opacity: 0; }
-            50% { transform: scale(1.5); opacity: 1; }
-            100% { transform: scale(2); opacity: 0; }
-        }
-
-        .magic-picker .slot-name-display {
-            font-family: 'Orbitron', monospace;
-            color: #19C6FD;
-            font-size: 0.9rem;
-            margin: 5px 0 10px 0;
-            text-shadow: 0 0 20px rgba(25, 198, 253, 0.3);
-            min-height: 30px;
-            transition: all 0.3s ease;
-            position: relative;
-            z-index: 2;
-        }
-
-        .magic-picker .slot-name-display.reveal {
-            animation: textReveal 0.5s ease-out;
-        }
-
-        @keyframes textReveal {
-            0% { transform: scale(0.5); opacity: 0; }
-            60% { transform: scale(1.2); opacity: 1; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        /* Sparkle Trail */
-        .sparkle-trail {
-            position: fixed;
-            pointer-events: none;
-            width: 15px;
-            height: 15px;
-            border-radius: 50%;
-            animation: sparkleFade 0.6s ease-out forwards;
-            z-index: 9999;
-        }
-
-        @keyframes sparkleFade {
-            0% { transform: scale(1); opacity: 1; }
-            100% { transform: scale(0); opacity: 0; }
-        }
-
-        /* Celebration Particles */
-        .particle {
-            position: fixed;
-            font-size: 1.5rem;
-            animation: particleFloat var(--duration) ease-out forwards;
-            opacity: 0;
-            pointer-events: none;
-            z-index: 9999;
-        }
-
-        @keyframes particleFloat {
-            0% {
-                opacity: 1;
-                transform: translate(0, 0) scale(1) rotate(0deg);
-            }
-            100% {
-                opacity: 0;
-                transform: translate(var(--x), var(--y)) scale(0) rotate(720deg);
-            }
-        }
-
-        .magic-btn {
-            background: linear-gradient(135deg, #f59e0b, #eab308);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 60px;
-            font-weight: 600;
-            font-family: 'Poppins', sans-serif;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(25, 198, 253, 0.3);
-            width: auto;
-            margin: 0;
-        }
-
-        .magic-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 25px rgba(25, 198, 253, 0.5);
-        }
-
-        .magic-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .magic-picker .magic-buttons {
-            display: flex;
-            gap: 8px;
-            margin-top: 8px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .magic-picker .magic-buttons button {
-            flex: 1;
-            margin: 0;
-        }
-
-        /* Magic Glow Ring around card */
-        .magic-picker .magic-ring {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            border: 2px solid rgba(25, 198, 253, 0.1);
-            animation: ringPulse 3s ease-in-out infinite;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .magic-picker .magic-ring::before {
-            content: '';
-            position: absolute;
-            inset: 10px;
-            border-radius: 50%;
-            border: 2px solid rgba(25, 198, 253, 0.05);
-            animation: ringPulse 3s ease-in-out infinite reverse;
-        }
-
-        @keyframes ringPulse {
-            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.3; }
-            50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.8; }
-        }
+        /* ========== AUDIO CONTROLS ========== */
+        
     </style>
 </head>
 <body>
-<div class="game-container">
-    <div class="title">SLOT WAR</div>
-    <div class="sub">Viewers type <strong>!A</strong> or <strong>!B</strong> to join a team</div>
-    <div class="three-columns">
-        <div class="left-column">
-            <div class="panel">
-                <div class="panel-title">Streamer Controls</div>
-                <div class="toggle-group">
-                    <button id="openJoiningBtn" class="btn-success">Open Joining</button>
-                    <button id="closeJoiningBtn" class="btn-danger">Close Joining</button>
-                </div>
-                <button id="clearTeamsBtn" class="btn-secondary">Clear Teams</button>
-                <button id="resetGameBtn" class="btn-danger">🔥 HARD RESET (Wipe ALL Data)</button>
-            </div>
-            <div class="panel">
-                <div class="panel-title">Manual Add</div>
-                <input type="text" id="manualUsername" class="input-field" placeholder="Username (required)" maxlength="20">
-                <div class="action-group" style="display: flex; gap: 8px;">
-                    <button id="manualAddA" class="btn-success" style="flex:1;">Add to Team A</button>
-                    <button id="manualAddB" class="btn-danger" style="flex:1;">Add to Team B</button>
-                </div>
-            </div>
-            <div class="panel">
-                <div class="panel-title">Provider Filters</div>
-                <div class="top-providers" id="topProvidersContainer"></div>
-                <input type="text" id="filterSearch" class="input-field" placeholder="Search providers...">
-                <div class="filter-actions">
-                    <button id="selectAllBtn">Select All</button>
-                    <button id="deselectAllBtn">Deselect All</button>
-                    <button id="clearFiltersBtn">Clear Filters</button>
-                </div>
-                <div id="providerFilterList" class="filter-panel"></div>
-            </div>
-            <div class="panel">
-                <div class="panel-title">📜 Stream Chat Log</div>
-                <div id="chatLogPanel" class="chat-log-panel">Waiting for messages...</div>
-            </div>
-            <div class="panel">
-                <div class="panel-title">🏆 Last 20 Winners</div>
-                <div id="winnerHistoryPanel" class="history-panel">No winners yet</div>
-            </div>
-        </div>
 
-        <div class="middle-column">
-            <div style="display: flex; gap: 20px;">
-                <div class="panel team-panel" style="flex:1">
-                    <div class="panel-title">TEAM A <span id="teamACount">(0)</span></div>
-                    <div id="teamAList" class="team-list"></div>
-                </div>
-                <div class="panel team-panel" style="flex:1">
-                    <div class="panel-title">TEAM B <span id="teamBCount">(0)</span></div>
-                    <div id="teamBList" class="team-list"></div>
-                </div>
-            </div>
-        </div>
+    <!-- ========== FLOATING BACKGROUND CANVAS ========== -->
+    <canvas id="bgCanvas"></canvas>
 
-        <div class="right-column">
-            <div class="panel">
-                <div class="panel-title">Select Slots</div>
-                <label style="font-size:0.85rem">Slot for Team A</label>
-                <select id="slotASelect" class="slot-select"></select>
-                <div id="slotAPreview" class="slot-preview"></div>
-                <div id="slotAName" class="slot-name"></div>
-                <label style="font-size:0.85rem">Slot for Team B</label>
-                <select id="slotBSelect" class="slot-select"></select>
-                <div id="slotBPreview" class="slot-preview"></div>
-                <div id="slotBName" class="slot-name"></div>
-                <div class="action-buttons">
-                    <div class="action-group">
-                        <button id="givePointsA">Give Points to Team A</button>
-                        <button id="givePointsB">Give Points to Team B</button>
+    <!-- ========== AUDIO CONTROLS ========== -->
+    
+    <div class="game-container">
+        <div class="title">SLOT WAR</div>
+        <div class="sub">Viewers type <strong>!A</strong> or <strong>!B</strong> to join a team</div>
+        <div class="three-columns">
+            <div class="left-column">
+                <div class="panel">
+                    <div class="panel-title">Streamer Controls</div>
+                    <div class="toggle-group">
+                        <button id="openJoiningBtn" class="btn-success">Open Joining</button>
+                        <button id="closeJoiningBtn" class="btn-danger">Close Joining</button>
                     </div>
-                    <div class="action-group">
-                        <button id="pickWinnerA" style="background:linear-gradient(135deg,#f59e0b,#eab308);">Pick Winner from Team A</button>
-                        <button id="pickWinnerB" style="background:linear-gradient(135deg,#f59e0b,#eab308);">Pick Winner from Team B</button>
+                    <button id="clearTeamsBtn" class="btn-secondary">Clear Teams</button>
+                    <button id="resetGameBtn" class="btn-danger">🔥 HARD RESET (Wipe ALL Data)</button>
+                </div>
+                <div class="panel">
+                    <div class="panel-title">Manual Add</div>
+                    <input type="text" id="manualUsername" class="input-field" placeholder="Username (required)" maxlength="20">
+                    <div class="action-group" style="display: flex; gap: 8px;">
+                        <button id="manualAddA" class="btn-success" style="flex:1;">Add to Team A</button>
+                        <button id="manualAddB" class="btn-danger" style="flex:1;">Add to Team B</button>
                     </div>
-                    <button id="selectSlotsBtn" style="background: linear-gradient(135deg, #f59e0b, #eab308);">Select Slots</button>
+                </div>
+                <div class="panel">
+                    <div class="panel-title">Provider Filters</div>
+                    <div class="top-providers" id="topProvidersContainer"></div>
+                    <input type="text" id="filterSearch" class="input-field" placeholder="Search providers...">
+                    <div class="filter-actions">
+                        <button id="selectAllBtn">Select All</button>
+                        <button id="deselectAllBtn">Deselect All</button>
+                        <button id="clearFiltersBtn">Clear Filters</button>
+                    </div>
+                    <div id="providerFilterList" class="filter-panel"></div>
+                </div>
+                <div class="panel">
+                    <div class="panel-title">Stream Chat Log</div>
+                    <div id="chatLogPanel" class="chat-log-panel">Waiting for messages...</div>
+                </div>
+                <div class="panel">
+                    <div class="panel-title">Last 20 Winners</div>
+                    <div id="winnerHistoryPanel" class="history-panel">No winners yet</div>
                 </div>
             </div>
-            
-            <!-- ===== MAGIC SLOT PICKER ===== -->
-            <div class="panel random-slot-panel magic-picker">
-                <div class="panel-title">🪄 Magic Slot Picker</div>
-                
-                <!-- Magic Ring Background -->
-                <div class="magic-ring"></div>
-                
-                <!-- Card Container -->
-                <div class="card-container" id="magicCardContainer">
-                    <div class="card" id="magicSlotCard">
-                        <div class="card-face card-front">
-                            <img id="magicSlotImage" src="" alt="Slot" style="display: none;">
+
+            <div class="middle-column">
+                <div style="display: flex; gap: 20px;">
+                    <div class="panel team-panel" style="flex:1">
+                        <div class="panel-title">TEAM A <span id="teamACount">(0)</span></div>
+                        <div id="teamAList" class="team-list"></div>
+                    </div>
+                    <div class="panel team-panel" style="flex:1">
+                        <div class="panel-title">TEAM B <span id="teamBCount">(0)</span></div>
+                        <div id="teamBList" class="team-list"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="right-column">
+                <div class="panel">
+                    <div class="panel-title">Select Slots</div>
+                    <label style="font-size:0.85rem">Slot for Team A</label>
+                    <select id="slotASelect" class="slot-select"></select>
+                    <div id="slotAPreview" class="slot-preview"></div>
+                    <div id="slotAName" class="slot-name"></div>
+                    <label style="font-size:0.85rem">Slot for Team B</label>
+                    <select id="slotBSelect" class="slot-select"></select>
+                    <div id="slotBPreview" class="slot-preview"></div>
+                    <div id="slotBName" class="slot-name"></div>
+                    <div class="action-buttons">
+                        <div class="action-group">
+                            <button id="givePointsA">Give Points to Team A</button>
+                            <button id="givePointsB">Give Points to Team B</button>
                         </div>
-                        <div class="card-face card-back">
-                            <div class="card-back-content">
-                                <div class="icon">🪄</div>
-                                <div>MAGIC</div>
-                                <div style="font-size:0.7rem;margin-top:5px;opacity:0.7;">✨ SLOT ✨</div>
-                            </div>
+                        <div class="action-group">
+                            <button id="pickWinnerA" style="background:linear-gradient(135deg,#f59e0b,#eab308);">Pick Winner from Team A</button>
+                            <button id="pickWinnerB" style="background:linear-gradient(135deg,#f59e0b,#eab308);">Pick Winner from Team B</button>
                         </div>
+                        <button id="selectSlotsBtn" style="background: linear-gradient(135deg, #f59e0b, #eab308);">Select Slots</button>
                     </div>
                 </div>
-
-                <!-- Wand Floating Over Card -->
-                <div class="wand-wrapper">
-                    <div class="wand-container" id="wandContainer" style="cursor: pointer;">
-                        <img class="wand-image" id="wandImage" src="wand.webp" alt="Magic Wand">
+                <div class="panel random-slot-panel">
+                    <div class="panel-title">Random Slot Picker</div>
+                    <div class="spin-animation-area">
+                        <img id="randomSlotResultImg" src="" style="display: none;">
                     </div>
-                </div>
-
-                <!-- Slot Name Display -->
-                <div class="slot-name-display" id="magicSlotNameDisplay">✨ Tap the wand ✨</div>
-
-                <div class="magic-buttons">
-                    <button id="magicForA" class="btn-success" style="flex:1;">🪄 Magic for Team A</button>
-                    <button id="magicForB" class="btn-danger" style="flex:1;">🪄 Magic for Team B</button>
+                    <div class="random-slot-buttons">
+                        <button id="randomForA" class="btn-secondary"> Random for A</button>
+                        <button id="randomForB" class="btn-secondary"> Random for B</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<script>
+    <!-- ========== FLOATING BACKGROUND PARTICLES ========== -->
+    <script>
+    (function() {
+        const canvas = document.getElementById('bgCanvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+
+        // List of your custom images (random1.webp to random10.webp)
+        const imageNames = [];
+        for (let i = 1; i <= 10; i++) {
+            imageNames.push(`random${i}.webp`);
+        }
+
+        function resizeCanvas() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // Load all images
+        const images = [];
+        let imagesLoaded = 0;
+        const totalImages = imageNames.length;
+
+        function loadImages() {
+            imageNames.forEach((name, index) => {
+                const img = new Image();
+                img.onload = () => {
+                    imagesLoaded++;
+                    if (imagesLoaded === totalImages) {
+                        console.log('All background images loaded!');
+                        animate();
+                    }
+                };
+                img.onerror = () => {
+                    imagesLoaded++;
+                    // If image fails to load, use a fallback colored circle
+                    console.warn(`Failed to load ${name}, using fallback`);
+                    const fallbackCanvas = document.createElement('canvas');
+                    fallbackCanvas.width = 60;
+                    fallbackCanvas.height = 60;
+                    const fctx = fallbackCanvas.getContext('2d');
+                    const hue = (index * 36) % 360;
+                    fctx.fillStyle = `hsl(${hue}, 70%, 50%)`;
+                    fctx.beginPath();
+                    fctx.arc(30, 30, 25, 0, Math.PI * 2);
+                    fctx.fill();
+                    fctx.fillStyle = 'white';
+                    fctx.font = '20px sans-serif';
+                    fctx.textAlign = 'center';
+                    fctx.textBaseline = 'middle';
+                    fctx.fillText('🎰', 30, 32);
+                    img.src = fallbackCanvas.toDataURL();
+                    if (imagesLoaded === totalImages) {
+                        console.log('All background images loaded (with fallbacks)');
+                        animate();
+                    }
+                };
+                img.src = `/${name}`;
+                images.push(img);
+            });
+        }
+
+        const particles = [];
+        const particleCount = 60;
+
+        function createParticles() {
+            for (let i = 0; i < particleCount; i++) {
+                const img = images[Math.floor(Math.random() * images.length)];
+                const size = 40 + Math.random() * 50;
+                particles.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    img: img,
+                    size: size,
+                    rotation: Math.random() * Math.PI * 2,
+                    rotationSpeed: (Math.random() - 0.5) * 0.01,
+                    floatSpeed: 0.0003 + Math.random() * 0.001,
+                    floatAngle: Math.random() * Math.PI * 2,
+                    floatRadius: 30 + Math.random() * 60,
+                    opacity: 0.08 + Math.random() * 0.15,
+                    driftX: (Math.random() - 0.5) * 0.2,
+                    driftY: (Math.random() - 0.5) * 0.2
+                });
+            }
+        }
+
+        let animationStarted = false;
+
+        function animate() {
+            if (animationStarted) return;
+            animationStarted = true;
+            
+            function draw() {
+                ctx.clearRect(0, 0, width, height);
+
+                for (const p of particles) {
+                    p.floatAngle += p.floatSpeed;
+                    p.x += Math.cos(p.floatAngle) * p.floatRadius * 0.002 + p.driftX * 0.15;
+                    p.y += Math.sin(p.floatAngle * 0.7) * p.floatRadius * 0.0015 + p.driftY * 0.15;
+                    p.rotation += p.rotationSpeed;
+
+                    // Wrap around edges
+                    if (p.x < -p.size) p.x = width + p.size;
+                    if (p.x > width + p.size) p.x = -p.size;
+                    if (p.y < -p.size) p.y = height + p.size;
+                    if (p.y > height + p.size) p.y = -p.size;
+
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate(p.rotation);
+                    ctx.globalAlpha = p.opacity;
+                    
+                    // Draw the image
+                    if (p.img && p.img.complete && p.img.naturalWidth > 0) {
+                        const size = p.size;
+                        ctx.drawImage(p.img, -size/2, -size/2, size, size);
+                    } else {
+                        // Fallback colored circle with emoji
+                        ctx.font = `${p.size * 0.7}px sans-serif`;
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillStyle = '#19C6FD';
+                        ctx.fillText('🎰', 0, 0);
+                    }
+                    
+                    ctx.restore();
+                }
+
+                requestAnimationFrame(draw);
+            }
+
+            // Create particles after images are loaded
+            createParticles();
+            draw();
+        }
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+            // Reposition particles
+            for (const p of particles) {
+                p.x = Math.random() * width;
+                p.y = Math.random() * height;
+            }
+        });
+
+        // Start loading images
+        loadImages();
+
+        // Fallback: if images take too long, start with fallbacks
+        setTimeout(() => {
+            if (!animationStarted) {
+                console.log('Starting animation with fallback images');
+                // Create fallback images for any that didn't load
+                images.forEach((img, index) => {
+                    if (!img.complete || img.naturalWidth === 0) {
+                        const fallbackCanvas = document.createElement('canvas');
+                        fallbackCanvas.width = 60;
+                        fallbackCanvas.height = 60;
+                        const fctx = fallbackCanvas.getContext('2d');
+                        const hue = (index * 36) % 360;
+                        fctx.fillStyle = `hsl(${hue}, 70%, 50%)`;
+                        fctx.beginPath();
+                        fctx.arc(30, 30, 25, 0, Math.PI * 2);
+                        fctx.fill();
+                        fctx.fillStyle = 'white';
+                        fctx.font = '20px sans-serif';
+                        fctx.textAlign = 'center';
+                        fctx.textBaseline = 'middle';
+                        fctx.fillText('🎰', 30, 32);
+                        img.src = fallbackCanvas.toDataURL();
+                    }
+                });
+                animate();
+            }
+        }, 3000);
+
+        console.log('🎰 Slot War background started!');
+    })();
+    </script>
+
+    <!-- ========== MAIN JAVASCRIPT ========== -->
+    <script>
     (function() {
         // ========== MULTI-CHANNEL SUPPORT ==========
         let currentChannelKey = '';
@@ -593,7 +500,6 @@
         const MAX_CHAT_LOG = 200;
         const MAX_WINNERS = 20;
 
-        // Deduplicate chat messages (prevents duplicates from multiple connections)
         const processedMessages = new Set();
         function isDuplicateMessage(username, content) {
             const key = `${username}|${content}`;
@@ -674,7 +580,6 @@
                     slotBSelect.value = slotData[0].name;
                     updateSlotNameDisplay();
                     sendSlotsToServer();
-                    initMagicPicker();
                 }
             } catch (err) {
                 console.error('Failed to load slots.json:', err);
@@ -720,6 +625,9 @@
         const manualUsername = document.getElementById('manualUsername');
         const manualAddA = document.getElementById('manualAddA');
         const manualAddB = document.getElementById('manualAddB');
+        const randomForABtn = document.getElementById('randomForA');
+        const randomForBBtn = document.getElementById('randomForB');
+        const randomSlotResultImg = document.getElementById('randomSlotResultImg');
         const gameMessageSpan = document.createElement('div'); gameMessageSpan.style.display = 'none';
 
         // ========== WEBSOCKET SYNC ==========
@@ -917,7 +825,7 @@
             } catch(err) { console.error(err); }
         }
 
-        // ========== PROVIDER FILTERS (full) ==========
+        // ========== PROVIDER FILTERS ==========
         const topProviderList = [
             "Pragmatic Play", "Titan Gaming", "Twist Gaming", "Uppercut Gaming",
             "BGaming", "Hacksaw Gaming", "Backseat Gaming", "Donut Gaming",
@@ -1134,7 +1042,6 @@
                 return false;
             }
 
-            // ---- CRYPTO SHUFFLE (fair randomness) ----
             let shuffled = [...teamMembers];
             for (let i = shuffled.length - 1; i > 0; i--) {
                 const randomIndex = crypto.getRandomValues(new Uint32Array(1))[0] % (i + 1);
@@ -1149,7 +1056,6 @@
             if (team === 'A') lastWinnerA = winnerName;
             else lastWinnerB = winnerName;
 
-            // ---- BUILD WHEEL OVERLAY ----
             const names = teamMembers.map(p => p.name);
             const overlay = document.createElement('div');
             overlay.className = 'wheel-overlay';
@@ -1171,7 +1077,6 @@
             for (let i = 0; i < repeatFactor; i++) repeated.push(...names);
             scroller.innerHTML = repeated.map(n => `<div class="wheel-item">${escapeHtml(n)}</div>`).join('');
 
-            // Force reflow to get correct dimensions
             scroller.offsetHeight;
             const firstItem = scroller.querySelector('.wheel-item');
             const itemHeight = firstItem.getBoundingClientRect().height;
@@ -1179,7 +1084,6 @@
             const centerOffset = (viewportHeight / 2) - (itemHeight / 2);
             const totalItems = repeated.length;
 
-            // ---- Find valid index within visible range (25 to totalItems-25) ----
             const minIndex = 25;
             const maxIndex = totalItems - 25;
             let targetIdx = -1;
@@ -1190,7 +1094,6 @@
                 }
             }
             if (targetIdx === -1) {
-                // fallback: any occurrence within range (should never happen)
                 for (let i = minIndex; i <= maxIndex; i++) {
                     if (repeated[i] === winnerName) {
                         targetIdx = i;
@@ -1200,20 +1103,19 @@
             }
             if (targetIdx === -1) targetIdx = minIndex;
 
-            // Calculate target offset (no random jitter)
             let targetOffset = -(targetIdx * itemHeight) + centerOffset;
             const maxOffset = -(0 * itemHeight) + centerOffset;
             const minOffset = -((totalItems - 1) * itemHeight) + centerOffset;
             targetOffset = Math.min(maxOffset, Math.max(minOffset, targetOffset));
 
-            // ---- DRAMATIC ANIMATION (8–12 sec, extremely fast start, smooth stop) ----
-            const duration = Math.random() * 4 + 8;   // 8–12 seconds
+            const duration = Math.random() * 4 + 8;
             scroller.style.transition = `transform ${duration}s cubic-bezier(0.05, 0.95, 0.2, 1)`;
             scroller.style.transform = `translateY(${targetOffset}px)`;
 
             const resultDiv = document.getElementById('wheelResult');
             scroller.addEventListener('transitionend', () => {
                 resultDiv.innerHTML = `WINNER: ${escapeHtml(winnerName)}`;
+                playWinSound();
                 shootConfetti();
                 const slot = team === 'A' ? selectedSlotA : selectedSlotB;
                 if (slot) {
@@ -1224,6 +1126,111 @@
 
             document.getElementById('closeWheelBtn').addEventListener('click', () => overlay.remove());
             return true;
+        }
+
+        // ========== RANDOM SLOT PICKER ==========
+        let isSpinning = false;
+        let spinInterval = null;
+        function getFilteredSlots() { return slotData.filter(slot => selectedProviders.has(slot.provider)); }
+        function startSpinAnimation(team) {
+            if (isSpinning) return;
+            const filtered = getFilteredSlots();
+            if (filtered.length === 0) { alert('No slots match the selected filters'); return; }
+            isSpinning = true;
+            const targetButton = team === 'A' ? randomForABtn : randomForBBtn;
+            targetButton.disabled = true;
+            randomForABtn.disabled = true;
+            randomForBBtn.disabled = true;
+            let frames = 0;
+            const totalFrames = 30;
+            const frameDelay = 80;
+            const randomIndex = Math.floor(Math.random() * filtered.length);
+            const chosenSlot = filtered[randomIndex];
+            randomSlotResultImg.style.display = 'block';
+            spinInterval = setInterval(() => {
+                if (frames >= totalFrames) {
+                    clearInterval(spinInterval);
+                    isSpinning = false;
+                    randomForABtn.disabled = false;
+                    randomForBBtn.disabled = false;
+                    targetButton.disabled = false;
+                    if (team === 'A') {
+                        selectedSlotA = chosenSlot;
+                        updateSlotPreview('A', selectedSlotA);
+                        slotASelect.value = chosenSlot.name;
+                        updateSlotNameDisplay();
+                        sendSlotsToServer();
+                    } else {
+                        selectedSlotB = chosenSlot;
+                        updateSlotPreview('B', selectedSlotB);
+                        slotBSelect.value = chosenSlot.name;
+                        updateSlotNameDisplay();
+                        sendSlotsToServer();
+                    }
+                    randomSlotResultImg.src = chosenSlot.image_url;
+                    randomSlotResultImg.style.transform = 'scale(1.05)';
+                    setTimeout(() => randomSlotResultImg.style.transform = 'scale(1)', 200);
+                    return;
+                }
+                const tempSlot = filtered[Math.floor(Math.random() * filtered.length)];
+                randomSlotResultImg.src = tempSlot.image_url;
+                const rotation = frames * 22;
+                const scale = 1 + Math.sin(frames * 0.8) * 0.05;
+                randomSlotResultImg.style.transform = `rotateY(${rotation}deg) scale(${scale})`;
+                frames++;
+            }, frameDelay);
+        }
+        randomForABtn.addEventListener('click', () => startSpinAnimation('A'));
+        randomForBBtn.addEventListener('click', () => startSpinAnimation('B'));
+
+        // ========== AUDIO ==========
+        let audioContext = null;
+        let isMuted = false;
+        let volume = 0.5;
+
+        function playWinSound() {
+            try {
+                if (isMuted) return;
+                if (!audioContext) {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (audioContext.state === 'suspended') audioContext.resume();
+                const now = audioContext.currentTime;
+                const o = audioContext.createOscillator();
+                const g = audioContext.createGain();
+                o.connect(g);
+                g.connect(audioContext.destination);
+                o.frequency.value = 880;
+                g.gain.setValueAtTime(volume * 0.3, now);
+                g.gain.exponentialRampToValueAtTime(0.00001, now + 0.5);
+                o.start(now);
+                o.stop(now + 0.5);
+            } catch(e) { /* silent */ }
+        }
+
+        function playSpinSound() {
+            try {
+                if (isMuted) return;
+                if (!audioContext) {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (audioContext.state === 'suspended') audioContext.resume();
+                const now = audioContext.currentTime;
+                const bufferSize = 4096;
+                const noise = audioContext.createScriptProcessor(bufferSize, 1, 1);
+                noise.onaudioprocess = function(e) {
+                    const output = e.outputBuffer.getChannelData(0);
+                    for (let i = 0; i < bufferSize; i++) output[i] = (Math.random() - 0.5) * volume * 0.2;
+                    noise.disconnect();
+                };
+                noise.connect(audioContext.destination);
+                const gain = audioContext.createGain();
+                gain.gain.setValueAtTime(volume * 0.15, now);
+                gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.3);
+                noise.connect(gain);
+                gain.connect(audioContext.destination);
+                setTimeout(() => { try { noise.disconnect(); } catch(e) {} }, 300);
+            } catch(e) { /* fallback */ }
         }
 
         function shootConfetti() {
@@ -1246,7 +1253,6 @@
         }
 
         function showWinnerOverlay(name, team, slot) {
-            // Simple winner overlay
             const overlay = document.createElement('div');
             overlay.className = 'winner-overlay';
             overlay.innerHTML = `
@@ -1267,8 +1273,12 @@
             overlay.addEventListener('click', () => { overlay.remove(); currentWinnerOverlay = null; });
         }
 
+        
+
         // ========== PERSISTENCE ==========
         let saveTimeout = null;
+        let userPointsMap = new Map();
+
         function saveState() {
             if (!currentChannel) return;
             if (saveTimeout) clearTimeout(saveTimeout);
@@ -1324,7 +1334,6 @@
         closeJoiningBtn.addEventListener('click', () => { joiningOpen = false; updateJoiningButtons(); saveState(); });
         updateJoiningButtons();
 
-        let userPointsMap = new Map();
         function clearAllTeams() {
             if (confirm("Clear all teams? Points will be preserved.")) {
                 participants = [];
@@ -1372,237 +1381,6 @@
 
         function escapeHtml(str) { return str.replace(/[&<>]/g, m => ({ '&':'&amp;','<':'&lt;','>':'&gt;' })[m] || m); }
 
-        // ========== MAGIC SLOT PICKER ==========
-        let magicIsSpinning = false;
-        let magicCurrentSlot = null;
-
-        function getMagicFilteredSlots() {
-            return slotData.filter(slot => selectedProviders.has(slot.provider));
-        }
-
-        function setMagicRandomSlot() {
-            const filtered = getMagicFilteredSlots();
-            if (filtered.length === 0) return null;
-            const randomIndex = Math.floor(Math.random() * filtered.length);
-            return filtered[randomIndex];
-        }
-
-        function updateMagicCard(slot) {
-            const img = document.getElementById('magicSlotImage');
-            const nameDisplay = document.getElementById('magicSlotNameDisplay');
-            if (slot) {
-                img.src = slot.image_url;
-                img.style.display = 'block';
-                nameDisplay.textContent = `✨ ${slot.name} ✨`;
-                magicCurrentSlot = slot;
-            }
-        }
-
-        function initMagicPicker() {
-            const slot = setMagicRandomSlot();
-            if (slot) updateMagicCard(slot);
-        }
-
-        function castMagicForTeam(team) {
-            if (magicIsSpinning) return;
-            
-            const filtered = getMagicFilteredSlots();
-            if (filtered.length === 0) {
-                alert('No slots match the selected filters');
-                return;
-            }
-            
-            magicIsSpinning = true;
-            
-            // Disable buttons
-            document.getElementById('magicForA').disabled = true;
-            document.getElementById('magicForB').disabled = true;
-            document.getElementById('wandContainer').style.pointerEvents = 'none';
-            
-            const card = document.getElementById('magicSlotCard');
-            const wandContainer = document.getElementById('wandContainer');
-            const img = document.getElementById('magicSlotImage');
-            const nameDisplay = document.getElementById('magicSlotNameDisplay');
-            
-            // Step 1: Wand wave
-            wandContainer.classList.add('waving');
-            
-            // Step 2: Start card flip
-            setTimeout(() => {
-                card.classList.add('flipping');
-                img.style.display = 'none';
-                nameDisplay.textContent = '🔄 Spinning...';
-            }, 200);
-            
-            // Step 3: Create sparkle trail
-            createSparkleTrail();
-            
-            // Step 4: Select new slot and reveal
-            setTimeout(() => {
-                // Get new random slot
-                const newSlot = setMagicRandomSlot();
-                if (!newSlot) {
-                    magicIsSpinning = false;
-                    return;
-                }
-                
-                // Stop flipping
-                card.classList.remove('flipping');
-                
-                // Update image
-                img.src = newSlot.image_url;
-                img.style.display = 'block';
-                
-                // Landing animation
-                card.classList.add('landing');
-                setTimeout(() => card.classList.remove('landing'), 600);
-                
-                // Update name with reveal animation
-                nameDisplay.textContent = `✨ ${newSlot.name} ✨`;
-                nameDisplay.classList.remove('reveal');
-                void nameDisplay.offsetWidth;
-                nameDisplay.classList.add('reveal');
-                
-                // Create celebration
-                createCelebrationParticles();
-                createGlowBurst();
-                
-                // Update the slot for the team
-                if (team === 'A') {
-                    selectedSlotA = newSlot;
-                    updateSlotPreview('A', selectedSlotA);
-                    if (slotASelect) slotASelect.value = newSlot.name;
-                } else {
-                    selectedSlotB = newSlot;
-                    updateSlotPreview('B', selectedSlotB);
-                    if (slotBSelect) slotBSelect.value = newSlot.name;
-                }
-                updateSlotNameDisplay();
-                sendSlotsToServer();
-                
-                magicCurrentSlot = newSlot;
-                
-            }, 1500);
-            
-            // Step 5: Clean up
-            setTimeout(() => {
-                wandContainer.classList.remove('waving');
-                wandContainer.style.pointerEvents = 'auto';
-                document.getElementById('magicForA').disabled = false;
-                document.getElementById('magicForB').disabled = false;
-                magicIsSpinning = false;
-            }, 2200);
-        }
-
-        function createSparkleTrail() {
-            const wandImg = document.getElementById('wandImage');
-            const rect = wandImg.getBoundingClientRect();
-            
-            const positions = [
-                { x: -20, y: -5 },
-                { x: -5, y: -15 },
-                { x: 10, y: -10 },
-                { x: 20, y: 0 },
-                { x: 15, y: 10 },
-                { x: 0, y: 15 },
-            ];
-            
-            positions.forEach((pos, i) => {
-                setTimeout(() => {
-                    const sparkle = document.createElement('div');
-                    sparkle.className = 'sparkle-trail';
-                    sparkle.style.left = (rect.left + pos.x) + 'px';
-                    sparkle.style.top = (rect.top + pos.y) + 'px';
-                    sparkle.style.background = `radial-gradient(circle, ${getRandomMagicColor()}, transparent)`;
-                    document.body.appendChild(sparkle);
-                    setTimeout(() => sparkle.remove(), 600);
-                }, i * 80);
-            });
-        }
-
-        function createCelebrationParticles() {
-            const emojis = ['✨', '⭐', '🌟', '💫', '🎆', '🎇', '🌈', '🪄'];
-            const card = document.getElementById('magicSlotCard');
-            const rect = card.getBoundingClientRect();
-            
-            for (let i = 0; i < 30; i++) {
-                setTimeout(() => {
-                    const particle = document.createElement('div');
-                    particle.className = 'particle';
-                    particle.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-                    
-                    const x = rect.left + Math.random() * rect.width;
-                    const y = rect.top + Math.random() * rect.height;
-                    
-                    particle.style.left = x + 'px';
-                    particle.style.top = y + 'px';
-                    particle.style.fontSize = (Math.random() * 1.5 + 1) + 'rem';
-                    particle.style.setProperty('--x', (Math.random() - 0.5) * 300 + 'px');
-                    particle.style.setProperty('--y', (Math.random() - 0.5) * 300 + 'px');
-                    particle.style.setProperty('--duration', (Math.random() * 1 + 0.5) + 's');
-                    
-                    document.body.appendChild(particle);
-                    setTimeout(() => particle.remove(), 2000);
-                }, i * 40);
-            }
-        }
-
-        function createGlowBurst() {
-            const card = document.getElementById('magicSlotCard');
-            const rect = card.getBoundingClientRect();
-            
-            const glow = document.createElement('div');
-            glow.style.cssText = `
-                position: fixed;
-                left: ${rect.left + rect.width/2 - 80}px;
-                top: ${rect.top + rect.height/2 - 80}px;
-                width: 160px;
-                height: 160px;
-                border-radius: 50%;
-                background: radial-gradient(circle, rgba(25, 198, 253, 0.5), transparent);
-                pointer-events: none;
-                animation: glowBurst 0.8s ease-out forwards;
-                z-index: 9998;
-            `;
-            
-            // Add keyframe if not exists
-            if (!document.getElementById('glowBurstStyle')) {
-                const style = document.createElement('style');
-                style.id = 'glowBurstStyle';
-                style.textContent = `
-                    @keyframes glowBurst {
-                        0% { transform: scale(0); opacity: 1; }
-                        100% { transform: scale(3); opacity: 0; }
-                    }
-                `;
-                document.head.appendChild(style);
-            }
-            
-            document.body.appendChild(glow);
-            setTimeout(() => glow.remove(), 800);
-        }
-
-        function getRandomMagicColor() {
-            const colors = ['#19C6FD', '#3b82f6', '#f59e0b', '#22c55e', '#ef4444', '#a855f7'];
-            return colors[Math.floor(Math.random() * colors.length)];
-        }
-
-        // Wand click handler - random preview
-        document.getElementById('wandContainer')?.addEventListener('click', function(e) {
-            e.stopPropagation();
-            if (!magicIsSpinning) {
-                const filtered = getMagicFilteredSlots();
-                if (filtered.length > 0) {
-                    const slot = setMagicRandomSlot();
-                    if (slot) updateMagicCard(slot);
-                }
-            }
-        });
-
-        // Magic buttons
-        document.getElementById('magicForA')?.addEventListener('click', () => castMagicForTeam('A'));
-        document.getElementById('magicForB')?.addEventListener('click', () => castMagicForTeam('B'));
-
         // ========== INIT ==========
         window.addEventListener('message', (event) => {
             if (event.data.type === 'KICK_TOKEN') {
@@ -1628,6 +1406,6 @@
             if (currentChannel) startKickBrowserChat(currentChannel);
         });
     })();
-</script>
+    </script>
 </body>
 </html>
