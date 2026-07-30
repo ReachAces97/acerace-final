@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top Chatters Overlay</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: transparent;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            overflow: hidden;
+            color: #e2e8f0;
+        }
+        .overlay {
+            position: fixed;
+            left: 24px;
+            top: 24px;
+            width: min(540px, calc(100vw - 48px));
+            max-width: 540px;
+            min-width: 320px;
+            background: rgba(10, 14, 23, 0.78);
+            backdrop-filter: blur(18px);
+            border-radius: 28px;
+            border: 1px solid rgba(25, 198, 253, 0.12);
+            box-shadow: 0 12px 56px rgba(0,0,0,0.6);
+            padding: 16px 14px 14px;
+            cursor: grab;
+            user-select: none;
+            z-index: 99999;
+        }
+        .overlay.dragging {
+            cursor: grabbing;
+            box-shadow: 0 16px 64px rgba(0,0,0,0.75);
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(25,198,253,0.06);
+            cursor: grab;
+        }
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .title {
+            font-family: 'Orbitron', monospace;
+            font-weight: 800;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, #19C6FD, #3b82f6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .badge {
+            font-size: 0.55rem;
+            background: rgba(25,198,253,0.1);
+            color: #19C6FD;
+            padding: 3px 10px;
+            border-radius: 60px;
+            border: 1px solid rgba(25,198,253,0.08);
+        }
+        .live-dot {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background: #22c55e;
+            border-radius: 50%;
+            margin-right: 4px;
+            animation: pulse-dot 1.8s infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(0.7); }
+        }
+        .list-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px 14px;
+            max-height: 420px;
+            overflow-y: auto;
+        }
+        .chatter-item {
+            display: flex;
+            align-items: center;
+            padding: 5px 8px;
+            border-radius: 12px;
+            background: rgba(15,23,42,0.25);
+            border: 1px solid rgba(255,255,255,0.02);
+            gap: 6px;
+            min-height: 34px;
+            animation: slideUp 0.3s ease both;
+        }
+        .chatter-item:nth-child(1) { animation-delay: 0.02s; }
+        .chatter-item:nth-child(2) { animation-delay: 0.05s; }
+        .chatter-item:nth-child(3) { animation-delay: 0.08s; }
+        .chatter-item:nth-child(4) { animation-delay: 0.11s; }
+        .chatter-item:nth-child(5) { animation-delay: 0.14s; }
+        .chatter-item:nth-child(6) { animation-delay: 0.17s; }
+        .chatter-item:nth-child(7) { animation-delay: 0.20s; }
+        .chatter-item:nth-child(8) { animation-delay: 0.23s; }
+        .chatter-item:nth-child(9) { animation-delay: 0.26s; }
+        .chatter-item:nth-child(10) { animation-delay: 0.29s; }
+        @keyframes slideUp {
+            0% { opacity: 0; transform: translateY(12px) scale(0.96); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .rank {
+            font-weight: 700;
+            font-size: 0.75rem;
+            min-width: 28px;
+            text-align: center;
+            font-family: 'Orbitron', monospace;
+            color: #64748b;
+        }
+        .rank-1 { color: #fbbf24; font-size: 0.9rem; }
+        .rank-2 { color: #94a3b8; font-size: 0.85rem; }
+        .rank-3 { color: #cd7f32; font-size: 0.8rem; }
+        .username {
+            flex: 1;
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: #f1f5f9;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .points {
+            font-weight: 700;
+            font-size: 0.7rem;
+            color: #19C6FD;
+            background: rgba(25,198,253,0.04);
+            padding: 1px 10px;
+            border-radius: 60px;
+            border: 1px solid rgba(25,198,253,0.04);
+        }
+        .points.gold { color: #fbbf24; border-color: rgba(251,191,36,0.08); }
+        .points.silver { color: #94a3b8; border-color: rgba(148,163,184,0.06); }
+        .points.bronze { color: #cd7f32; border-color: rgba(205,127,50,0.06); }
+        .chatter-item.top-1 { background: rgba(251,191,36,0.05); border-color: rgba(251,191,36,0.08); }
+        .chatter-item.top-2 { background: rgba(148,163,184,0.03); border-color: rgba(148,163,184,0.05); }
+        .chatter-item.top-3 { background: rgba(205,127,50,0.03); border-color: rgba(205,127,50,0.06); }
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255,255,255,0.03);
+            font-size: 0.6rem;
+            color: #64748b;
+        }
+        .status {
+            font-size: 0.55rem;
+            color: #64748b;
+        }
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 30px 10px;
+            color: #64748b;
+            font-size: 0.85rem;
+        }
+        .empty-state .emoji { font-size: 1.8rem; display: block; margin-bottom: 8px; opacity: 0.4; }
+        .loading {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 20px 0;
+            color: #64748b;
+            font-size: 0.8rem;
+        }
+        .refresh-btn, .reset-btn {
+            background: #334155;
+            border: none;
+            border-radius: 60px;
+            padding: 4px 14px;
+            color: #e2e8f0;
+            font-size: 0.6rem;
+            cursor: pointer;
+        }
+        .refresh-btn:hover, .reset-btn:hover { background: #475569; }
+    </style>
+</head>
+<body>
+<div class="overlay" id="overlay">
+    <div class="header">
+        <div class="title">🏆 Top Chatters</div>
+        <div class="header-actions">
+            <div class="badge"><span class="live-dot"></span> LIVE</div>
+            <button class="reset-btn" id="resetPosBtn">Reset</button>
+        </div>
+    </div>
+
+    <div class="list-grid" id="listContainer">
+        <div class="loading" id="loadingState">⏳ Connecting…</div>
+        <div id="listContent" style="display:contents;"></div>
+    </div>
+
+    <div class="footer">
+        <span id="footerInfo">👥 0 chatters · 0 pts</span>
+        <span class="status" id="connectionStatus">🔌 Connecting</span>
+        <button class="refresh-btn" id="refreshBtn">↻</button>
+    </div>
+</div>
+
+<script>
+    (function() {
+        const listContent = document.getElementById('listContent');
+        const loadingState = document.getElementById('loadingState');
+        const footerInfo = document.getElementById('footerInfo');
+        const connectionStatus = document.getElementById('connectionStatus');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const resetPosBtn = document.getElementById('resetPosBtn');
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m] || m);
+        }
+
+        function renderChatters(chatters) {
+            const count = Math.min(Array.isArray(chatters) ? chats.length : 0, 20);
+            const top = (Array.isArray(chatters) ? chats : []).slice(0, count);
+
+            if (top.length === 0) {
+                listContent.innerHTML = `<div class="empty-state"><span class="emoji">💬</span>No chatters yet<div class="sub" style="font-size:0.7rem;color:#475569;">Waiting for data…</div></div>`;
+                loadingState.style.display = 'none';
+                footerInfo.textContent = `👥 0 chatters · 0 pts`;
+                return;
+            }
+
+            const half = Math.ceil(top.length / 2);
+            const leftCol = top.slice(0, half);
+            const rightCol = top.slice(half);
+
+            const renderItem = (chatter, rank) => {
+                let rankClass = 'rank';
+                let icon = '';
+                let pointsClass = 'points';
+                let itemClass = 'chatter-item';
+                if (rank === 1) { rankClass += ' rank-1'; icon = '🥇'; pointsClass += ' gold'; itemClass += ' top-1'; }
+                else if (rank === 2) { rankClass += ' rank-2'; icon = '🥈'; pointsClass += ' silver'; itemClass += ' top-2'; }
+                else if (rank === 3) { rankClass += ' rank-3'; icon = '🥉'; pointsClass += ' bronze'; itemClass += ' top-3'; }
+
+                return `<div class="${itemClass}">
+                    <div class="${rankClass}">${icon || '#'+rank}</div>
+                    <div class="username">${escapeHtml(chatter.username)}</div>
+                    <div class="${pointsClass}">${(chatter.points||0).toLocaleString()} pts</div>
+                </div>`;
+            };
+
+            const leftHtml = leftCol.map((c,i) => renderItem(c, i+1)).join('');
+            const rightHtml = rightCol.map((c,i) => renderItem(c, leftCol.length+i+1)).join('');
+
+            listContent.innerHTML = `<div style="display:flex; gap:12px; grid-column:1/-1;">
+                <div style="flex:1; display:flex; flex-direction:column; gap:4px;">${leftHtml}</div>
+                <div style="flex:1; display:flex; flex-direction:column; gap:4px;">${rightHtml}</div>
+            </div>`;
+            loadingState.style.display = 'none';
+
+            const total = top.length;
+            const totalPoints = top.reduce((sum,c) => sum + (c.points||0), 0);
+            footerInfo.textContent = `👥 ${total} chatters · ${totalPoints.toLocaleString()} pts`;
+        }
+
+        // ========== WebSocket connection ==========
+        let ws = null;
+        let reconnectTimer = null;
+        let reconnectAttempts = 0;
+        let isConnected = false;
+
+        function connectWebSocket() {
+            if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) return;
+            
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsUrl = `${protocol}//${window.location.host}`;
+            ws = new WebSocket(wsUrl);
+
+            ws.onopen = () => {
+                console.log('🔗 Overlay WebSocket connected');
+                isConnected = true;
+                connectionStatus.textContent = '🟢 Live';
+                reconnectAttempts = 0;
+            };
+
+            ws.onmessage = (event) => {
+                try {
+                    const msg = JSON.parse(event.data);
+                    if (msg.type === 'chattersState') {
+                        const data = msg.data || {};
+                        if (data && Array.isArray(data.chatters)) {
+                            renderChatters(data.chatters);
+                            connectionStatus.textContent = `🟢 ${data.channel || ''}`;
+                        } else if (data && data.reset) {
+                            renderChatters([]);
+                            connectionStatus.textContent = '🟢 Reset';
+                        }
+                    }
+                } catch (e) {
+                    console.warn('WS message error:', e);
+                }
+            };
+
+            ws.onclose = () => {
+                console.log('🔴 Overlay WebSocket disconnected');
+                isConnected = false;
+                connectionStatus.textContent = '🔴 Disconnected';
+                if (reconnectTimer) clearTimeout(reconnectTimer);
+                reconnectAttempts++;
+                const delay = Math.min(3000 * Math.pow(1.5, reconnectAttempts), 30000);
+                reconnectTimer = setTimeout(connectWebSocket, delay);
+            };
+
+            ws.onerror = (err) => {
+                console.error('WebSocket error:', err);
+                connectionStatus.textContent = '⚠️ Error';
+                // will be closed by the browser, then reconnect
+            };
+        }
+
+        function loadLocalState() {
+            try {
+                const sessionId = localStorage.getItem('chatterCurrentSession');
+                if (!sessionId) return null;
+                const raw = localStorage.getItem(`chatterSession_${sessionId}`);
+                if (!raw) return null;
+                const data = JSON.parse(raw);
+                const chatters = Object.entries(data.chatters || {}).map(([username, stats]) => ({
+                    username,
+                    points: stats.points || 0,
+                    messages: stats.messages || 0
+                }));
+                chatters.sort((a, b) => b.points - a.points);
+                return chatters;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        async function fetchState() {
+            try {
+                const response = await fetch('/api/chatter/state');
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data && Array.isArray(data.chatters) && data.chatters.length > 0) {
+                        renderChatters(data.chatters);
+                        connectionStatus.textContent = `🟢 ${data.channel || ''}`;
+                        return;
+                    }
+                    if (data && data.reset) {
+                        renderChatters([]);
+                        connectionStatus.textContent = '🟢 Reset';
+                        return;
+                    }
+                }
+            } catch (e) {}
+
+            const localChatters = loadLocalState();
+            if (localChatters && localChatters.length > 0) {
+                renderChatters(localChatters);
+                connectionStatus.textContent = '🟢 Local sync';
+            } else {
+                renderChatters([]);
+                connectionStatus.textContent = '⏳ Waiting for data';
+            }
+        }
+
+        // ========== Manual refresh (reconnect and force a request) ==========
+        refreshBtn.addEventListener('click', async () => {
+            refreshBtn.textContent = '⟳';
+            await fetchState();
+            setTimeout(() => refreshBtn.textContent = '↻', 500);
+        });
+
+        // ========== Drag support ==========
+        const overlay = document.getElementById('overlay');
+        let isDragging = false;
+        let dragOffsetX = 0;
+        let dragOffsetY = 0;
+
+        function clampPosition(x, y) {
+            const margin = 12;
+            const width = overlay.offsetWidth || 420;
+            const height = overlay.offsetHeight || 260;
+            const maxX = Math.max(margin, window.innerWidth - width - margin);
+            const maxY = Math.max(margin, window.innerHeight - height - margin);
+            return {
+                x: Math.min(Math.max(x, margin), maxX),
+                y: Math.min(Math.max(y, margin), maxY)
+            };
+        }
+
+        function savePosition() {
+            const rect = overlay.getBoundingClientRect();
+            localStorage.setItem('topChatterOverlayPosition', JSON.stringify({ x: rect.left, y: rect.top }));
+        }
+
+        function restorePosition() {
+            try {
+                const saved = localStorage.getItem('topChatterOverlayPosition');
+                if (!saved) return;
+                const pos = JSON.parse(saved);
+                const clamped = clampPosition(pos.x || 24, pos.y || 24);
+                overlay.style.left = `${clamped.x}px`;
+                overlay.style.top = `${clamped.y}px`;
+            } catch (e) {}
+        }
+
+        overlay.addEventListener('mousedown', (e) => {
+            if (e.target.closest('button')) return;
+            isDragging = true;
+            const rect = overlay.getBoundingClientRect();
+            dragOffsetX = e.clientX - rect.left;
+            dragOffsetY = e.clientY - rect.top;
+            overlay.classList.add('dragging');
+            e.preventDefault();
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            const next = clampPosition(e.clientX - dragOffsetX, e.clientY - dragOffsetY);
+            overlay.style.left = `${next.x}px`;
+            overlay.style.top = `${next.y}px`;
+        });
+
+        document.addEventListener('mouseup', () => {
+            if (isDragging) {
+                isDragging = false;
+                overlay.classList.remove('dragging');
+                savePosition();
+            }
+        });
+
+        resetPosBtn.addEventListener('click', () => {
+            overlay.style.left = '24px';
+            overlay.style.top = '24px';
+            savePosition();
+        });
+
+        window.addEventListener('resize', () => {
+            const rect = overlay.getBoundingClientRect();
+            const clamped = clampPosition(rect.left, rect.top);
+            overlay.style.left = `${clamped.x}px`;
+            overlay.style.top = `${clamped.y}px`;
+            savePosition();
+        });
+
+        // ========== Start ==========
+        restorePosition();
+        connectWebSocket();
+        fetchState();
+        setInterval(fetchState, 2000);
+
+        window.addEventListener('storage', (event) => {
+            if (event.key === 'chatterCurrentSession' || event.key?.startsWith('chatterSession_')) {
+                const localChatters = loadLocalState();
+                if (localChatters) {
+                    renderChatters(localChatters);
+                    connectionStatus.textContent = '🟢 Local sync';
+                }
+            }
+        });
+
+        // Also try to load from localStorage as fallback in case WebSocket takes time
+        setTimeout(() => {
+            try {
+                const sessionId = localStorage.getItem('chatterCurrentSession');
+                if (sessionId) {
+                    const raw = localStorage.getItem('chatterSession_' + sessionId);
+                    if (raw) {
+                        const data = JSON.parse(raw);
+                        if (data.chatters) {
+                            const chatters = Object.entries(data.chatters).map(([username, stats]) => ({
+                                username,
+                                points: stats.points || 0
+                            }));
+                            chatters.sort((a,b) => b.points - a.points);
+                            renderChatters(chatters);
+                            connectionStatus.textContent = '📁 Cache (waiting for live)';
+                        }
+                    }
+                }
+            } catch(e) {}
+        }, 500);
+    })();
+</script>
+</body>
+</html>

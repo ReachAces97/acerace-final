@@ -21,7 +21,7 @@ app.use((req, res, next) => {
 });
 
 app.use(compression());
-app.use(express.json());
+app.use(express.json({ limit: '5mb' }));
 app.use('/assets', express.static(path.join(__dirname, 'assets'), { maxAge: '7d', immutable: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 // ========== CHATTER DATA MANAGEMENT ==========
@@ -90,10 +90,28 @@ app.get('/overlay', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'overlay.html'));
 });
 
+app.get('/overlay-top', (req, res) => {
+    res.redirect('/game.html?overlay=1');
+});
+
+app.get('/overlaytop', (req, res) => {
+    res.redirect('/game.html?overlay=1');
+});
+
 // ========== SHARED PARTICIPANTS & SLOTS (for Slot War overlay) ==========
 let currentParticipants = [];
 let selectedSlotA = null;
 let selectedSlotB = null;
+let currentChatterState = {
+    channel: null,
+    sessionId: null,
+    chatters: [],
+    totalPoints: 0,
+    totalChatters: 0,
+    winnerCount: 0,
+    updatedAt: Date.now(),
+    reset: false
+};
 
 function broadcastParticipants() {
     const data = JSON.stringify({ type: 'participants', data: currentParticipants });
@@ -109,10 +127,18 @@ function broadcastSlots() {
     });
 }
 
+function broadcastChatterState() {
+    const data = JSON.stringify({ type: 'chattersState', data: currentChatterState });
+    wss.clients.forEach(client => {
+        if (client.readyState === WebSocket.OPEN) client.send(data);
+    });
+}
+
 wss.on('connection', (ws) => {
     console.log('🟢 WebSocket client connected');
     ws.send(JSON.stringify({ type: 'participants', data: currentParticipants }));
     ws.send(JSON.stringify({ type: 'slots', data: { teamA: selectedSlotA, teamB: selectedSlotB } }));
+    ws.send(JSON.stringify({ type: 'chattersState', data: currentChatterState }));
 
     ws.on('message', (message) => {
         try {
@@ -124,6 +150,12 @@ wss.on('connection', (ws) => {
                 selectedSlotA = data.teamA;
                 selectedSlotB = data.teamB;
                 broadcastSlots();
+            } else if (type === 'chatterState') {
+                currentChatterState = {
+                    ...(data || {}),
+                    updatedAt: Date.now()
+                };
+                broadcastChatterState();
             }
         } catch (err) { console.error('WS message error', err); }
     });
@@ -142,6 +174,35 @@ app.post('/api/participants', express.json(), (req, res) => {
 });
 
 app.get('/api/participants', (req, res) => res.json(currentParticipants));
+
+app.post('/api/chatter/state', express.json({ limit: '2mb' }), (req, res) => {
+    try {
+        const data = req.body || {};
+        if (data && (data.chatters || data.reset !== undefined || data.channel !== undefined)) {
+            currentChatterState = {
+                channel: data.channel || currentChatterState.channel || null,
+                sessionId: data.sessionId || currentChatterState.sessionId || null,
+                chatters: Array.isArray(data.chatters) ? data.chatters : currentChatterState.chatters || [],
+                totalPoints: Number(data.totalPoints || currentChatterState.totalPoints || 0),
+                totalChatters: Number(data.totalChatters || currentChatterState.totalChatters || 0),
+                winnerCount: Number(data.winnerCount || currentChatterState.winnerCount || 0),
+                updatedAt: Date.now(),
+                reset: Boolean(data.reset)
+            };
+            broadcastChatterState();
+            res.json({ ok: true, state: currentChatterState });
+        } else {
+            res.status(400).json({ error: 'Invalid chatter state payload' });
+        }
+    } catch (err) {
+        console.error('Chatter state update error', err);
+        res.status(500).json({ error: 'Failed to update chatter state' });
+    }
+});
+
+app.get('/api/chatter/state', (req, res) => {
+    res.json(currentChatterState);
+});
 
 app.post('/api/slots', express.json(), (req, res) => {
     const { teamA, teamB } = req.body;
