@@ -67,10 +67,42 @@
         .team-list::-webkit-scrollbar { width: 6px; }
         .team-list::-webkit-scrollbar-track { background: #0f172a; border-radius: 3px; }
         .team-list::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #19C6FD, #3b82f6); border-radius: 3px; }
-        .team-item { background: rgba(30, 41, 59, 0.7); margin: 8px 0; padding: 8px 12px; border-radius: 60px; display: flex; justify-content: space-between; align-items: center; gap: 8px; border: 1px solid rgba(25, 198, 253, 0.15); color: #f1f5f9; }
+        .team-item { background: rgba(30, 41, 59, 0.7); margin: 8px 0; padding: 8px 12px; border-radius: 60px; display: flex; justify-content: space-between; align-items: center; gap: 8px; border: 1px solid rgba(25, 198, 253, 0.15); color: #f1f5f9; position: relative; overflow: hidden; }
+        .team-item.new-join { animation: joinSlideIn 0.45s cubic-bezier(0.2, 0.9, 0.2, 1); }
+        @keyframes joinSlideIn {
+            0% { opacity: 0; transform: translateX(26px) scale(0.97); }
+            60% { opacity: 1; transform: translateX(-4px) scale(1.01); }
+            100% { opacity: 1; transform: translateX(0) scale(1); }
+        }
         .team-name { font-weight: 600; word-break: break-word; }
         .team-points { font-family: monospace; font-size: 0.85rem; background: #0f172a; padding: 2px 8px; border-radius: 60px; margin-left: 8px; }
         .remove-participant { background: #dc2626; border: none; border-radius: 40px; padding: 2px 10px; color: white; cursor: pointer; font-size: 12px; transition: 0.2s; }
+        .join-badge {
+            position: absolute;
+            top: 10px;
+            right: 16px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            color: white;
+            background: linear-gradient(135deg, rgba(25,198,253,0.92), rgba(59,130,246,0.9));
+            box-shadow: 0 8px 18px rgba(25,198,253,0.25);
+            opacity: 0;
+            transform: translateX(32px);
+            animation: joinBadgeSlide 1.4s ease forwards;
+            pointer-events: none;
+            z-index: 10;
+        }
+        .join-badge.join-a { background: linear-gradient(135deg, rgba(34,197,94,0.95), rgba(20,184,166,0.9)); }
+        .join-badge.join-b { background: linear-gradient(135deg, rgba(239,68,68,0.95), rgba(251,146,60,0.9)); }
+        @keyframes joinBadgeSlide {
+            0% { opacity: 0; transform: translateX(32px); }
+            18% { opacity: 1; transform: translateX(0); }
+            82% { opacity: 1; transform: translateX(0); }
+            100% { opacity: 0; transform: translateX(-18px); }
+        }
         .remove-participant:hover { transform: scale(1.05); background: #ef4444; }
         .slot-select { width: 100%; padding: 10px 14px; border-radius: 60px; border: 1px solid rgba(25, 198, 253, 0.3); background: #0f172a; color: #f1f5f9; outline: none; font-family: inherit; margin-bottom: 12px; }
         .slot-select optgroup { background: #1e293b; color: #f1f5f9; }
@@ -214,6 +246,7 @@
             <div class="left-column">
                 <div class="panel">
                     <div class="panel-title">Streamer Controls</div>
+                    <div id="slotWarConnectionStatus" class="connection-status">Waiting for channel…</div>
                     <div class="toggle-group">
                         <button id="openJoiningBtn" class="btn-success">Open Joining</button>
                         <button id="closeJoiningBtn" class="btn-danger">Close Joining</button>
@@ -590,6 +623,8 @@
         let participants = [];
         let participantsMap = new Map();
         let joinedUsers = new Set();
+        let joinFlashName = null;
+        let joinFlashTeam = null;
         let joiningOpen = true;
         let selectedSlotA = null;
         let selectedSlotB = null;
@@ -597,6 +632,7 @@
         let currentChannel = null;
         let reconnectTimer = null;
         let reconnectAttempt = 0;
+        let kickConnectionToken = 0;
         let manualDisconnect = false;
         let currentWinnerOverlay = null;
         let currentWinnerName = null;
@@ -638,6 +674,9 @@
             ws = new WebSocket(wsUrl);
             ws.onopen = () => {
                 console.log('Game WebSocket connected');
+                if (!kickBrowserSocket || kickBrowserSocket.readyState !== WebSocket.OPEN) {
+                    setConnectionStatus(currentChannel ? `Watching #${currentChannel}` : 'Local sync live', true);
+                }
                 if (currentChannel) {
                     ws.send(JSON.stringify({ type: 'joinRoom', room: currentChannel }));
                 }
@@ -675,7 +714,12 @@
                     }
                 } catch(e) { console.warn(e); }
             };
-            ws.onclose = () => setTimeout(connectWebSocket, 1000);
+            ws.onclose = () => {
+                if (!kickBrowserSocket || kickBrowserSocket.readyState !== WebSocket.OPEN) {
+                    setConnectionStatus(currentChannel ? `Reconnecting to #${currentChannel}...` : 'Sync reconnecting...', false);
+                    setTimeout(connectWebSocket, 1000);
+                }
+            };
         }
 
         function sendParticipantsToServer() {
@@ -701,6 +745,25 @@
             }, 50);
         }
 
+        function setConnectionStatus(message, connected = false) {
+            const statusEl = document.getElementById('slotWarConnectionStatus');
+            if (!statusEl) return;
+            statusEl.textContent = message;
+            statusEl.style.color = connected ? '#86efac' : '#fbbf24';
+            statusEl.style.borderColor = connected ? 'rgba(34,197,94,0.7)' : 'rgba(251,191,36,0.7)';
+            statusEl.style.background = connected ? 'rgba(34,197,94,0.12)' : 'rgba(251,191,36,0.08)';
+        }
+
+        function flashJoinBadge(team, name) {
+            const container = team === 'A' ? document.getElementById('teamAList') : document.getElementById('teamBList');
+            if (!container) return;
+            const badge = document.createElement('div');
+            badge.className = `join-badge join-${team.toLowerCase()}`;
+            badge.textContent = `${name} joined Team ${team}`;
+            container.appendChild(badge);
+            setTimeout(() => badge.remove(), 1400);
+        }
+
         function renderTeams() {
             const teamAList = document.getElementById('teamAList');
             const teamBList = document.getElementById('teamBList');
@@ -711,6 +774,9 @@
             sorted.forEach(p => {
                 const div = document.createElement('div');
                 div.className = 'team-item';
+                if (joinFlashName && joinFlashTeam && p.name === joinFlashName && p.team === joinFlashTeam) {
+                    div.classList.add('new-join');
+                }
                 div.innerHTML = `<span class="team-name">${escapeHtml(p.name)} <span class="team-points">${p.points || 0}</span></span><button class="remove-participant" data-id="${p.id}" data-team="${p.team}">X</button>`;
                 if (p.team === 'A') {
                     teamAList.appendChild(div);
@@ -726,6 +792,10 @@
             document.querySelectorAll('.remove-participant').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     const id = parseFloat(btn.getAttribute('data-id'));
+                    const removed = participants.find(p => p.id === id);
+                    if (removed) {
+                        joinedUsers.delete(removed.name.toLowerCase());
+                    }
                     participants = participants.filter(p => p.id !== id);
                     participantsMap.delete(id);
                     renderTeams();
@@ -747,7 +817,15 @@
             participants.push({ name: displayName, id: newId, team: team.toUpperCase(), points: savedPoints });
             participantsMap.set(newId, participants[participants.length-1]);
             joinedUsers.add(name);
+            joinFlashName = displayName;
+            joinFlashTeam = team.toUpperCase();
+            flashJoinBadge(joinFlashTeam, displayName);
             scheduleRender();
+            setTimeout(() => {
+                joinFlashName = null;
+                joinFlashTeam = null;
+                scheduleRender();
+            }, 500);
             saveState();
             sendParticipantsToServer();
             return true;
@@ -786,23 +864,59 @@
         }
 
         function stopKickBrowserChat() {
-            if (reconnectTimer) clearTimeout(reconnectTimer);
+            if (reconnectTimer) {
+                clearTimeout(reconnectTimer);
+                reconnectTimer = null;
+            }
             reconnectAttempt = 0;
-            if (kickBrowserSocket) { try { kickBrowserSocket.close(); } catch(e) {} kickBrowserSocket = null; }
+            const socket = kickBrowserSocket;
+            kickBrowserSocket = null;
+            if (socket) {
+                try { socket.onclose = null; socket.onerror = null; socket.onmessage = null; socket.close(); } catch(e) {}
+            }
+        }
+
+        function hasActiveKickConnection(channelName) {
+            return !!(kickBrowserSocket && (kickBrowserSocket.readyState === WebSocket.OPEN || kickBrowserSocket.readyState === WebSocket.CONNECTING) && currentChannel === channelName && !manualDisconnect);
         }
 
         async function startKickBrowserChat(channelName) {
+            if (!channelName || manualDisconnect) return;
+            const normalizedChannel = String(channelName).trim().replace(/^@/, '');
+            if (!normalizedChannel) return;
+            const runId = ++kickConnectionToken;
+
+            if (hasActiveKickConnection(normalizedChannel)) {
+                setConnectionStatus(`Watching #${normalizedChannel}`, true);
+                return;
+            }
+
+            if (currentChannel !== normalizedChannel) {
+                currentChannel = normalizedChannel;
+                currentChannelKey = normalizedChannel;
+            }
+
             stopKickBrowserChat();
-            if (manualDisconnect) return;
             try {
+                setConnectionStatus(`Resolving #${channelName}...`, false);
                 const chatroomId = await resolveKickChatroomId(channelName);
+                if (runId !== kickConnectionToken) return;
+
                 const pusherUrl = 'wss://ws-us2.pusher.com/app/32cbd69e4b950bf97679?protocol=7&client=js&version=8.4.0&flash=false';
                 const wsChat = new WebSocket(pusherUrl);
+
                 wsChat.addEventListener('open', () => {
+                    if (runId !== kickConnectionToken) {
+                        try { wsChat.close(); } catch(e) {}
+                        return;
+                    }
                     wsChat.send(JSON.stringify({ event: 'pusher:subscribe', data: { auth: '', channel: `chatrooms.${chatroomId}.v2` } }));
+                    setConnectionStatus(`Watching #${channelName}`, true);
                     reconnectAttempt = 0;
                 });
+
                 wsChat.addEventListener('message', (event) => {
+                    if (runId !== kickConnectionToken) return;
                     try {
                         const msg = JSON.parse(event.data);
                         if (msg.event === 'App\\Events\\ChatMessageEvent') {
@@ -811,18 +925,34 @@
                         }
                     } catch(e) {}
                 });
+
                 wsChat.addEventListener('close', () => {
+                    if (runId !== kickConnectionToken) return;
+                    setConnectionStatus(`Reconnecting to #${channelName}...`, false);
                     if (!manualDisconnect && currentChannel) {
                         const delay = Math.min(1000 * Math.pow(1.5, reconnectAttempt), 30000);
                         reconnectAttempt++;
-                        reconnectTimer = setTimeout(() => startKickBrowserChat(currentChannel), delay);
+                        reconnectTimer = setTimeout(() => {
+                            if (runId !== kickConnectionToken) return;
+                            if (!manualDisconnect && currentChannel) startKickBrowserChat(currentChannel);
+                        }, delay);
                     }
                 });
+
+                wsChat.addEventListener('error', () => {
+                    if (runId !== kickConnectionToken) return;
+                    setConnectionStatus(`Reconnecting to #${channelName}...`, false);
+                });
+
                 kickBrowserSocket = wsChat;
                 currentChannel = channelName;
                 currentChannelKey = channelName;
                 saveState();
-            } catch(err) { console.error(err); }
+            } catch(err) {
+                if (runId !== kickConnectionToken) return;
+                console.error(err);
+                setConnectionStatus('Channel unavailable', false);
+            }
         }
 
         // ========== PROVIDER FILTERS ==========
@@ -1293,17 +1423,28 @@
         }
 
         function loadState() {
+            const activeChannel = currentChannel || currentChannelKey;
+            if (!activeChannel) return;
             const saved = localStorage.getItem(getStorageKey('slotWarState'));
             if (!saved) return;
             try {
                 const s = JSON.parse(saved);
                 if (!s.currentChannel) return;
+                if (s.currentChannel && activeChannel && s.currentChannel !== activeChannel) {
+                    console.warn('Ignoring stale slot war state for', s.currentChannel, 'using active channel', activeChannel);
+                    return;
+                }
                 participants = s.participants || [];
-                participants.forEach(p => participantsMap.set(p.id, p));
+                participantsMap.clear();
+                joinedUsers.clear();
+                participants.forEach(p => {
+                    participantsMap.set(p.id, p);
+                    joinedUsers.add(p.name.toLowerCase());
+                });
                 joiningOpen = s.joiningOpen !== false;
                 if (s.selectedSlotA) selectedSlotA = slotData.find(sl => sl.name === s.selectedSlotA);
                 if (s.selectedSlotB) selectedSlotB = slotData.find(sl => sl.name === s.selectedSlotB);
-                currentChannel = s.currentChannel;
+                currentChannel = activeChannel;
                 currentChannelKey = currentChannel;
                 if (s.lastWinnerA) lastWinnerA = s.lastWinnerA;
                 if (s.lastWinnerB) lastWinnerB = s.lastWinnerB;
@@ -1386,9 +1527,26 @@
             if (event.data.type === 'KICK_TOKEN') {
                 if (event.data.token) {
                     manualDisconnect = false;
-                    if (event.data.channel) {
-                        currentChannel = event.data.channel;
-                        currentChannelKey = currentChannel;
+                    const nextChannel = String(event.data.channel || '').trim().replace(/^@/, '');
+                    if (nextChannel) {
+                        const channelChanged = !currentChannel || currentChannel !== nextChannel;
+                        currentChannel = nextChannel;
+                        currentChannelKey = nextChannel;
+
+                        if (!channelChanged && hasActiveKickConnection(nextChannel)) {
+                            setConnectionStatus(`Watching #${nextChannel}`, true);
+                            return;
+                        }
+
+                        const lastKnown = localStorage.getItem('slotWarLastKnownChannel');
+                        if (lastKnown && lastKnown !== currentChannel) {
+                            localStorage.removeItem(`slotWarState_${lastKnown}`);
+                        }
+                        localStorage.setItem('slotWarLastKnownChannel', currentChannel);
+                        if (!hasActiveKickConnection(nextChannel)) {
+                            setConnectionStatus(`Connecting to #${currentChannel}...`, false);
+                        }
+                        loadState();
                         startKickBrowserChat(currentChannel);
                     }
                 } else {
@@ -1396,10 +1554,13 @@
                     stopKickBrowserChat();
                     currentChannel = null;
                     currentChannelKey = '';
+                    localStorage.removeItem('slotWarLastKnownChannel');
+                    setConnectionStatus('Waiting for channel…', false);
                 }
             }
         });
 
+        setConnectionStatus('Waiting for channel…', false);
         connectWebSocket();
         loadSlotData().then(() => {
             loadState();

@@ -307,7 +307,6 @@
             }
         }
 
-        // Send to both iframes
         function sendTokenToAllIframes() {
             const swFrame = document.getElementById('slotwarFrame');
             const arFrame = document.getElementById('aceraceFrame');
@@ -320,7 +319,6 @@
             }
         }
 
-        // When iframe loads, send token again
         function setupIframeReload(iframeId) {
             const iframe = document.getElementById(iframeId);
             if (!iframe) return;
@@ -459,6 +457,7 @@
                 const tab = btn.dataset.tab;
                 document.getElementById('slotwar-content').classList.toggle('active', tab === 'slotwar');
                 document.getElementById('acerace-content').classList.toggle('active', tab === 'acerace');
+                sendTokenToAllIframes();
             });
         });
 

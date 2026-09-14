@@ -253,6 +253,42 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
+        .participant-avatar {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(25, 198, 253, 0.25);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            position: relative;
+        }
+        .participant-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+        }
+        .participant-avatar-fallback {
+            width: 100%;
+            height: 100%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #e2e8f0;
+            background: linear-gradient(135deg, #19C6FD, #3b82f6);
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+        }
         .participant-time {
             font-size: 0.7rem;
             opacity: 0.8;
@@ -519,10 +555,41 @@
             background-clip: text;
             color: transparent;
         }
+        .winner-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+            flex-wrap: wrap;
+            margin: 18px 0 12px;
+        }
+        .winner-avatar-large {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            overflow: hidden;
+            position: relative;
+            border: 2px solid rgba(25, 198, 253, 0.9);
+            background: rgba(15, 23, 42, 0.9);
+            box-shadow: 0 0 18px rgba(25, 198, 253, 0.35);
+            flex-shrink: 0;
+        }
+        .winner-avatar-large img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+        }
+        .winner-avatar-large .participant-avatar-fallback {
+            font-size: 2rem;
+        }
         .winner-card .winner-name {
             font-size: 2.8rem;
             font-weight: 800;
-            margin: 20px 0;
+            margin: 0;
             text-shadow: 0 0 10px #19C6FD, 0 0 20px #3b82f6;
             animation: flicker 2s infinite;
             font-family: 'Orbitron', monospace;
@@ -625,40 +692,110 @@
             font-family: 'Orbitron', monospace;
         }
         .wheel-viewport {
-            background: #020617;
+            background: linear-gradient(180deg, rgba(2, 6, 23, 0.9), rgba(15, 23, 42, 0.7));
             border-radius: 20px;
-            padding: 20px;
+            padding: 12px 18px;
             overflow: hidden;
-            height: 120px;
+            height: 150px;
             position: relative;
+            border: 1px solid rgba(25, 198, 253, 0.18);
         }
         .wheel-scroller {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            height: 100%;
             transition: transform cubic-bezier(0.05, 0.9, 0.2, 1);
+            will-change: transform;
+            padding: 0 16px;
         }
         .wheel-item {
-            padding: 12px;
-            font-size: 1.5rem;
+            min-width: 124px;
+            width: 124px;
+            height: 120px;
+            padding: 8px 6px 10px;
+            font-size: 0.8rem;
             font-weight: 700;
             text-align: center;
-            border-bottom: 1px solid #334155;
             color: #f1f5f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            white-space: nowrap;
+            border-left: 1px solid rgba(148, 163, 184, 0.18);
+            border-right: 1px solid rgba(148, 163, 184, 0.18);
+            background: rgba(15, 23, 42, 0.18);
+            box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.04);
+        }
+        .wheel-item:first-child {
+            border-left: none;
         }
         .wheel-item:last-child {
-            border-bottom: none;
+            border-right: none;
+        }
+        .wheel-item-avatar {
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            overflow: hidden;
+            position: relative;
+            flex-shrink: 0;
+            background: rgba(148, 163, 184, 0.2);
+            border: 2px solid rgba(25, 198, 253, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 12px rgba(25, 198, 253, 0.2);
+        }
+        .wheel-item-avatar img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            z-index: 1;
+            opacity: 1;
+        }
+        .wheel-item-avatar .participant-avatar-fallback {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #e2e8f0;
+            background: linear-gradient(135deg, #19C6FD, #3b82f6);
+            z-index: 2;
+        }
+        .wheel-item-name {
+            font-size: 0.72rem;
+            font-weight: 700;
+            line-height: 1.1;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: #dfeaf5;
         }
         .wheel-pointer {
             position: absolute;
-            left: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 0;
-            height: 0;
-            border-left: 15px solid #19C6FD;
-            border-top: 10px solid transparent;
-            border-bottom: 10px solid transparent;
-            filter: drop-shadow(0 0 2px black);
+            left: 50%;
+            top: 0;
+            transform: translateX(-50%);
+            width: 3px;
+            height: 100%;
+            background: linear-gradient(180deg, rgba(25, 198, 253, 0.18), rgba(25, 198, 253, 0.9), rgba(25, 198, 253, 0.18));
+            box-shadow: 0 0 10px rgba(25, 198, 253, 0.5);
             pointer-events: none;
             z-index: 10;
+            border-radius: 999px;
+            opacity: 0.8;
         }
         .ready-overlay {
             position: fixed;
@@ -2099,6 +2236,58 @@
 
         function escapeHtml(str) { return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[m] || m); }
 
+        const kickUserAvatarCache = new Map();
+
+        function normalizeKickAvatar(url) {
+            if (!url) return '';
+            if (url.startsWith('//')) return `https:${url}`;
+            return url;
+        }
+
+        async function fetchKickUserAvatar(username) {
+            const clean = (username || '').trim();
+            if (!clean) return '';
+
+            const key = clean.toLowerCase();
+            if (kickUserAvatarCache.has(key)) return kickUserAvatarCache.get(key);
+
+            try {
+                const res = await fetch(`https://kick.com/api/v1/channels/${encodeURIComponent(clean)}`, {
+                    cache: 'no-store',
+                    headers: { 'Accept': 'application/json' }
+                });
+                if (!res.ok) return '';
+
+                const json = await res.json();
+                const avatar = json?.user?.profile_pic ||
+                    json?.user?.profile_picture ||
+                    json?.user?.avatar ||
+                    json?.user?.profilePic ||
+                    json?.profile_pic ||
+                    json?.profile_picture ||
+                    json?.avatar ||
+                    json?.profilePic ||
+                    json?.data?.user?.profile_pic ||
+                    json?.data?.user?.profile_picture ||
+                    json?.data?.channel?.user?.profile_pic ||
+                    json?.data?.channel?.user?.profile_picture ||
+                    json?.channel?.user?.profile_pic ||
+                    json?.channel?.user?.profile_picture ||
+                    json?.channel?.user?.profile_image_url ||
+                    json?.user?.profile_image_url;
+
+                const finalAvatar = normalizeKickAvatar(avatar);
+                if (finalAvatar) {
+                    kickUserAvatarCache.set(key, finalAvatar);
+                    return finalAvatar;
+                }
+            } catch (e) {
+                console.warn('[Kick avatar] fetch failed for', clean, e);
+            }
+
+            return '';
+        }
+
         // ─────────────────────────────────────────────────────────────────────
         //  OVERLAY – SINGLE COLUMN AUTO-SCROLL (STOPS AT BOTTOM)
         // ─────────────────────────────────────────────────────────────────────
@@ -2426,7 +2615,7 @@
         function saveState() {
             if (!isLoggedIn || !currentChannel) return;
             localStorage.setItem(getStorageKey('aceRaceState'), JSON.stringify({
-                participants: participants.map(p => ({ name: p.name, id: p.id, lastSeen: p.lastSeen })),
+                participants: participants.map(p => ({ name: p.name, id: p.id, lastSeen: p.lastSeen, avatar: p.avatar || '' })),
                 selectedPlayer1: selectedPlayer1 ? { name: selectedPlayer1.name, id: selectedPlayer1.id } : null,
                 selectedPlayer2: selectedPlayer2 ? { name: selectedPlayer2.name, id: selectedPlayer2.id } : null,
                 currentMode,
@@ -2449,7 +2638,12 @@
             try {
                 const s = JSON.parse(saved);
                 if (!s.isLoggedIn || !s.currentChannel) return;
-                participants = s.participants || [];
+                participants = (s.participants || []).map(p => ({
+                    name: p.name,
+                    id: p.id,
+                    lastSeen: p.lastSeen,
+                    avatar: p.avatar || ''
+                }));
                 selectedPlayer1 = s.selectedPlayer1;
                 selectedPlayer2 = s.selectedPlayer2;
                 currentMode = s.currentMode || 'keyword';
@@ -2540,7 +2734,7 @@
             lastConnectedChannel = null;
         }
 
-        function handleChatMessage(username, content) {
+        async function handleChatMessage(username, content, avatarUrl = '') {
             if (!username || !content) return;
             if (isDuplicateMessage(username, content)) return;
 
@@ -2554,13 +2748,18 @@
 
             if (!joiningOpen) return;
 
+            const cleanName = username.trim();
+            const resolvedAvatar = avatarUrl || await fetchKickUserAvatar(cleanName);
             const kl = keyword.toLowerCase();
             if (currentMode === 'keyword') {
                 if (kl === '' || content.toLowerCase() === kl || content.toLowerCase().startsWith(kl + ' '))
-                    addParticipant(username);
+                    addParticipant(cleanName, Date.now(), resolvedAvatar);
             } else {
-                if (!participants.some(p => p.name.toLowerCase() === username.toLowerCase())) addParticipant(username);
-                else updateParticipantSeen(username);
+                if (!participants.some(p => p.name.toLowerCase() === cleanName.toLowerCase())) {
+                    addParticipant(cleanName, Date.now(), resolvedAvatar);
+                } else {
+                    updateParticipantSeen(cleanName);
+                }
             }
             if (window._readyCheckCallback) window._readyCheckCallback(username, content);
         }
@@ -2594,7 +2793,12 @@
                         const msg = JSON.parse(event.data);
                         if (msg.event === 'App\\Events\\ChatMessageEvent') {
                             const td = JSON.parse(msg.data);
-                            handleChatMessage(td?.sender?.username || td?.user?.username, td?.content?.trim());
+                            const sender = td?.sender || td?.user || {};
+                            const username = sender.username || td?.user?.username || td?.sender?.username;
+                            const avatar = sender.profile_pic || sender.profile_picture || sender.avatar || sender.profilePic ||
+                                sender.profile_image_url || td?.profile_pic || td?.profile_picture || td?.avatar || td?.profilePic ||
+                                td?.user?.profile_pic || td?.user?.profile_picture || td?.sender?.profile_pic || td?.sender?.profile_picture;
+                            handleChatMessage(username, td?.content?.trim(), avatar);
                         }
                     } catch (e) { /* ignore */ }
                 });
@@ -2795,6 +2999,11 @@
         // ─────────────────────────────────────────────────────────────────────
         function showWinnerOverlay(winnerName, winnerMessages) {
             if (currentWinnerOverlay) currentWinnerOverlay.remove();
+            const winnerParticipant = participants.find(p => p.name.toLowerCase() === winnerName.toLowerCase()) || null;
+            const winnerAvatar = winnerParticipant?.avatar || '';
+            const winnerAvatarHtml = (winnerAvatar || '').trim()
+                ? `<div class="winner-avatar-large"><img src="${normalizeKickAvatar(winnerAvatar)}" alt="" onerror="this.style.display='none';this.parentElement.querySelector('.participant-avatar-fallback').style.display='flex';"><span class="participant-avatar-fallback">${escapeHtml(winnerName.charAt(0).toUpperCase())}</span></div>`
+                : `<div class="winner-avatar-large"><span class="participant-avatar-fallback" style="display:flex;">${escapeHtml(winnerName.charAt(0).toUpperCase())}</span></div>`;
             const winnersOwnChat = fullChatLog
                 .filter(entry => entry.username.toLowerCase() === winnerName.toLowerCase())
                 .slice(0, 30)
@@ -2807,7 +3016,10 @@
             overlay.innerHTML = `
             <div class="winner-card">
                 <h1>WINNER!</h1>
-                <div class="winner-name">${escapeHtml(winnerName)}</div>
+                <div class="winner-header">
+                    ${winnerAvatarHtml}
+                    <div class="winner-name">${escapeHtml(winnerName)}</div>
+                </div>
                 <div class="winner-chat-log">
                     <strong>${escapeHtml(winnerName)}'s chat messages (last 30)</strong>
                     <div class="winner-main-chat" style="margin-top:10px;">${chatLogHtml}</div>
@@ -2847,27 +3059,31 @@
             }
             const winnerName = winner.name;
             lastSingleWinner = winnerName;
-            const names = participants.map(p => p.name);
-            const repeatFactor = 100;
-            let repeated = [];
-            for (let i = 0; i < repeatFactor; i++) repeated.push(...names);
-            const totalItems = repeated.length;
-            const minIndex = 25;
-            const maxIndex = totalItems - 25;
-            let targetIdx = -1;
-            for (let i = minIndex; i <= maxIndex; i++) {
-                if (repeated[i] === winnerName) {
-                    targetIdx = i;
-                    break;
+            const winnerAvatar = winner.avatar || '';
+            const shuffleArray = (array) => {
+                const next = [...array];
+                for (let i = next.length - 1; i > 0; i--) {
+                    const randomIndex = crypto.getRandomValues(new Uint32Array(1))[0] % (i + 1);
+                    [next[i], next[randomIndex]] = [next[randomIndex], next[i]];
                 }
+                return next;
+            };
+            const repeated = [];
+            const spinRounds = 14;
+            for (let i = 0; i < spinRounds; i++) {
+                repeated.push(...shuffleArray(participants.map(p => ({ name: p.name, avatar: p.avatar || '' }))));
             }
-            if (targetIdx === -1) targetIdx = minIndex;
+            const tailWindowStart = Math.max(0, repeated.length - Math.max(24, participants.length * 6));
+            const winnerInsertIndex = tailWindowStart + Math.floor(Math.random() * Math.max(10, participants.length * 2));
+            repeated.splice(winnerInsertIndex, 0, { name: winnerName, avatar: winnerAvatar });
+            const totalItems = repeated.length;
+            const targetIdx = winnerInsertIndex;
             const overlay = document.createElement('div');
             overlay.className = 'wheel-overlay';
             overlay.innerHTML = `
-            <div class="wheel-container" style="max-width:500px;">
+            <div class="wheel-container" style="max-width:780px;">
                 <div class="wheel-title">Picking a Winner</div>
-                <div class="wheel-viewport" style="height:200px;position:relative;overflow:hidden;">
+                <div class="wheel-viewport" style="height:140px;position:relative;overflow:hidden;">
                     <div id="singleWheelScroller" class="wheel-scroller"></div>
                     <div class="wheel-pointer"></div>
                 </div>
@@ -2876,19 +3092,26 @@
             </div>`;
             document.body.appendChild(overlay);
             const scroller = document.getElementById('singleWheelScroller');
-            scroller.innerHTML = repeated.map(n => `<div class="wheel-item">${escapeHtml(n)}</div>`).join('');
-            scroller.offsetHeight;
+            scroller.innerHTML = repeated.map(entry => {
+                const name = entry.name;
+                const avatar = entry.avatar || '';
+                const avatarMarkup = (avatar || '').trim()
+                    ? `<div class="wheel-item-avatar">
+                        <img src="${normalizeKickAvatar(avatar)}" alt="${escapeHtml(name)}" onload="this.style.opacity='1'; this.parentElement.querySelector('.participant-avatar-fallback').style.display='none';" onerror="this.style.display='none'; const f=this.parentElement.querySelector('.participant-avatar-fallback'); if(f) f.style.display='flex';">
+                        <span class="participant-avatar-fallback">${escapeHtml(name.charAt(0).toUpperCase())}</span>
+                      </div>`
+                    : `<div class="wheel-item-avatar"><span class="participant-avatar-fallback" style="display:flex;">${escapeHtml(name.charAt(0).toUpperCase())}</span></div>`;
+                return `<div class="wheel-item">${avatarMarkup}<div class="wheel-item-name">${escapeHtml(name)}</div></div>`;
+            }).join('');
             const firstItem = scroller.querySelector('.wheel-item');
-            const itemHeight = firstItem.getBoundingClientRect().height;
-            const viewportHeight = 200;
-            const centerOffset = (viewportHeight / 2) - (itemHeight / 2);
-            let targetOffset = -(targetIdx * itemHeight) + centerOffset;
-            const maxOffset = -(0 * itemHeight) + centerOffset;
-            const minOffset = -((totalItems - 1) * itemHeight) + centerOffset;
-            targetOffset = Math.min(maxOffset, Math.max(minOffset, targetOffset));
-            const duration = Math.random() * 4 + 8;
-            scroller.style.transition = `transform ${duration}s cubic-bezier(0.05, 0.95, 0.2, 1)`;
-            scroller.style.transform = `translateY(${targetOffset}px)`;
+            const itemGap = 0;
+            const itemWidth = firstItem.getBoundingClientRect().width + itemGap;
+            const viewportWidth = scroller.parentElement.clientWidth;
+            const targetCenter = (targetIdx + 0.5) * itemWidth;
+            const anchorOffset = viewportWidth / 2 - targetCenter;
+            const duration = 8 + Math.random() * 2.5;
+            scroller.style.transition = `transform ${duration}s cubic-bezier(0.08, 0.82, 0.18, 1)`;
+            scroller.style.transform = `translateX(${anchorOffset}px)`;
             const resultDiv = document.getElementById('wheelResult');
             scroller.addEventListener('transitionend', () => {
                 resultDiv.innerHTML = `WINNER: ${escapeHtml(winnerName)}`;
@@ -2904,23 +3127,26 @@
         // ─────────────────────────────────────────────────────────────────────
         //  PARTICIPANTS
         // ─────────────────────────────────────────────────────────────────────
-        function addParticipant(username, timestamp) {
+        function addParticipant(username, timestamp, avatarUrl = '') {
             const name = username.trim();
             if (!name || participants.some(p => p.name.toLowerCase() === name.toLowerCase())) return false;
             const id = Date.now() + Math.random();
             const lastSeen = timestamp || Date.now();
-            participants.push({ name, id, lastSeen });
+            participants.push({ name, id, lastSeen, avatar: avatarUrl || '' });
             const isP1 = selectedPlayer1 && selectedPlayer1.id === id;
             const isP2 = selectedPlayer2 && selectedPlayer2.id === id;
             const cls = isP1 ? 'selected-player1' : isP2 ? 'selected-player2' : '';
             const timeHtml = (currentMode === 'active' && !isP1 && !isP2) ?
                 `<span class="participant-time" data-lastseen="${lastSeen}">⏱️ ${timeAgo(lastSeen)}</span>` :
                 (isP1 || isP2 ? `<span class="participant-time">Protected</span>` : '');
+            const avatarHtml = (avatarUrl || '').trim()
+                ? `<div class="participant-avatar"><img src="${normalizeKickAvatar(avatarUrl)}" alt="" onload="this.style.zIndex='1'; this.parentElement.querySelector('.participant-avatar-fallback').style.display='none';" onerror="this.style.display='none'; this.parentElement.querySelector('.participant-avatar-fallback').style.display='flex';"><span class="participant-avatar-fallback">${escapeHtml(name.charAt(0).toUpperCase())}</span></div>`
+                : `<div class="participant-avatar"><span class="participant-avatar-fallback" style="display:flex;">${escapeHtml(name.charAt(0).toUpperCase())}</span></div>`;
             const div = document.createElement('div');
             div.className = `participant-item ${cls}`;
             div.setAttribute('data-id', id);
             div.innerHTML =
-                `<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;"><span class="participant-name">${escapeHtml(name)}</span>${timeHtml}</div><div><button class="remove-participant" data-id="${id}">✖</button></div>`;
+                `<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">${avatarHtml}<span class="participant-name">${escapeHtml(name)}</span>${timeHtml}</div><div><button class="remove-participant" data-id="${id}">✖</button></div>`;
             participantListDiv.appendChild(div);
             attachParticipantEvents(div);
             participantCountSpan.innerText = participants.length;
@@ -3000,11 +3226,14 @@
                 const timeHtml = (currentMode === 'active' && !isP1 && !isP2) ?
                     `<span class="participant-time" data-lastseen="${lastSeen}">⏱️ ${timeAgo(lastSeen)}</span>` :
                     (isP1 || isP2 ? `<span class="participant-time">Protected</span>` : '');
+                const avatarHtml = (p.avatar || '').trim()
+                    ? `<div class="participant-avatar"><img src="${normalizeKickAvatar(p.avatar)}" alt="" onload="this.style.zIndex='1'; this.parentElement.querySelector('.participant-avatar-fallback').style.display='none';" onerror="this.style.display='none'; this.parentElement.querySelector('.participant-avatar-fallback').style.display='flex';"><span class="participant-avatar-fallback">${escapeHtml((p.name || '?').charAt(0).toUpperCase())}</span></div>`
+                    : `<div class="participant-avatar"><span class="participant-avatar-fallback" style="display:flex;">${escapeHtml((p.name || '?').charAt(0).toUpperCase())}</span></div>`;
                 const div = document.createElement('div');
                 div.className = `participant-item ${cls}`;
                 div.setAttribute('data-id', p.id);
                 div.innerHTML =
-                    `<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;"><span class="participant-name">${escapeHtml(p.name)}</span>${timeHtml}</div><div><button class="remove-participant" data-id="${p.id}">✖</button></div>`;
+                    `<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">${avatarHtml}<span class="participant-name">${escapeHtml(p.name)}</span>${timeHtml}</div><div><button class="remove-participant" data-id="${p.id}">✖</button></div>`;
                 participantListDiv.appendChild(div);
                 attachParticipantEvents(div);
             });
@@ -3025,7 +3254,7 @@
         // ─────────────────────────────────────────────────────────────────────
         //  WHEEL SELECTOR
         // ─────────────────────────────────────────────────────────────────────
-        function showWheelSelector() {
+        async function showWheelSelector() {
             if (participants.length < 2) {
                 gameMessageSpan.innerText = "Need at least 2 participants";
                 return false;
@@ -3049,22 +3278,37 @@
                 }
             }
             lastSelectedPair = [p1.name, p2.name].sort().join('|');
+            const buildWheelSequence = (allNames, winnerName) => {
+                const sequence = [];
+                for (let pass = 0; pass < 12; pass++) {
+                    const shuffledNames = [...allNames];
+                    for (let i = shuffledNames.length - 1; i > 0; i--) {
+                        const randomIndex = crypto.getRandomValues(new Uint32Array(1))[0] % (i + 1);
+                        [shuffledNames[i], shuffledNames[randomIndex]] = [shuffledNames[randomIndex], shuffledNames[i]];
+                    }
+                    sequence.push(...shuffledNames.map(name => ({ name, avatar: participants.find(p => p.name.toLowerCase() === name.toLowerCase())?.avatar || '' })));
+                }
+                for (let i = 0; i < Math.max(12, allNames.length * 4); i++) {
+                    sequence.push({ name: winnerName, avatar: participants.find(p => p.name.toLowerCase() === winnerName.toLowerCase())?.avatar || '' });
+                }
+                return sequence;
+            };
             const overlay = document.createElement('div');
             overlay.className = 'wheel-overlay';
             overlay.innerHTML = `
-            <div class="wheel-container">
+            <div class="wheel-container" style="max-width:780px;">
                 <div class="wheel-title">Selecting Duelists</div>
                 <div class="wheels">
                     <div class="wheel">
                         <div class="wheel-label">Player 1</div>
-                        <div class="wheel-viewport">
+                        <div class="wheel-viewport" style="height:140px;position:relative;overflow:hidden;">
                             <div id="wheel1Scroller" class="wheel-scroller"></div>
                             <div class="wheel-pointer"></div>
                         </div>
                     </div>
                     <div class="wheel">
                         <div class="wheel-label">Player 2</div>
-                        <div class="wheel-viewport">
+                        <div class="wheel-viewport" style="height:140px;position:relative;overflow:hidden;">
                             <div id="wheel2Scroller" class="wheel-scroller"></div>
                             <div class="wheel-pointer"></div>
                         </div>
@@ -3073,50 +3317,30 @@
             </div>`;
             document.body.appendChild(overlay);
             const names = participants.map(p => p.name);
-            const repeatFactor = 100;
-            let repeated = [];
-            for (let i = 0; i < repeatFactor; i++) repeated.push(...names);
+            const sequence1 = buildWheelSequence(names, p1.name);
+            const sequence2 = buildWheelSequence(names, p2.name);
+            const wheelRender = (entry) => {
+                const avatar = (entry.avatar || '').trim();
+                const avatarMarkup = avatar
+                    ? `<div class="wheel-item-avatar"><img src="${normalizeKickAvatar(avatar)}" alt="${escapeHtml(entry.name)}" onload="this.style.opacity='1'; this.parentElement.querySelector('.participant-avatar-fallback').style.display='none';" onerror="this.style.display='none'; const f=this.parentElement.querySelector('.participant-avatar-fallback'); if(f) f.style.display='flex';"><span class="participant-avatar-fallback">${escapeHtml(entry.name.charAt(0).toUpperCase())}</span></div>`
+                    : `<div class="wheel-item-avatar"><span class="participant-avatar-fallback" style="display:flex;">${escapeHtml(entry.name.charAt(0).toUpperCase())}</span></div>`;
+                return `<div class="wheel-item">${avatarMarkup}<div class="wheel-item-name">${escapeHtml(entry.name)}</div></div>`;
+            };
             const w1 = document.getElementById('wheel1Scroller');
             const w2 = document.getElementById('wheel2Scroller');
-            w1.innerHTML = repeated.map(n => `<div class="wheel-item">${escapeHtml(n)}</div>`).join('');
-            w2.innerHTML = repeated.map(n => `<div class="wheel-item">${escapeHtml(n)}</div>`).join('');
+            w1.innerHTML = sequence1.map(wheelRender).join('');
+            w2.innerHTML = sequence2.map(wheelRender).join('');
             const firstItem = w1.querySelector('.wheel-item');
-            const itemHeight = firstItem.getBoundingClientRect().height;
-            const viewportHeight = 120;
-            const centerOffset = (viewportHeight / 2) - (itemHeight / 2);
-            const totalItems = repeated.length;
-            const minIndex = 25;
-            const maxIndex = totalItems - 25;
-            let idx1 = -1,
-                idx2 = -1;
-            for (let i = minIndex; i <= maxIndex; i++) {
-                if (repeated[i] === p1.name) {
-                    idx1 = i;
-                    break;
-                }
-            }
-            if (idx1 === -1) idx1 = minIndex;
-            for (let i = minIndex; i <= maxIndex; i++) {
-                if (repeated[i] === p2.name && i !== idx1) {
-                    idx2 = i;
-                    break;
-                }
-            }
-            if (idx2 === -1) {
-                for (let i = minIndex; i <= maxIndex; i++) {
-                    if (repeated[i] === p2.name) {
-                        idx2 = i;
-                        break;
-                    }
-                }
-            }
-            if (idx2 === -1) idx2 = (idx1 + 1) % totalItems;
+            const itemWidth = firstItem.getBoundingClientRect().width;
+            const viewportWidth = w1.parentElement.clientWidth;
+            const targetIdx1 = sequence1.length - 1;
+            const targetIdx2 = sequence2.length - 1;
             const d1 = Math.random() * 4 + 8;
             const d2 = Math.random() * 4 + 8;
-            w1.style.transition = `transform ${d1}s cubic-bezier(0.05, 0.95, 0.2, 1)`;
-            w2.style.transition = `transform ${d2}s cubic-bezier(0.05, 0.95, 0.2, 1)`;
-            w1.style.transform = `translateY(${-(idx1 * itemHeight) + centerOffset}px)`;
-            w2.style.transform = `translateY(${-(idx2 * itemHeight) + centerOffset}px)`;
+            w1.style.transition = `transform ${d1}s cubic-bezier(0.08, 0.82, 0.18, 1)`;
+            w2.style.transition = `transform ${d2}s cubic-bezier(0.08, 0.82, 0.18, 1)`;
+            w1.style.transform = `translateX(${viewportWidth / 2 - (targetIdx1 + 0.5) * itemWidth}px)`;
+            w2.style.transform = `translateX(${viewportWidth / 2 - (targetIdx2 + 0.5) * itemWidth}px)`;
             playWheelSpinSound();
             let stopped = 0;
 
@@ -3716,9 +3940,20 @@
             }
 
             generateSessionId() {
-                const channel = currentChannel || 'default';
+                const saved = localStorage.getItem('chatterCurrentSession');
+                if (saved) return saved;
+                const channel = currentChannel || localStorage.getItem('lastConnectedChannel') || 'default';
                 const date = new Date().toISOString().split('T')[0];
-                return `${channel}_${date}_${Date.now()}`;
+                const sessionId = `${channel}_${date}_${Date.now()}`;
+                localStorage.setItem('chatterCurrentSession', sessionId);
+                return sessionId;
+            }
+
+            createFreshSessionId() {
+                const channel = currentChannel || localStorage.getItem('lastConnectedChannel') || 'default';
+                const freshId = `${channel}_${Date.now()}_fresh`;
+                localStorage.setItem('chatterCurrentSession', freshId);
+                return freshId;
             }
 
             async loadAllTimeFromServer() {
@@ -3792,6 +4027,7 @@
                     };
                     localStorage.setItem(`chatterSession_${this.sessionId}`, JSON.stringify(data));
                     localStorage.setItem('chatterCurrentSession', this.sessionId);
+                    if (currentChannel) localStorage.setItem('lastConnectedChannel', currentChannel);
                     this.publishChatterState(reset);
                 } catch (e) { /* ignore */ }
             }
@@ -4177,33 +4413,47 @@
                 this.showWheelAnimation(winner.username, top15);
             }
 
-            showWheelAnimation(winnerName, top15) {
+            async showWheelAnimation(winnerName, top15) {
                 const allNames = top15.map(u => u.username);
-                const repeatFactor = 100;
-                let repeated = [];
-                for (let i = 0; i < repeatFactor; i++) {
-                    repeated = repeated.concat(allNames);
-                }
-                const totalItems = repeated.length;
-                const minIndex = Math.floor(totalItems * 0.3);
-                const maxIndex = Math.floor(totalItems * 0.7);
-                let targetIdx = -1;
-                for (let i = minIndex; i <= maxIndex; i++) {
-                    if (repeated[i] === winnerName) {
-                        targetIdx = i;
-                        break;
+                const avatarMap = new Map();
+                const resolvedEntries = await Promise.all(allNames.map(async (name) => {
+                    const avatar = await fetchKickUserAvatar(name);
+                    avatarMap.set(name.toLowerCase(), avatar);
+                    return { name, avatar };
+                }));
+                const buildWheelSequence = (list, finalWinner) => {
+                    const sequence = [];
+                    const passCount = 12;
+                    for (let pass = 0; pass < passCount; pass++) {
+                        const shuffled = [...list];
+                        for (let i = shuffled.length - 1; i > 0; i--) {
+                            const randomIndex = crypto.getRandomValues(new Uint32Array(1))[0] % (i + 1);
+                            [shuffled[i], shuffled[randomIndex]] = [shuffled[randomIndex], shuffled[i]];
+                        }
+                        sequence.push(...shuffled.map(name => ({
+                            name,
+                            avatar: avatarMap.get(name.toLowerCase()) || ''
+                        })));
                     }
-                }
-                if (targetIdx === -1) targetIdx = Math.floor(totalItems / 2);
+                    const winnerEntry = {
+                        name: finalWinner,
+                        avatar: avatarMap.get(finalWinner.toLowerCase()) || ''
+                    };
+                    const tailStart = Math.max(0, sequence.length - Math.max(24, list.length * 5));
+                    const targetIdx = tailStart + Math.floor(Math.random() * Math.max(10, list.length * 2));
+                    sequence.splice(targetIdx, 0, winnerEntry);
+                    return { sequence, targetIdx };
+                };
+                const { sequence: repeated, targetIdx } = buildWheelSequence(allNames, winnerName);
                 const overlay = document.createElement('div');
                 overlay.className = 'wheel-overlay';
                 overlay.innerHTML = `
-                <div class="wheel-container" style="max-width:500px;">
+                <div class="wheel-container" style="max-width:780px;">
                     <div class="wheel-title">🎯 Rolling Winner</div>
                     <div style="color:#94a3b8;font-size:0.85rem;margin-bottom:10px;">
                         🥇 #1: 25% | 🥈 #2: 20% | 🥉 #3: 15% | Others: 10%
                     </div>
-                    <div class="wheel-viewport" style="height:200px;position:relative;overflow:hidden;">
+                    <div class="wheel-viewport" style="height:140px;position:relative;overflow:hidden;">
                         <div id="singleWheelScroller" class="wheel-scroller"></div>
                         <div class="wheel-pointer"></div>
                     </div>
@@ -4212,19 +4462,20 @@
                 </div>`;
                 document.body.appendChild(overlay);
                 const scroller = document.getElementById('singleWheelScroller');
-                scroller.innerHTML = repeated.map(n => `<div class="wheel-item">${escapeHtml(n)}</div>`).join('');
-                scroller.offsetHeight;
+                scroller.innerHTML = repeated.map(entry => {
+                    const avatar = (entry.avatar || '').trim();
+                    const avatarMarkup = avatar
+                        ? `<div class="wheel-item-avatar"><img src="${normalizeKickAvatar(avatar)}" alt="${escapeHtml(entry.name)}" onload="this.style.opacity='1'; this.parentElement.querySelector('.participant-avatar-fallback').style.display='none';" onerror="this.style.display='none'; const f=this.parentElement.querySelector('.participant-avatar-fallback'); if(f) f.style.display='flex';"><span class="participant-avatar-fallback">${escapeHtml(entry.name.charAt(0).toUpperCase())}</span></div>`
+                        : `<div class="wheel-item-avatar"><span class="participant-avatar-fallback" style="display:flex;">${escapeHtml(entry.name.charAt(0).toUpperCase())}</span></div>`;
+                    return `<div class="wheel-item">${avatarMarkup}<div class="wheel-item-name">${escapeHtml(entry.name)}</div></div>`;
+                }).join('');
                 const firstItem = scroller.querySelector('.wheel-item');
-                const itemHeight = firstItem.getBoundingClientRect().height;
-                const viewportHeight = 200;
-                const centerOffset = (viewportHeight / 2) - (itemHeight / 2);
-                let targetOffset = -(targetIdx * itemHeight) + centerOffset;
-                const maxOffset = -(0 * itemHeight) + centerOffset;
-                const minOffset = -((totalItems - 1) * itemHeight) + centerOffset;
-                targetOffset = Math.min(maxOffset, Math.max(minOffset, targetOffset));
+                const itemWidth = firstItem.getBoundingClientRect().width + 0;
+                const viewportWidth = scroller.parentElement.clientWidth;
+                const anchorOffset = viewportWidth / 2 - (targetIdx + 0.5) * itemWidth;
                 const duration = Math.random() * 4 + 8;
-                scroller.style.transition = `transform ${duration}s cubic-bezier(0.05, 0.95, 0.2, 1)`;
-                scroller.style.transform = `translateY(${targetOffset}px)`;
+                scroller.style.transition = `transform ${duration}s cubic-bezier(0.08, 0.82, 0.18, 1)`;
+                scroller.style.transform = `translateX(${anchorOffset}px)`;
                 playWheelSpinSound();
                 const resultDiv = document.getElementById('wheelResult');
                 let animationEnded = false;
@@ -4233,12 +4484,10 @@
                     animationEnded = true;
                     const rank = top15.findIndex(u => u.username === winnerName) + 1;
                     const points = top15.find(u => u.username === winnerName)?.points || 0;
-                    let bonusText = '',
-                        rankEmoji = '';
-                    if (rank === 1) { bonusText = '🏆 20% bonus!';
-                        rankEmoji = '🥇'; } else if (rank === 2) { bonusText = '🥈 15% bonus!';
-                        rankEmoji = '🥈'; } else if (rank === 3) { bonusText = '🥉 10% bonus!';
-                        rankEmoji = '🥉'; }
+                    let bonusText = '', rankEmoji = '';
+                    if (rank === 1) { bonusText = '🏆 20% bonus!'; rankEmoji = '🥇'; }
+                    else if (rank === 2) { bonusText = '🥈 15% bonus!'; rankEmoji = '🥈'; }
+                    else if (rank === 3) { bonusText = '🥉 10% bonus!'; rankEmoji = '🥉'; }
                     resultDiv.innerHTML = `
                         <div style="font-size:2rem;font-weight:800;color:#fbbf24;animation:bouncePop 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);">
                             🎉 WINNER 🎉
@@ -4269,9 +4518,7 @@
                     }
                 });
                 setTimeout(() => {
-                    if (overlay.parentNode) {
-                        overlay.remove();
-                    }
+                    if (overlay.parentNode) overlay.remove();
                 }, 15000);
             }
 
@@ -4611,8 +4858,9 @@
                 if (!confirm('Are you sure? Current points will be archived but reset for the new stream.')) {
                     return false;
                 }
+                const previousSessionId = this.sessionId;
                 const sessionData = {
-                    sessionId: this.sessionId,
+                    sessionId: previousSessionId,
                     date: new Date().toISOString(),
                     totalPoints: this.getTotalPoints(),
                     chatCount: this.chatters.size,
@@ -4625,7 +4873,8 @@
                 this.winnerHistory = [];
                 this.lastWinner = null;
                 this.messageHistory.clear();
-                this.sessionId = this.generateSessionId();
+                if (previousSessionId) localStorage.removeItem(`chatterSession_${previousSessionId}`);
+                this.sessionId = this.createFreshSessionId();
                 this.saveSessionData(true);
                 this.updateUI();
                 gameMessageSpan.innerText = 'New stream session started! Fresh points for everyone!';
