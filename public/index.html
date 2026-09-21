@@ -491,6 +491,28 @@
 
         window.addEventListener('resize', resizeIframes);
         setTimeout(resizeIframes, 100);
+        // 1. Listen for the token sent by the Kick popup
+  window.addEventListener("message", (event) => {
+    if (event.data && event.data.type === 'KICK_TOKEN') {
+      const token = event.data.token;
+      
+      // Save the token locally
+      localStorage.setItem('kick_token', token);
+      console.log("✅ Login caught successfully! Token saved.");
+      
+      // Reload the page to update the UI
+      window.location.reload(); 
+    }
+  });
+
+  // 2. Check if the user is already logged in when the page loads
+  document.addEventListener("DOMContentLoaded", () => {
+    const token = localStorage.getItem('kick_token');
+    if (token) {
+      console.log("✅ User is active. Token:", token);
+      // We will add the logic to hide the Login button here next
+    }
+  });
     </script>
 </body>
 </html>
