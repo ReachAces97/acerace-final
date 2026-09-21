@@ -64,11 +64,11 @@ export async function onRequest(context) {
     
     const tokenData = await tokenRes.json();
 
-    // 4. Success! Redirect back to the main page with the token as a QUERY PARAMETER
-    const redirectUrl = new URL('/', url.origin);
-    redirectUrl.searchParams.set('token', tokenData.access_token);
-    
-    return Response.redirect(redirectUrl.toString(), 302);
+    // 4. Success — return an HTML page that posts the token to the opener (popup flow)
+    const safeToken = JSON.stringify(tokenData.access_token || '');
+    const html = `<!doctype html><html><head><meta charset="utf-8"><title>Login Successful</title></head><body style="background:#0a0c12;color:#e2e8f0;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;"><div style="text-align:center;background:rgba(15,23,42,0.9);padding:24px;border-radius:16px;border:1px solid #19C6FD;"><h1>✅ Login Successful</h1><p>You may close this window.</p><button onclick="window.close()">Close</button></div><script>try{ const t = ${safeToken}; if(window.opener){ window.opener.postMessage({ type: 'KICK_TOKEN', token: t, channel: null }, '*'); setTimeout(()=>window.close(),300); } }catch(e){}</script></body></html>`;
+
+    return new Response(html, { headers: { 'Content-Type': 'text/html' } });
 
   } catch (e) {
     return new Response(`<h3>Login failed during token exchange</h3><p style="color:red; font-size:14px;">${e.message}</p>`, { status: 500 });
