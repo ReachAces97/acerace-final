@@ -8,137 +8,59 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
             font-family: 'Poppins', sans-serif; 
-            background: radial-gradient(ellipse 80% 50% at 20% 40%, rgba(25,198,253,0.15), transparent), 
-                        radial-gradient(ellipse 60% 80% at 80% 60%, rgba(6,93,230,0.1), transparent), 
-                        #0a0c12; 
+            background: #0a0c12; 
             min-height: 100vh; 
             padding: 20px; 
             color: #e2e8f0; 
             display: flex;
             flex-direction: column;
         }
-
+        /* Debug Bar */
+        #debug {
+            background: #111; color: #0f0; padding: 10px; 
+            font-family: monospace; font-size: 12px; 
+            border: 1px solid #0f0; margin-bottom: 20px; border-radius: 8px;
+            word-break: break-all;
+        }
         .top-bar {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(8px);
-            border-radius: 60px;
-            padding: 6px 18px;
-            margin-bottom: 20px;
+            display: flex; align-items: center; gap: 12px;
+            background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px);
+            border-radius: 60px; padding: 6px 18px; margin-bottom: 20px;
             border: 1px solid rgba(25, 198, 253, 0.15);
-            flex-wrap: nowrap;
-            min-height: 52px;
-            flex-shrink: 0;
+            flex-wrap: nowrap; min-height: 52px; flex-shrink: 0;
         }
-
-        .connection-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-shrink: 0;
-        }
-
-        .status-dot {
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            margin-right: 4px;
-            flex-shrink: 0;
-        }
+        .connection-group { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+        .status-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 4px; flex-shrink: 0; }
         .status-dot.online { background: #22c55e; box-shadow: 0 0 8px rgba(34, 197, 94, 0.5); }
         .status-dot.offline { background: #64748b; }
         .status-dot.connecting { background: #f59e0b; box-shadow: 0 0 8px rgba(245, 158, 11, 0.4); animation: pulse 1s infinite; }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
-        }
-
-        #statusText {
-            font-size: 0.75rem;
-            color: #94a3b8;
-            white-space: nowrap;
-            min-width: 60px;
-        }
-
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        #statusText { font-size: 0.75rem; color: #94a3b8; white-space: nowrap; min-width: 60px; }
         .connection-group input {
-            background: #0f172a;
-            border: 1px solid rgba(25, 198, 253, 0.25);
-            padding: 6px 12px;
-            border-radius: 60px;
-            color: white;
-            font-size: 0.8rem;
-            width: 130px;
-            outline: none;
-            transition: border-color 0.2s;
+            background: #0f172a; border: 1px solid rgba(25, 198, 253, 0.25);
+            padding: 6px 12px; border-radius: 60px; color: white;
+            font-size: 0.8rem; width: 130px; outline: none;
         }
-        .connection-group input:focus {
-            border-color: #19C6FD;
-            box-shadow: 0 0 12px rgba(25, 198, 253, 0.15);
-        }
-        .connection-group input::placeholder {
-            color: #64748b;
-        }
-        .connection-group input:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        .btn {
-            padding: 6px 16px;
-            border-radius: 60px;
-            font-weight: 600;
-            font-size: 0.8rem;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s;
-            white-space: nowrap;
-        }
-        .btn:hover { transform: translateY(-1px); }
-        .btn:active { transform: translateY(0px); }
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none !important;
-        }
-
+        .connection-group input:focus { border-color: #19C6FD; }
+        .btn { padding: 6px 16px; border-radius: 60px; font-weight: 600; font-size: 0.8rem; border: none; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
         .btn-primary { background: linear-gradient(135deg, #19C6FD, #3b82f6); color: white; }
-        .btn-primary:hover:not(:disabled) { box-shadow: 0 4px 12px rgba(25, 198, 253, 0.3); }
         .btn-danger { background: #dc2626; color: white; }
-        .btn-danger:hover:not(:disabled) { box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3); }
         .btn-secondary { background: #334155; color: #e2e8f0; }
-        .btn-secondary:hover:not(:disabled) { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); }
         .btn-success { background: #22c55e; color: white; }
-        .btn-success:hover:not(:disabled) { box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3); }
-
         .tab-group { display: flex; gap: 6px; margin-left: auto; flex-shrink: 0; }
-        .tab-btn {
-            padding: 6px 18px; border-radius: 60px; font-weight: 600; font-size: 0.8rem;
-            border: none; cursor: pointer; transition: all 0.2s;
-            background: rgba(30, 41, 59, 0.5); color: #94a3b8; white-space: nowrap;
-        }
-        .tab-btn:hover { background: rgba(30, 41, 59, 0.8); color: #e2e8f0; }
-        .tab-btn.active { background: linear-gradient(135deg, #19C6FD, #3b82f6); color: white; box-shadow: 0 0 20px rgba(25, 198, 253, 0.3); }
-
-        #userInfo {
-            font-size: 0.7rem; color: #22c55e; white-space: nowrap;
-            max-width: 120px; overflow: hidden; text-overflow: ellipsis;
-        }
-
+        .tab-btn { padding: 6px 18px; border-radius: 60px; font-weight: 600; font-size: 0.8rem; border: none; cursor: pointer; background: rgba(30, 41, 59, 0.5); color: #94a3b8; }
+        .tab-btn.active { background: linear-gradient(135deg, #19C6FD, #3b82f6); color: white; }
+        #userInfo { font-size: 0.7rem; color: #22c55e; max-width: 120px; overflow: hidden; text-overflow: ellipsis; }
         .iframe-container { flex: 1; min-height: 0; position: relative; }
-        iframe {
-            width: 100%; height: 100%; min-height: 700px; border: none;
-            border-radius: 28px; background: rgba(10, 14, 23, 0.6); backdrop-filter: blur(12px);
-        }
-
+        iframe { width: 100%; height: 100%; min-height: 700px; border: none; border-radius: 28px; background: rgba(10, 14, 23, 0.6); }
         .tab-content { display: none; height: 100%; }
         .tab-content.active { display: block; height: 100%; }
     </style>
 </head>
 <body>
+
+    <!-- DEBUG BANNER -->
+    <div id="debug">Waiting for script to run...</div>
 
     <div class="top-bar">
         <div class="connection-group">
@@ -165,17 +87,17 @@
     </div>
 
     <script>
-        // ========== ERROR CATCHER ==========
-        // This will alert us if there is a JavaScript syntax error anywhere
+        // 1. Catch JS Errors and put them in the Debug Bar
         window.onerror = function(msg, url, line, col, error) {
-            alert("JS Error: " + msg + "\nLine: " + line);
+            document.getElementById('debug').innerText = "JS ERROR: " + msg + " (Line: " + line + ")";
+            document.getElementById('debug').style.background = "#f00";
             return false;
         };
 
-        // ========== PERSISTENT LOGIN STATE ==========
         let kickToken = null;
         let currentChannel = null;
 
+        const debugBar = document.getElementById('debug');
         const statusDot = document.getElementById('statusDot');
         const statusText = document.getElementById('statusText');
         const loginBtn = document.getElementById('loginBtn');
@@ -204,14 +126,6 @@
                 if (swFrame) sendTokenToIframe(swFrame, null, null);
                 if (arFrame) sendTokenToIframe(arFrame, null, null);
             }
-        }
-
-        function setupIframeReload(iframeId) {
-            const iframe = document.getElementById(iframeId);
-            if (!iframe) return;
-            iframe.addEventListener('load', () => {
-                if (kickToken) sendTokenToIframe(iframe, kickToken, currentChannel);
-            });
         }
 
         function updateUI() {
@@ -263,30 +177,27 @@
                 kickToken = savedToken;
                 currentChannel = savedChannel || null;
                 updateUI();
-                if (currentChannel) {
-                    setTimeout(() => sendTokenToAllIframes(), 300);
-                }
+                debugBar.innerText = "Restored old session from localStorage.";
             } else {
                 kickToken = null;
                 currentChannel = null;
                 updateUI();
+                debugBar.innerText = "No old session found in localStorage.";
             }
         }
 
-        // ========== CATCH TOKEN FROM URL REDIRECT ==========
+        // 2. Bulletproof Token Checker
         function checkUrlForToken() {
             const hash = window.location.hash;
-            
-            // DEBUG ALERT: Show us the raw hash
-            if (hash) {
-                alert("Hash found in URL: " + hash);
-            }
+            debugBar.innerText = "Checking URL... Hash is: " + hash;
 
-            if (hash && hash.startsWith('#token=')) {
-                const token = hash.replace('#token=', '');
+            if (hash && hash.includes('token=')) {
+                // Split by 'token=' and take the first part before any '&'
+                const token = hash.split('token=')[1].split('&')[0];
                 
-                // DEBUG ALERT: Confirm token extraction
-                alert("Token extracted! Logging you in now...");
+                debugBar.innerText = "SUCCESS! Token extracted: " + token.substring(0, 15) + "...";
+                debugBar.style.background = "#0f0";
+                debugBar.style.color = "#000";
                 
                 kickToken = token;
                 persistState(); 
@@ -294,27 +205,17 @@
                 
                 // Clean the URL
                 window.history.replaceState(null, null, window.location.pathname);
-                
-                if (currentChannel) {
-                    setTimeout(() => sendTokenToAllIframes(), 300);
-                }
                 return true;
             }
             return false;
         }
 
-        // ========== EVENT HANDLERS ==========
-        channelInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') connectBtn.click();
-        });
-
+        // --- EVENT LISTENERS ---
         loginBtn.addEventListener('click', () => {
             if (kickToken) {
-                kickToken = null;
-                currentChannel = null;
-                persistState();
-                updateUI();
-                sendTokenToAllIframes();
+                kickToken = null; currentChannel = null;
+                persistState(); updateUI(); sendTokenToAllIframes();
+                debugBar.innerText = "Logged out.";
             } else {
                 window.location.href = '/auth/kick';
             }
@@ -325,9 +226,7 @@
             const channel = channelInput.value.trim();
             if (!channel) return alert('Enter a channel name');
             currentChannel = channel;
-            persistState();
-            updateUI();
-            sendTokenToAllIframes();
+            persistState(); updateUI(); sendTokenToAllIframes();
         });
 
         document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -341,18 +240,13 @@
             });
         });
 
-        // ========== INITIALIZE ==========
-        // 1. Check URL for token FIRST
+        // --- INITIALIZE ---
+        debugBar.innerText = "Page loaded. Initializing...";
         const justLoggedIn = checkUrlForToken();
         
-        // 2. Only restore old session if we didn't just log in
         if (!justLoggedIn) {
             restoreState();
         }
-
-        setupIframeReload('slotwarFrame');
-        setupIframeReload('aceraceFrame');
-        setTimeout(() => { if (kickToken) sendTokenToAllIframes(); }, 500);
     </script>
 </body>
 </html>
