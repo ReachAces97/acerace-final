@@ -1,8 +1,0 @@
-[build]
-  publish = "public"
-  functions = "netlify/functions"
-  command = "npm run copy-assets || true"
-
-[dev]
-  command = "npm run dev"
-  port = 8888
