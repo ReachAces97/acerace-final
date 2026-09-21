@@ -7,14 +7,14 @@ export async function onRequest(context) {
 
   // 1. Handle errors sent back by Kick
   if (error) {
-    return new Response(`<h3>Login failed</h3><p>${error_description || error}</p><button onclick="window.close()">Close</button>`, { headers: { 'Content-Type': 'text/html' } });
+    return new Response(`<h3>Login failed</h3><p>${error_description || error}</p>`, { headers: { 'Content-Type': 'text/html' } });
   }
   
   if (!code || !state) {
-    return new Response('<h3>Missing code/state</h3><button onclick="window.close()">Close</button>', { headers: { 'Content-Type': 'text/html' } });
+    return new Response('<h3>Missing code/state</h3>', { headers: { 'Content-Type': 'text/html' } });
   }
 
-  // 2. Decode the state to get the PKCE verifier (using standard web APIs)
+  // 2. Decode the state to get the PKCE verifier
   function base64urlDecode(s) { 
     return atob(s.replace(/-/g, '+').replace(/_/g, '/')); 
   }
@@ -31,11 +31,11 @@ export async function onRequest(context) {
   const KICK_CLIENT_ID = context.env.KICK_CLIENT_ID;
   const KICK_CLIENT_SECRET = context.env.KICK_CLIENT_SECRET;
   
-  // Use the exact redirect URI from environment variables
-  const redirectUri = context.env.KICK_REDIRECT_URI || url.origin + '/auth/kick/callback';
+  // 🔴 HARDCODED: We are forcing this exact URL to bypass any environment variable issues
+  const redirectUri = "https://acerace-final50.pages.dev/auth/kick/callback";
 
   if (!KICK_CLIENT_ID || !KICK_CLIENT_SECRET) {
-    return new Response('<h3>Server misconfigured</h3><p>Environment variables missing.</p>', { headers: { 'Content-Type': 'text/html' }, status: 500 });
+    return new Response('<h3>Server misconfigured</h3><p>Environment variables missing.</p>', { status: 500 });
   }
 
   // 3. Exchange the code for an access token
@@ -71,6 +71,6 @@ export async function onRequest(context) {
     return Response.redirect(redirectUrl.toString(), 302);
 
   } catch (e) {
-    return new Response(`<h3>Login failed during token exchange</h3><p style="color:red; font-size:14px;">${e.message}</p><button onclick="window.close()">Close</button>`, { headers: { 'Content-Type': 'text/html' }, status: 500 });
+    return new Response(`<h3>Login failed during token exchange</h3><p style="color:red; font-size:14px;">${e.message}</p>`, { status: 500 });
   }
 }

@@ -1,3 +1,13 @@
+# 1. Allow API routes to reach their functions
+/api/* /api/:splat 200
+
+# 2. Force the auth routes to run their functions (THIS FIXES THE LOGIN)
+/auth/* /auth/:splat 200
+
+# 3. Your existing overlay rewrites
 /overlay    /overlay.html   200
 /overlay-top    /overlaytop.html   200
 /overlaytop    /overlaytop.html   200
+
+# 4. Fallback for Single Page App (MUST BE LAST)
+/* /index.html 200

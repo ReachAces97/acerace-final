@@ -1,9 +1,11 @@
 export async function onRequest(context) {
   const clientId = context.env.KICK_CLIENT_ID;
-  const redirectUri = context.env.KICK_REDIRECT_URI;
-
-  if (!clientId || !redirectUri) {
-    return new Response("Missing KICK_CLIENT_ID or KICK_REDIRECT_URI in Cloudflare variables", { status: 500 });
+  
+  // 🔴 HARDCODED: We are forcing this exact URL to bypass any environment variable issues
+  const redirectUri = "https://acerace-final50.pages.dev/auth/kick/callback";
+  
+  if (!clientId) {
+    return new Response("Missing KICK_CLIENT_ID in Cloudflare variables", { status: 500 });
   }
 
   // Generate PKCE verifier and challenge (required by Kick)
@@ -22,7 +24,7 @@ export async function onRequest(context) {
   const statePayload = JSON.stringify({ v: codeVerifier });
   const state = btoa(statePayload).replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
 
-  // 🔴 THIS IS THE KEY FIX: Using id.kick.com instead of kick.com
+  // Redirect to Kick's actual OAuth server
   const kickAuthUrl = `https://id.kick.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=user:read&state=${state}&code_challenge=${codeChallenge}&code_challenge_method=S256`;
 
   return Response.redirect(kickAuthUrl, 302);
