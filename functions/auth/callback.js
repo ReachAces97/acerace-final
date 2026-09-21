@@ -64,10 +64,11 @@ export async function onRequest(context) {
     
     const tokenData = await tokenRes.json();
 
-    // 4. Success! Redirect back to the main page with the token in the URL hash
-    // This completely bypasses popup blockers and window.opener issues.
-    const redirectUrl = `${url.origin}/#token=${tokenData.access_token}`;
-    return Response.redirect(redirectUrl, 302);
+    // 4. Success! Redirect back to the main page with the token as a QUERY PARAMETER
+    const redirectUrl = new URL('/', url.origin);
+    redirectUrl.searchParams.set('token', tokenData.access_token);
+    
+    return Response.redirect(redirectUrl.toString(), 302);
 
   } catch (e) {
     return new Response(`<h3>Login failed during token exchange</h3><p style="color:red; font-size:14px;">${e.message}</p><button onclick="window.close()">Close</button>`, { headers: { 'Content-Type': 'text/html' }, status: 500 });

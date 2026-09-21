@@ -20,7 +20,7 @@
             background: #111; color: #0f0; padding: 10px; 
             font-family: monospace; font-size: 12px; 
             border: 1px solid #0f0; margin-bottom: 20px; border-radius: 8px;
-            word-break: break-all;
+            word-break: break-all; white-space: pre-wrap;
         }
         .top-bar {
             display: flex; align-items: center; gap: 12px;
@@ -89,8 +89,10 @@
     <script>
         // 1. Catch JS Errors and put them in the Debug Bar
         window.onerror = function(msg, url, line, col, error) {
-            document.getElementById('debug').innerText = "JS ERROR: " + msg + " (Line: " + line + ")";
-            document.getElementById('debug').style.background = "#f00";
+            const debug = document.getElementById('debug');
+            debug.innerText += "\nJS ERROR: " + msg + " (Line: " + line + ")";
+            debug.style.background = "#f00";
+            debug.style.color = "#fff";
             return false;
         };
 
@@ -177,25 +179,33 @@
                 kickToken = savedToken;
                 currentChannel = savedChannel || null;
                 updateUI();
-                debugBar.innerText = "Restored old session from localStorage.";
+                debugBar.innerText += "\nRestored old session from localStorage.";
             } else {
                 kickToken = null;
                 currentChannel = null;
                 updateUI();
-                debugBar.innerText = "No old session found in localStorage.";
+                debugBar.innerText += "\nNo old session found in localStorage.";
             }
         }
 
-        // 2. Bulletproof Token Checker
-        function checkUrlForToken() {
-            const hash = window.location.hash;
-            debugBar.innerText = "Checking URL... Hash is: " + hash;
+        function setupIframeReload(iframeId) {
+            const iframe = document.getElementById(iframeId);
+            if (!iframe) return;
+            iframe.addEventListener('load', () => {
+                if (kickToken) sendTokenToIframe(iframe, kickToken, currentChannel);
+            });
+        }
 
-            if (hash && hash.includes('token=')) {
-                // Split by 'token=' and take the first part before any '&'
-                const token = hash.split('token=')[1].split('&')[0];
-                
-                debugBar.innerText = "SUCCESS! Token extracted: " + token.substring(0, 15) + "...";
+        // 2. Token Checker (Using Query Parameters)
+        function checkUrlForToken() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+            
+            debugBar.innerText = "Checking URL Query Parameters...\n";
+            debugBar.innerText += "Search string: " + window.location.search + "\n";
+            
+            if (token) {
+                debugBar.innerText += "SUCCESS! Token extracted from URL.\n";
                 debugBar.style.background = "#0f0";
                 debugBar.style.color = "#000";
                 
@@ -203,10 +213,16 @@
                 persistState(); 
                 updateUI();     
                 
-                // Clean the URL
+                // Clean the URL so the token isn't visible in the address bar
                 window.history.replaceState(null, null, window.location.pathname);
+                
+                if (currentChannel) {
+                    setTimeout(() => sendTokenToAllIframes(), 300);
+                }
                 return true;
             }
+            
+            debugBar.innerText += "No token found in URL.\n";
             return false;
         }
 
@@ -241,12 +257,16 @@
         });
 
         // --- INITIALIZE ---
-        debugBar.innerText = "Page loaded. Initializing...";
+        debugBar.innerText = "Page loaded. Initializing...\n";
         const justLoggedIn = checkUrlForToken();
         
         if (!justLoggedIn) {
             restoreState();
         }
+        
+        setupIframeReload('slotwarFrame');
+        setupIframeReload('aceraceFrame');
+        setTimeout(() => { if (kickToken) sendTokenToAllIframes(); }, 500);
     </script>
 </body>
 </html>
