@@ -492,18 +492,7 @@
         window.addEventListener('resize', resizeIframes);
         setTimeout(resizeIframes, 100);
         // 1. Listen for the token sent by the Kick popup
-  window.addEventListener("message", (event) => {
-    if (event.data && event.data.type === 'KICK_TOKEN') {
-      const token = event.data.token;
-      
-      // Save the token locally
-      localStorage.setItem('kick_token', token);
-      console.log("✅ Login caught successfully! Token saved.");
-      
-      // Reload the page to update the UI
-      window.location.reload(); 
-    }
-  });
+
 
     </script>
 </body>
