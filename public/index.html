@@ -413,7 +413,7 @@
                 if (reconnectTimer) { clearTimeout(reconnectTimer); reconnectTimer = null; }
             } else {
                 // Open OAuth popup
-                window.open('/auth/kick', 'KickLogin', 'width=600,height=700');
+              window.location.href = '/auth/kick';
             }
         });
 
@@ -471,6 +471,31 @@
 
         // ========== INITIALIZE ==========
         restoreState();
+                // ========== CATCH TOKEN FROM URL REDIRECT ==========
+        function checkUrlForToken() {
+            const hash = window.location.hash;
+            if (hash && hash.startsWith('#token=')) {
+                const token = hash.replace('#token=', '');
+                console.log("🎉 Token caught from URL redirect!");
+                
+                kickToken = token;
+                persistState();
+                updateUI();
+                
+                // Clean the URL so the token isn't visible in the address bar
+                window.history.replaceState(null, null, ' ');
+                
+                // If they already typed a channel, send it to the iframes
+                if (currentChannel) {
+                    setTimeout(() => {
+                        sendTokenToAllIframes();
+                    }, 300);
+                }
+            }
+        }
+
+        // Run the check immediately on page load
+        checkUrlForToken();
 
         // Also try to send after a short delay (in case iframe load event already fired)
         setTimeout(() => {

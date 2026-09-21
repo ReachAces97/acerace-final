@@ -64,42 +64,10 @@ export async function onRequest(context) {
     
     const tokenData = await tokenRes.json();
 
-    // 4. Return HTML that sends the token back to the main window with Debug Logs
-    const html = `<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>Login Successful</title>
-</head>
-<body style="background:#0a0c12;color:#e2e8f0;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;font-family:sans-serif;">
-    <div style="text-align:center;background:rgba(15,23,42,0.9);padding:24px;border-radius:16px;border:1px solid #19C6FD;">
-        <h1>✅ Login Successful</h1>
-        <p id="status">Returning to application...</p>
-    </div>
-    <script>
-        console.log("Popup loaded. Checking for opener...");
-        
-        if (window.opener) { 
-            console.log("Opener found! Sending token to main window...");
-            window.opener.postMessage({ 
-                type: 'KICK_TOKEN', 
-                token: '${tokenData.access_token}', 
-                channel: null 
-            }, '*'); 
-            document.getElementById('status').innerText = "Token sent! Closing...";
-        } else {
-            console.log("Error: window.opener is null!");
-            document.getElementById('status').innerText = "Error: window.opener is null. This popup was opened incorrectly.";
-            document.getElementById('status').style.color = "red";
-        }
-        
-        // Give it 3 seconds so you can read the debug messages before it closes
-        setTimeout(() => window.close(), 3000);
-    </script>
-</body>
-</html>`;
-    
-    return new Response(html, { headers: { 'Content-Type': 'text/html' } });
+    // 4. Success! Redirect back to the main page with the token in the URL hash
+    // This completely bypasses popup blockers and window.opener issues.
+    const redirectUrl = `${url.origin}/#token=${tokenData.access_token}`;
+    return Response.redirect(redirectUrl, 302);
 
   } catch (e) {
     return new Response(`<h3>Login failed during token exchange</h3><p style="color:red; font-size:14px;">${e.message}</p><button onclick="window.close()">Close</button>`, { headers: { 'Content-Type': 'text/html' }, status: 500 });
