@@ -22,6 +22,7 @@ export async function onRequest(context) {
   const statePayload = JSON.stringify({ v: codeVerifier });
   const state = btoa(statePayload).replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
 
+  // 🔴 THIS IS THE KEY FIX: Using id.kick.com instead of kick.com
   const kickAuthUrl = `https://id.kick.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=user:read&state=${state}&code_challenge=${codeChallenge}&code_challenge_method=S256`;
 
   return Response.redirect(kickAuthUrl, 302);
