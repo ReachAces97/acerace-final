@@ -4,7 +4,8 @@
   "description": "Kick chat games: Slot War (team duel) + Ace Race (card drawing giveaway)",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "copy-assets": "cp -R assets public/assets || true"
   },
   "dependencies": {
     "compression": "^1.8.1",
