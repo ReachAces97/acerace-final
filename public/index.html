@@ -412,8 +412,8 @@
                 sendTokenToAllIframes();
                 if (reconnectTimer) { clearTimeout(reconnectTimer); reconnectTimer = null; }
             } else {
-                // Open OAuth popup
-              window.location.href = '/auth/kick';
+                // Redirect to Kick OAuth (Replaces the old popup method)
+                window.location.href = '/auth/kick';
             }
         });
 
@@ -434,25 +434,6 @@
             sendTokenToAllIframes();
         });
 
-        // Listen for OAuth callback message (from popup)
-                // Listen for OAuth callback message (from popup)
-        window.addEventListener('message', (event) => {
-            console.log("📩 Main window received a message:", event.data); // <-- ADD THIS
-            
-            if (event.data && event.data.type === 'KICK_TOKEN') {
-                console.log("✅ Token caught! Updating UI..."); // <-- ADD THIS
-                kickToken = event.data.token;
-                currentChannel = event.data.channel || null;
-                persistState();
-                updateUI();
-                if (currentChannel) {
-                    setTimeout(() => {
-                        sendTokenToAllIframes();
-                    }, 300);
-                }
-            }
-        });
-
         // ========== TAB SWITCHING ==========
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', () => {
@@ -465,13 +446,7 @@
             });
         });
 
-        // ========== SETUP IFRAME RELOAD ==========
-        setupIframeReload('slotwarFrame');
-        setupIframeReload('aceraceFrame');
-
-        // ========== INITIALIZE ==========
-        restoreState();
-                // ========== CATCH TOKEN FROM URL REDIRECT ==========
+        // ========== CATCH TOKEN FROM URL REDIRECT ==========
         function checkUrlForToken() {
             const hash = window.location.hash;
             if (hash && hash.startsWith('#token=')) {
@@ -479,11 +454,11 @@
                 console.log("🎉 Token caught from URL redirect!");
                 
                 kickToken = token;
-                persistState();
-                updateUI();
+                persistState(); // Save it so you stay logged in
+                updateUI();     // Change the UI to "Logged in"
                 
                 // Clean the URL so the token isn't visible in the address bar
-                window.history.replaceState(null, null, ' ');
+                window.history.replaceState(null, null, window.location.pathname);
                 
                 // If they already typed a channel, send it to the iframes
                 if (currentChannel) {
@@ -491,25 +466,37 @@
                         sendTokenToAllIframes();
                     }, 300);
                 }
+                return true; // We found a token!
             }
+            return false;
         }
 
-        // Run the check immediately on page load
-        checkUrlForToken();
+        // ========== INITIALIZE ==========
+        // 1. First, check if we just came back from Kick with a token in the URL
+        const justLoggedIn = checkUrlForToken();
+        
+        // 2. If no token in URL, try to restore an old session from localStorage
+        if (!justLoggedIn) {
+            restoreState();
+        }
 
-        // Also try to send after a short delay (in case iframe load event already fired)
+        // 3. Setup iframe reloads (so they get the token when they load)
+        setupIframeReload('slotwarFrame');
+        setupIframeReload('aceraceFrame');
+
+        // 4. Send token after a short delay (in case iframe load event already fired)
         setTimeout(() => {
             if (kickToken) sendTokenToAllIframes();
         }, 500);
 
-        // Handle page visibility change - reconnect if needed
+        // 5. Handle page visibility change - reconnect if needed
         document.addEventListener('visibilitychange', () => {
             if (!document.hidden && kickToken && currentChannel) {
                 sendTokenToAllIframes();
             }
         });
 
-        // Handle resize to ensure iframe fills space
+        // 6. Handle resize to ensure iframe fills space
         function resizeIframes() {
             const container = document.querySelector('.iframe-container');
             const iframes = document.querySelectorAll('iframe');
@@ -520,9 +507,6 @@
 
         window.addEventListener('resize', resizeIframes);
         setTimeout(resizeIframes, 100);
-        // 1. Listen for the token sent by the Kick popup
-
-
     </script>
 </body>
 </html>
