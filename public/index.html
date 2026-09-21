@@ -435,8 +435,12 @@
         });
 
         // Listen for OAuth callback message (from popup)
+                // Listen for OAuth callback message (from popup)
         window.addEventListener('message', (event) => {
-            if (event.data.type === 'KICK_TOKEN') {
+            console.log("📩 Main window received a message:", event.data); // <-- ADD THIS
+            
+            if (event.data && event.data.type === 'KICK_TOKEN') {
+                console.log("✅ Token caught! Updating UI..."); // <-- ADD THIS
                 kickToken = event.data.token;
                 currentChannel = event.data.channel || null;
                 persistState();
