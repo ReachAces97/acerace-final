@@ -1,5 +1,3 @@
-import { Buffer } from 'node:buffer';
-
 export async function onRequest(context) {
   const url = new URL(context.request.url);
   const code = url.searchParams.get('code');
@@ -15,9 +13,8 @@ export async function onRequest(context) {
     return new Response('<h3>Missing code/state</h3><button onclick="window.close()">Close</button>', { headers: { 'Content-Type': 'text/html' } });
   }
 
-  // Decode state (base64url JSON) to extract verifier
   function base64urlDecode(s) { 
-    return Buffer.from(s.replace(/-/g, '+').replace(/_/g, '/'), 'base64').toString('utf8'); 
+    return atob(s.replace(/-/g, '+').replace(/_/g, '/'));
   }
   
   let verifier = null;
@@ -29,15 +26,12 @@ export async function onRequest(context) {
 
   const KICK_CLIENT_ID = context.env.KICK_CLIENT_ID;
   const KICK_CLIENT_SECRET = context.env.KICK_CLIENT_SECRET;
-  const reqUrl = new URL(context.request.url);
-  const origin = context.env.SITE_ORIGIN || reqUrl.origin;
-  const redirectUri = origin + '/auth/kick/callback';
+  const redirectUri = context.env.KICK_REDIRECT_URI; // MUST use the exact same URI
 
-  if (!KICK_CLIENT_ID || !KICK_CLIENT_SECRET) {
+  if (!KICK_CLIENT_ID || !KICK_CLIENT_SECRET || !redirectUri) {
     return new Response('<h3>Server misconfigured</h3><p>Environment variables missing.</p>', { headers: { 'Content-Type': 'text/html' }, status: 500 });
   }
 
-  // Exchange code for token
   try {
     const body = new URLSearchParams({
       grant_type: 'authorization_code',
@@ -54,14 +48,18 @@ export async function onRequest(context) {
       body: body.toString()
     });
 
-    if (!tokenRes.ok) throw new Error('Token exchange failed');
+    if (!tokenRes.ok) {
+      const errorText = await tokenRes.text();
+      console.error('Token exchange failed:', errorText);
+      throw new Error('Token exchange failed');
+    }
+    
     const tokenData = await tokenRes.json();
 
-    // Return an HTML page that posts message back to opener and closes itself
     const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Login Successful</title></head><body style="background:#0a0c12;color:#e2e8f0;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;"><div style="text-align:center;background:rgba(15,23,42,0.9);padding:24px;border-radius:16px;border:1px solid #19C6FD;"><h1>✅ Login Successful</h1><p>Returning to application...</p></div><script>if (window.opener) { window.opener.postMessage({ type: 'KICK_TOKEN', token: '${tokenData.access_token}', channel: null }, '*'); } setTimeout(() => window.close(), 1000);</script></body></html>`;
     
     return new Response(html, { headers: { 'Content-Type': 'text/html' } });
   } catch (e) {
-    return new Response('<h3>Login failed during token exchange</h3>', { headers: { 'Content-Type': 'text/html' }, status: 500 });
+    return new Response('<h3>Login failed during token exchange</h3><p>Check Cloudflare logs for details.</p>', { headers: { 'Content-Type': 'text/html' }, status: 500 });
   }
 }

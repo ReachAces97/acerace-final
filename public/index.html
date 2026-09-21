@@ -505,14 +505,6 @@
     }
   });
 
-  // 2. Check if the user is already logged in when the page loads
-  document.addEventListener("DOMContentLoaded", () => {
-    const token = localStorage.getItem('kick_token');
-    if (token) {
-      console.log("✅ User is active. Token:", token);
-      // We will add the logic to hide the Login button here next
-    }
-  });
     </script>
 </body>
 </html>
