@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "copy-assets": "cp -R assets public/assets || true"
+    "copy-assets": "node scripts/copy-assets.js",
+    "build": "npm run copy-assets"
   },
   "dependencies": {
     "compression": "^1.8.1",
